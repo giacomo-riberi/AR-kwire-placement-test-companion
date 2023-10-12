@@ -230,11 +230,11 @@ def TEST():
     test_data = {
         "id": secrets.token_hex(3),
         "time_init": time.time(),
-        "phase":                custom_input(" ├-- phase [INTEGER]: ", "INTEGER"),
-        "gender":               custom_input(" ├-- gender [M/F]: ", ["m", "f"]).upper(),
-        "age":                  custom_input(" ├-- age [INTEGER]: ", "INTEGER"),
-        "specialization_year":  custom_input(" ├-- year of specialization [INTEGER]: ", "INTEGER"),
-        "num_operations":       custom_input(" ├-- number of operations [INTEGER]: ", "INTEGER"),
+        "phase":                custom_input(" |-- phase [INTEGER]: ", "INTEGER"),
+        "gender":               custom_input(" |-- gender [M/F]: ", ["m", "f"]).upper(),
+        "age":                  custom_input(" |-- age [INTEGER]: ", "INTEGER"),
+        "specialization_year":  custom_input(" |-- year of specialization [INTEGER]: ", "INTEGER"),
+        "num_operations":       custom_input(" |-- number of operations [INTEGER]: ", "INTEGER"),
         "test_duration": 0.0,   # to update
         "test_radiation": 0.0,  # to update
         "test_PAC": 0,          # to update
@@ -312,14 +312,14 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
     
     # PA FAILED
     if user_input.lower() == 'f':
-        print("\t\t └-candidate has FAILED positioning attempt!")
+        print("\t\t |-candidate has FAILED positioning attempt!")
         PA_data["PA_success"] = False
 
         input("CANDIDATE: remove the K-wire [ENTER]: ")
     
     # PA SUCCESS
     elif user_input.lower() == 's':
-        print("\t\t └-candidate has performed SUCCESSFUL positioning attempt!")
+        print("\t\t |-candidate has performed SUCCESSFUL positioning attempt!")
         PA_data["PA_success"] = True
     
 
@@ -331,15 +331,15 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
     PA_data["PA_number"] = PA_number
     # PA_data["PA_success"] -> already set
     PA_data["PAD"] = time.time() - PAD_init
-    PA_data["PAR"] = custom_input(" ├-- positioning attempt RADIATION [FLOAT]: ", "FLOAT")
-    PA_data["P1A"] = custom_input(" ├-- P1A [FLOAT]: ", "FLOAT")
-    PA_data["P1B"] = custom_input(" ├-- P1B [FLOAT]: ", "FLOAT")
-    PA_data["P1C"] = custom_input(" ├-- P1C [FLOAT]: ", "FLOAT")
-    PA_data["P1D"] = custom_input(" ├-- P1D [FLOAT]: ", "FLOAT")
-    PA_data["P2A"] = custom_input(" ├-- P2A [FLOAT]: ", "FLOAT")
-    PA_data["P2B"] = custom_input(" ├-- P2B [FLOAT]: ", "FLOAT")
-    PA_data["P2C"] = custom_input(" ├-- P2C [FLOAT]: ", "FLOAT")
-    PA_data["P2D"] = custom_input(" ├-- P2D [FLOAT]: ", "FLOAT")
+    PA_data["PAR"] = custom_input(" |-- positioning attempt RADIATION [FLOAT]: ", "FLOAT")
+    PA_data["P1A"] = custom_input(" |-- P1A [FLOAT]: ", "FLOAT")
+    PA_data["P1B"] = custom_input(" |-- P1B [FLOAT]: ", "FLOAT")
+    PA_data["P1C"] = custom_input(" |-- P1C [FLOAT]: ", "FLOAT")
+    PA_data["P1D"] = custom_input(" |-- P1D [FLOAT]: ", "FLOAT")
+    PA_data["P2A"] = custom_input(" |-- P2A [FLOAT]: ", "FLOAT")
+    PA_data["P2B"] = custom_input(" |-- P2B [FLOAT]: ", "FLOAT")
+    PA_data["P2C"] = custom_input(" |-- P2C [FLOAT]: ", "FLOAT")
+    PA_data["P2D"] = custom_input(" |-- P2D [FLOAT]: ", "FLOAT")
     PA_data["test_id"] = test_id
     PA_data["ECP_id"] = ECP_id
     
