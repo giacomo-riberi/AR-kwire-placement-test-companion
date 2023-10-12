@@ -1,8 +1,9 @@
 import sqlite3
 import time
 import secrets
-import re
 import sys, traceback
+
+from tools import custom_input, chronometer
 
 version = "v1.0"
 
@@ -22,12 +23,15 @@ def main():
 
     print("bye!")
 
-# save_db saves data on database
+
 def save_db(TEST_data):
+    "save_db saves data on database"
+
     global ECPs, PAs
 
-    # printExcept prints logs generated in the try-except block
     def printExcept(er):
+        "printExcept prints logs generated in the try-except block"
+
         print('SQLite error: %s' % (' '.join(er.args)))
         print("Exception class is: ", er.__class__)
         print('SQLite traceback: ')
@@ -220,8 +224,10 @@ def save_db(TEST_data):
     conn.close()
     print("SAVED ON DATABASE!")
 
-# TEST performs 3 ECPs with multiple PA
+
 def TEST():
+    "TEST performs 3 ECPs with multiple PA"
+
     global ECPs
 
     print("# BEGIN POSITIONING TEST FOR A CANDIDATE (ONE SINGLE PHASE) #\n")
@@ -261,8 +267,9 @@ def TEST():
 
     return test_data
 
-# ECP performs single ECP with multiple PA
 def ECP(phase, test_id, ECP_number):
+    "ECP performs single ECP with multiple PA"
+
     global PAs
 
     ECP_data = {
@@ -299,65 +306,58 @@ def ECP(phase, test_id, ECP_number):
     return ECP_data
     
     
-# ECP performs single PA
 def PA(phase, test_id, ECP_number, ECP_id, PA_number):
+    "PA performs single PA"
+
+    def terminatePA(PA_success: bool):
+        "terminatePA terminates PA, performs data extraction and candidate extracts K-wire"
+
+        chrono.pause() # pause chronometer to get data
+        print(f"DATA COLLECTION - PA{ECP_number}.{PA_number}")
+        PA_data["id"] = secrets.token_hex(3)
+        PA_data["time_init"] = PAD_init
+        PA_data["phase"] = phase
+        PA_data["ECP_number"] = ECP_number
+        PA_data["PA_number"] = PA_number
+        PA_data["PA_success"] = PA_success
+        # PA_data["PAD"] # set after K-wire extraction
+        PA_data["PAR"] = custom_input(" |-- positioning attempt RADIATION [FLOAT]: ", "FLOAT")
+        PA_data["P1A"] = custom_input(" |-- P1A [FLOAT]: ", "FLOAT")
+        PA_data["P1B"] = custom_input(" |-- P1B [FLOAT]: ", "FLOAT")
+        PA_data["P1C"] = custom_input(" |-- P1C [FLOAT]: ", "FLOAT")
+        PA_data["P1D"] = custom_input(" |-- P1D [FLOAT]: ", "FLOAT")
+        PA_data["P2A"] = custom_input(" |-- P2A [FLOAT]: ", "FLOAT")
+        PA_data["P2B"] = custom_input(" |-- P2B [FLOAT]: ", "FLOAT")
+        PA_data["P2C"] = custom_input(" |-- P2C [FLOAT]: ", "FLOAT")
+        PA_data["P2D"] = custom_input(" |-- P2D [FLOAT]: ", "FLOAT")
+        PA_data["test_id"] = test_id
+        PA_data["ECP_id"] = ECP_id
+        chrono.start() # start chronometer to include also extraction time in PA
+
+        input("CANDIDATE: extract the K-wire [ENTER when done]: ")
+        PA_data["PAD"] = chrono.reset()
+
     PA_data = {}
 
     print(f"\n------------------------\nPA{ECP_number}.{PA_number} START!")
     input("PERFORM:\t reset x-ray machine [ENTER]: ")
-    PAD_init = time.time()
+    
+    chrono = chronometer()
+    PAD_init = chrono.start()
 
-    PA = {}
     user_input = custom_input("CANDIDATE:\t insert K-wire, checks it and declares it failed[f] or successful[s]: ", ["f", "s"])
     
     # PA FAILED
     if user_input.lower() == 'f':
         print("\t\t |-candidate has FAILED positioning attempt!")
-        PA_data["PA_success"] = False
-
-        input("CANDIDATE: remove the K-wire [ENTER]: ")
+        terminatePA(False)
     
     # PA SUCCESS
     elif user_input.lower() == 's':
         print("\t\t |-candidate has performed SUCCESSFUL positioning attempt!")
-        PA_data["PA_success"] = True
-    
-
-    print(f"DATA COLLECTION - PA{ECP_number}.{PA_number} finished")
-    PA_data["id"] = secrets.token_hex(3)
-    PA_data["time_init"] = time.time()
-    PA_data["phase"] = phase
-    PA_data["ECP_number"] = ECP_number
-    PA_data["PA_number"] = PA_number
-    # PA_data["PA_success"] -> already set
-    PA_data["PAD"] = time.time() - PAD_init
-    PA_data["PAR"] = custom_input(" |-- positioning attempt RADIATION [FLOAT]: ", "FLOAT")
-    PA_data["P1A"] = custom_input(" |-- P1A [FLOAT]: ", "FLOAT")
-    PA_data["P1B"] = custom_input(" |-- P1B [FLOAT]: ", "FLOAT")
-    PA_data["P1C"] = custom_input(" |-- P1C [FLOAT]: ", "FLOAT")
-    PA_data["P1D"] = custom_input(" |-- P1D [FLOAT]: ", "FLOAT")
-    PA_data["P2A"] = custom_input(" |-- P2A [FLOAT]: ", "FLOAT")
-    PA_data["P2B"] = custom_input(" |-- P2B [FLOAT]: ", "FLOAT")
-    PA_data["P2C"] = custom_input(" |-- P2C [FLOAT]: ", "FLOAT")
-    PA_data["P2D"] = custom_input(" |-- P2D [FLOAT]: ", "FLOAT")
-    PA_data["test_id"] = test_id
-    PA_data["ECP_id"] = ECP_id
+        terminatePA(True)
     
     return PA_data
-
-#  custom_input behaves like input but continues to prompt the user until the input matches one of the accepted values
-def custom_input(prompt, accepted_values):
-    while True:
-        user_input = input(prompt).strip().lower()  
-        if user_input == "":
-            continue
-        if user_input in accepted_values:
-            return user_input
-        elif accepted_values == "INTEGER" and user_input.isdigit():
-            return int(user_input)
-        elif accepted_values == "FLOAT" and (user_input.isdigit() or re.match(r'^-?\d+(?:\.\d+)$', user_input) != None):
-            return float(user_input)
-
 
 if __name__ == "__main__":
     main()
