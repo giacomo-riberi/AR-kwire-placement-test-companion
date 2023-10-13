@@ -1,18 +1,45 @@
 import re, time
+from . import logger
 
-def custom_input(prompt, accepted_values):
-    "custom_input behaves like input but continues to prompt the user until the input matches one of the accepted values"
+class custom_input:
+    "input gets custom inputs"
 
-    while True:
-        user_input = input(prompt).strip().lower()  
-        if user_input == "":
-            continue
+    def __init__(self):
+        return
+    
+    def all(self, prompt):
+        "accepts everything"
+        user_input = input(prompt).strip().lower()
+        logger.debug(prompt + "\t|" + user_input + "|")
+        return user_input
+    
+    def acc(self, prompt, accepted_values):
+        "accepts scpecific values (case insensitive)"
+        user_input = input(prompt).strip().lower()
         if user_input in accepted_values:
+            logger.debug(prompt + "\t|" + user_input + "|")
             return user_input
-        elif accepted_values == "INTEGER" and user_input.isdigit():
+        else:
+            return self.acc(prompt, accepted_values)
+    
+    def int(self, prompt):
+        "accepts integers"
+        user_input = input(prompt).strip().lower()
+        if user_input.isdigit():
+            logger.debug(prompt + "\t|" + user_input + "|")
             return int(user_input)
-        elif accepted_values == "FLOAT" and (user_input.isdigit() or re.match(r'^-?\d+(?:\.\d+)$', user_input) != None):
+        else:
+            return self.int(prompt)
+    
+    def flo(self, prompt):
+        "accepts integers and floats"
+        user_input = input(prompt).strip().lower()
+        if user_input.isdigit() or re.match(r'^-?\d+(?:\.\d+)$', user_input):
+            logger.debug(prompt + "\t|" + user_input + "|")
             return float(user_input)
+        else:
+            return self.flo(prompt)
+
 
 class chronometer:
     "chronometer is a chronometer object capable of reset, start, pause, read"
@@ -55,3 +82,4 @@ class chronometer:
             return self.elapsed_time + (time.time() - self.start_time)
         else:
             return self.elapsed_time
+

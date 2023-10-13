@@ -1,13 +1,17 @@
-import time
-from main import Chronometer
+# test with `python -m unittest test.tools_test``
 
-def main():
-    test_cronometer()
+import unittest
+import time
+from utils.utils import chronometer
+
+class Testing(unittest.TestCase):
+    def test_cronometer(self):
+        test_cronometer()
 
 def test_cronometer():
     test_init = time.time()
 
-    chrono = Chronometer()
+    chrono = chronometer()
     chrono.start()
     print("read {:.2f}, should be 0.00".format(chrono.read()))
 
@@ -34,5 +38,6 @@ def test_cronometer():
 
     print("total time elapsed: {:.2f}, should be 4.00".format(time.time()-test_init))
 
-if __name__ == "__main__":
-    main()
+
+if __name__ == '__main__':
+    unittest.main()
