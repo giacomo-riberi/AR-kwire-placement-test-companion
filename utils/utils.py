@@ -10,14 +10,14 @@ class custom_input:
     def all(self, prompt):
         "accepts everything including empty strings"
         user_input = input(prompt).strip().lower()
-        logger.debug(prompt + "\t|" + user_input + "|")
+        logger.debug_noprint(prompt + "\t|" + user_input + "|")
         return user_input
     
     def acc(self, prompt, accepted_values):
         "accepts scpecific values (case insensitive)"
         user_input = input(prompt).strip().lower()
         if user_input in accepted_values:
-            logger.debug(prompt + "\t|" + user_input + "|")
+            logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return user_input
         else:
             return self.acc(prompt, accepted_values)
@@ -26,7 +26,7 @@ class custom_input:
         "accepts integers"
         user_input = input(prompt).strip().lower()
         if user_input.isdigit():
-            logger.debug(prompt + "\t|" + user_input + "|")
+            logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return int(user_input)
         else:
             return self.int(prompt)
@@ -35,7 +35,7 @@ class custom_input:
         "accepts integers and floats"
         user_input = input(prompt).strip().lower()
         if user_input.isdigit() or re.match(r'^-?\d+(?:\.\d+)$', user_input):
-            logger.debug(prompt + "\t|" + user_input + "|")
+            logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return float(user_input)
         else:
             return self.flo(prompt)
@@ -44,7 +44,7 @@ class custom_input:
         "accepts non empty strings"
         user_input = input(prompt).strip().lower()
         if user_input != "":
-            logger.debug(prompt + "\t|" + user_input + "|")
+            logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return user_input
         else:
             return self.str(prompt)

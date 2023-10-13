@@ -3,6 +3,7 @@ import time
 from datetime import datetime
 import secrets
 import sys, traceback
+import signal
 
 import utils.utils as utils
 from utils import logger
@@ -11,15 +12,17 @@ version = "v1.1"
 
 # TODO
 # inserire data leggibile in database
-# intercept ctrlc
 
 ECPs = []
 PAs = []
-
-
 ci = utils.custom_input()
 
 def main():
+    def handler(signum, frame):
+        logger.info("\nexiting. DATA NOT SAVED!")
+        exit(0)
+    signal.signal(signal.SIGINT, handler)
+
     logger.info(f"# POSITIONING TEST COMPANION ({version}) #\n")
 
     TEST_data = TEST()
