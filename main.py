@@ -8,7 +8,7 @@ from datetime import datetime
 import utils.utils as utils
 from utils import logger
 
-version = "v1.1"
+version = "v1.2"
 
 ECPs = []
 PAs = []
