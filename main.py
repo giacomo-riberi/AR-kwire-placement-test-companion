@@ -1,9 +1,9 @@
 import sqlite3
 import time
-from datetime import datetime
 import secrets
-import sys, traceback
+import sys
 import signal
+from datetime import datetime
 
 import utils.utils as utils
 from utils import logger
@@ -128,7 +128,7 @@ def save_db(TEST_data):
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (  TEST_data['id'],
                 TEST_data['datatype'],
-                TEST_data['time_init'],
+                datetime.fromtimestamp(round(TEST_data["time_init"], 0)),
                 TEST_data['phase'],
                 TEST_data['name'],
                 TEST_data['surname'],
@@ -162,7 +162,7 @@ def save_db(TEST_data):
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (  ECP_data['id'],
                     ECP_data['datatype'],
-                    ECP_data['time_init'],
+                    datetime.fromtimestamp(round(ECP_data["time_init"], 0)),
                     ECP_data['phase'],
                     ECP_data['ECP_number'],
                     ECP_data['ECPD'],
@@ -198,7 +198,7 @@ def save_db(TEST_data):
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (  PA_data["id"],
                     PA_data["datatype"],
-                    PA_data["time_init"],
+                    datetime.fromtimestamp(round(PA_data["time_init"], 0)),
                     PA_data["phase"],
                     PA_data["ECP_number"],
                     PA_data["PA_number"],
@@ -240,7 +240,7 @@ def TEST():
     test_data = {
         "id": secrets.token_hex(3),
         "datatype": "test",
-        "time_init": datetime.now(),
+        "time_init": time.time(),
         "phase":                ci.int(" |-- phase [INTEGER]:               "),
         "name":                 ci.str(" |-- name [STRING]:                 "),
         "surname":              ci.str(" |-- surname [STRING]:              "),
@@ -282,7 +282,7 @@ def ECP(phase, test_id, ECP_number):
     ECP_data = {
         "id": secrets.token_hex(4),
         "datatype": "ecp",
-        "time_init": datetime.now(),
+        "time_init": time.time(),
         "phase": phase,
         "ECP_number": ECP_number,
         "ECPD": 0.0,        # to update
@@ -353,7 +353,7 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
     ci.all("PERFORM:\t reset x-ray machine [ENTER when done]: ")
     
     chrono = utils.chronometer()
-    time_init = datetime.fromtimestamp(chrono.start())
+    time_init = chrono.start()
 
     i = ci.acc("CANDIDATE:\t insert K-wire, checks it and declares it failed[f] or successful[s]: ", ["f", "s"])
     if i.lower() == 'f': # PA FAILED
