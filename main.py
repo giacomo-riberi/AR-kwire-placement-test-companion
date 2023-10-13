@@ -9,8 +9,13 @@ from utils import logger
 
 version = "v1.1"
 
+# TODO
+# inserire data leggibile in database
+# intercept ctrlc
+
 ECPs = []
 PAs = []
+
 
 ci = utils.custom_input()
 
@@ -29,16 +34,6 @@ def save_db(TEST_data):
 
     global ECPs, PAs
 
-    def logExcept(er):
-        "logExcept prints logs generated in the try-except block"
-
-        logger.error('SQLite error: %s' % (' '.join(er.args)))
-        logger.error("Exception class is: ", er.__class__)
-        logger.error('SQLite traceback: ')
-        exc_type, exc_value, exc_tb = sys.exc_info()
-        logger.error(traceback.format_exception(exc_type, exc_value, exc_tb))
-
-    # create database tables
     try:
         conn = sqlite3.connect(f'positioning_test_data-({version}).db') # Create a connection to the SQLite database (or create it if it doesn't exist)
         cursor = conn.cursor() # Create a cursor object to interact with the database
@@ -47,8 +42,11 @@ def save_db(TEST_data):
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS TEST (
                 id TEXT NOT NULL PRIMARY KEY,
+                datatype TEXT,
                 time_init REAL,
                 phase INTEGER,
+                name TEXT,
+                surname TEXT,
                 gender TEXT,
                 age INTEGER,
                 specialization_year TEXT,
@@ -66,6 +64,7 @@ def save_db(TEST_data):
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS ECP (
                 id TEXT NOT NULL PRIMARY KEY,
+                datatype TEXT,
                 time_init REAL,
                 phase INTEGER,
                 ECP_number INTEGER,
@@ -81,6 +80,7 @@ def save_db(TEST_data):
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS PA (
                 id TEXT NOT NULL PRIMARY KEY,
+                datatype TEXT,
                 time_init REAL,
                 phase INTEGER,
                 ECP_number INTEGER,
@@ -101,19 +101,19 @@ def save_db(TEST_data):
             )''')
 
         conn.commit()
-    except sqlite3.Error as er:
-        logExcept(er)
-        sys.exit()
     
-    ### DON'T COMMIT UNTIL ALL INSERTIONS ARE DONE! ###
+    
+        ### DON'T COMMIT UNTIL ALL INSERTIONS ARE DONE! ###
 
-    # insert TEST_data into database
-    try:
+        # insert TEST_data into database
         cursor.execute('''
             INSERT INTO TEST (
                 id,
+                datatype,
                 time_init,
                 phase,
+                name,
+                surname,
                 gender,
                 age,
                 specialization_year,
@@ -125,10 +125,13 @@ def save_db(TEST_data):
                 test_ECPC,
                 PA_ids,
                 ECP_ids
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (  TEST_data['id'],
+                TEST_data['datatype'],
                 TEST_data['time_init'],
                 TEST_data['phase'],
+                TEST_data['name'],
+                TEST_data['surname'],
                 TEST_data['gender'],
                 TEST_data['age'],
                 TEST_data['specialization_year'],
@@ -140,16 +143,13 @@ def save_db(TEST_data):
                 TEST_data['test_ECPC'],
                 ",".join(TEST_data['PA_ids']),
                 ",".join(TEST_data['ECP_ids'])))
-    except sqlite3.Error as er:
-        logExcept(er)
-        sys.exit()
-    
-    # insert ECPs into database
-    for ECP_data in ECPs:
-        try:
+        
+        # insert ECPs into database
+        for ECP_data in ECPs:
             cursor.execute('''
                 INSERT INTO ECP (
                     id,
+                    datatype,
                     time_init,
                     phase,
                     ECP_number,
@@ -159,8 +159,9 @@ def save_db(TEST_data):
                     ECP_PACF,
                     test_id,
                     PA_ids
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (  ECP_data['id'],
+                    ECP_data['datatype'],
                     ECP_data['time_init'],
                     ECP_data['phase'],
                     ECP_data['ECP_number'],
@@ -170,16 +171,13 @@ def save_db(TEST_data):
                     ECP_data['ECP_PACF'],
                     ECP_data['test_id'],
                     ",".join(ECP_data['PA_ids'])))
-        except sqlite3.Error as er:
-            logExcept(er)
-            sys.exit()
 
-    # insert PAs into database
-    for PA_data in PAs:
-        try:
+        # insert PAs into database
+        for PA_data in PAs:
             cursor.execute('''
                 INSERT INTO PA (
                     id,
+                    datatype,
                     time_init,
                     phase,
                     ECP_number,
@@ -197,8 +195,9 @@ def save_db(TEST_data):
                     P2D,
                     test_id,
                     ECP_id
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (  PA_data["id"],
+                    PA_data["datatype"],
                     PA_data["time_init"],
                     PA_data["phase"],
                     PA_data["ECP_number"],
@@ -216,9 +215,12 @@ def save_db(TEST_data):
                     PA_data["P2D"],
                     PA_data["test_id"],
                     PA_data["ECP_id"]))
-        except sqlite3.Error as er:
-            logExcept(er)
-            sys.exit()
+    except sqlite3.Error as er:
+        logger.error(f"-------------------")
+        logger.error(f"SQLite traceback  : " + " - ".join([str(x).strip() for x in sys.exc_info()]))
+        logger.error(f"SQLite error line : " + str(er.__traceback__.tb_lineno))
+        logger.error(f"SQLite error      : " + str(er))
+        sys.exit()
         
     conn.commit()
     conn.close()
@@ -237,12 +239,15 @@ def TEST():
     logger.info("DATA COLLECTION")
     test_data = {
         "id": secrets.token_hex(3),
+        "datatype": "test",
         "time_init": time.time(),
-        "phase":                ci.int(" |-- phase [INTEGER]:                  "),
-        "gender":               ci.acc(" |-- gender [M/F]:                     ", ["m", "f"]).upper(),
-        "age":                  ci.int(" |-- age [INTEGER]:                    "),
-        "specialization_year":  ci.int(" |-- year of specialization [INTEGER]: "),
-        "num_operations":       ci.int(" |-- number of operations [INTEGER]:   "),
+        "phase":                ci.int(" |-- phase [INTEGER]:               "),
+        "name":                 ci.str(" |-- name [STRING]:                 "),
+        "surname":              ci.str(" |-- surname [STRING]:              "),
+        "gender":               ci.acc(" |-- gender [M/F]:                  ", ["m", "f"]).upper(),
+        "age":                  ci.int(" |-- age [INTEGER]:                 "),
+        "specialization_year":  ci.int(" |-- specialization year [INTEGER]: "),
+        "num_operations":       ci.int(" |-- operations count [INTEGER]:    "),
         "test_duration": 0.0,   # to update
         "test_radiation": 0.0,  # to update
         "test_PAC": 0,          # to update
@@ -275,7 +280,8 @@ def ECP(phase, test_id, ECP_number):
     global PAs
 
     ECP_data = {
-        "id": secrets.token_hex(3),
+        "id": secrets.token_hex(4),
+        "datatype": "ecp",
         "time_init": time.time(),
         "phase": phase,
         "ECP_number": ECP_number,
@@ -316,46 +322,46 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
 
         chrono.pause() # pause chronometer to get data
         logger.info(f"DATA COLLECTION - PA{ECP_number}.{PA_number}")
-        PA_data["id"] = secrets.token_hex(3)
-        PA_data["time_init"] = PAD_init
-        PA_data["phase"] = phase
-        PA_data["ECP_number"] = ECP_number
-        PA_data["PA_number"] = PA_number
-        PA_data["PA_success"] = PA_success
-        # PA_data["PAD"] # set after K-wire extraction
-        PA_data["PAR"] = ci.flo(" |-- positioning attempt RADIATION [FLOAT]: ")
-        PA_data["P1A"] = ci.flo(" |-- P1A [FLOAT]: ")
-        PA_data["P1B"] = ci.flo(" |-- P1B [FLOAT]: ")
-        PA_data["P1C"] = ci.flo(" |-- P1C [FLOAT]: ")
-        PA_data["P1D"] = ci.flo(" |-- P1D [FLOAT]: ")
-        PA_data["P2A"] = ci.flo(" |-- P2A [FLOAT]: ")
-        PA_data["P2B"] = ci.flo(" |-- P2B [FLOAT]: ")
-        PA_data["P2C"] = ci.flo(" |-- P2C [FLOAT]: ")
-        PA_data["P2D"] = ci.flo(" |-- P2D [FLOAT]: ")
-        PA_data["test_id"] = test_id
-        PA_data["ECP_id"] = ECP_id
+        PA_data = {
+            "id": secrets.token_hex(5),
+            "datatype": "pa",
+            "time_init": time_init,
+            "phase": phase,
+            "ECP_number": ECP_number,
+            "PA_number": PA_number,
+            "PA_success": PA_success,
+            # "PAD", # set after K-wire extraction
+            "PAR": ci.flo(" |-- positioning attempt RADIATION [FLOAT]: "),
+            "P1A": ci.flo(" |-- P1A [FLOAT]: "),
+            "P1B": ci.flo(" |-- P1B [FLOAT]: "),
+            "P1C": ci.flo(" |-- P1C [FLOAT]: "),
+            "P1D": ci.flo(" |-- P1D [FLOAT]: "),
+            "P2A": ci.flo(" |-- P2A [FLOAT]: "),
+            "P2B": ci.flo(" |-- P2B [FLOAT]: "),
+            "P2C": ci.flo(" |-- P2C [FLOAT]: "),
+            "P2D": ci.flo(" |-- P2D [FLOAT]: "),
+            "test_id": test_id,
+            "ECP_id": ECP_id
+        }
         chrono.start() # start chronometer to include also extraction time in PA
 
         ci.all("CANDIDATE: extract the K-wire [ENTER when done]: ")
         PA_data["PAD"] = chrono.reset()
-
-    PA_data = {}
+        return PA_data
 
     logger.info(f"\n------------------------\nPA{ECP_number}.{PA_number} START!")
     ci.all("PERFORM:\t reset x-ray machine [ENTER when done]: ")
     
     chrono = utils.chronometer()
-    PAD_init = chrono.start()
+    time_init = chrono.start()
 
     i = ci.acc("CANDIDATE:\t insert K-wire, checks it and declares it failed[f] or successful[s]: ", ["f", "s"])
     if i.lower() == 'f': # PA FAILED
         logger.info("\t\t |-candidate has FAILED positioning attempt!")
-        terminatePA(False)
+        return terminatePA(False)
     elif i.lower() == 's': # PA SUCCESS
         logger.info("\t\t |-candidate has performed SUCCESSFUL positioning attempt!")
-        terminatePA(True)
+        return terminatePA(True)
     
-    return PA_data
-
 if __name__ == "__main__":
     main()

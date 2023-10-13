@@ -17,7 +17,7 @@ file_handler = logging.FileHandler(f"logs/{datetime.now().strftime('%Y-%m-%d_%H-
 file_handler.setLevel(logging.DEBUG)
 
 # Create a formatter
-formatter = logging.Formatter('%(asctime)s - [%(levelname)8s] - %(message)s')
+formatter = logging.Formatter('%(asctime)s - [%(levelname)6s] - %(message)s')
 file_handler.setFormatter(formatter)
 
 # Add the handler to the logger

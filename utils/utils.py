@@ -8,7 +8,7 @@ class custom_input:
         return
     
     def all(self, prompt):
-        "accepts everything"
+        "accepts everything including empty strings"
         user_input = input(prompt).strip().lower()
         logger.debug(prompt + "\t|" + user_input + "|")
         return user_input
@@ -39,6 +39,15 @@ class custom_input:
             return float(user_input)
         else:
             return self.flo(prompt)
+    
+    def str(self, prompt):
+        "accepts non empty strings"
+        user_input = input(prompt).strip().lower()
+        if user_input != "":
+            logger.debug(prompt + "\t|" + user_input + "|")
+            return user_input
+        else:
+            return self.str(prompt)
 
 
 class chronometer:
