@@ -10,9 +10,6 @@ from utils import logger
 
 version = "v1.1"
 
-# TODO
-# inserire data leggibile in database
-
 ECPs = []
 PAs = []
 ci = utils.custom_input()
@@ -46,7 +43,7 @@ def save_db(TEST_data):
             CREATE TABLE IF NOT EXISTS TEST (
                 id TEXT NOT NULL PRIMARY KEY,
                 datatype TEXT,
-                time_init REAL,
+                time_init TIMESTAMP,
                 phase INTEGER,
                 name TEXT,
                 surname TEXT,
@@ -68,7 +65,7 @@ def save_db(TEST_data):
             CREATE TABLE IF NOT EXISTS ECP (
                 id TEXT NOT NULL PRIMARY KEY,
                 datatype TEXT,
-                time_init REAL,
+                time_init TIMESTAMP,
                 phase INTEGER,
                 ECP_number INTEGER,
                 ECPD REAL,
@@ -84,7 +81,7 @@ def save_db(TEST_data):
             CREATE TABLE IF NOT EXISTS PA (
                 id TEXT NOT NULL PRIMARY KEY,
                 datatype TEXT,
-                time_init REAL,
+                time_init TIMESTAMP,
                 phase INTEGER,
                 ECP_number INTEGER,
                 PA_number INTEGER,
@@ -243,7 +240,7 @@ def TEST():
     test_data = {
         "id": secrets.token_hex(3),
         "datatype": "test",
-        "time_init": time.time(),
+        "time_init": datetime.now(),
         "phase":                ci.int(" |-- phase [INTEGER]:               "),
         "name":                 ci.str(" |-- name [STRING]:                 "),
         "surname":              ci.str(" |-- surname [STRING]:              "),
@@ -285,7 +282,7 @@ def ECP(phase, test_id, ECP_number):
     ECP_data = {
         "id": secrets.token_hex(4),
         "datatype": "ecp",
-        "time_init": time.time(),
+        "time_init": datetime.now(),
         "phase": phase,
         "ECP_number": ECP_number,
         "ECPD": 0.0,        # to update
@@ -356,7 +353,7 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
     ci.all("PERFORM:\t reset x-ray machine [ENTER when done]: ")
     
     chrono = utils.chronometer()
-    time_init = chrono.start()
+    time_init = datetime.fromtimestamp(chrono.start())
 
     i = ci.acc("CANDIDATE:\t insert K-wire, checks it and declares it failed[f] or successful[s]: ", ["f", "s"])
     if i.lower() == 'f': # PA FAILED

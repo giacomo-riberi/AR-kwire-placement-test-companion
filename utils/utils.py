@@ -63,7 +63,10 @@ class chronometer:
         self.start_time = None
         self.elapsed_time = 0.0
         self.is_running = False
-        return et
+        if et == None:
+            return et
+        else:
+            return round(et, 2)
 
     def start(self) -> float | None:
         "starts the chronometer and returns start time"
@@ -71,7 +74,7 @@ class chronometer:
         if not self.is_running:
             self.start_time = time.time()
             self.is_running = True
-            return self.start_time
+            return round(self.start_time, 2)
         else:
             print("Chronometer is already running.")
 
@@ -81,14 +84,14 @@ class chronometer:
         if self.is_running:
             self.elapsed_time += time.time() - self.start_time
             self.is_running = False
-            return self.elapsed_time
+            return round(self.start_time, 2)
         else:
             print("Chronometer is not running.")
 
     def read(self) -> float | None: # self.elapsed_time might be None
         "returns elapsed time"
         if self.is_running:
-            return self.elapsed_time + (time.time() - self.start_time)
+            return round(self.elapsed_time + (time.time() - self.start_time), 2)
         else:
-            return self.elapsed_time
+            return round(self.start_time, 2)
 
