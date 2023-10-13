@@ -349,7 +349,8 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
         PA_data["PAD"] = chrono.reset()
         return PA_data
 
-    logger.info(f"\n------------------------\nPA{ECP_number}.{PA_number} START!")
+    logger.info(f"\n------------------------")
+    logger.info(f"PA{ECP_number}.{PA_number} START!")
     ci.all("PERFORM:\t reset x-ray machine [ENTER when done]: ")
     
     chrono = utils.chronometer()
