@@ -43,6 +43,8 @@ def save_db(TEST_data):
             CREATE TABLE IF NOT EXISTS TEST (
                 id TEXT NOT NULL PRIMARY KEY,
                 datatype TEXT,
+                PA_ids TEXT,
+                ECP_ids TEXT,
                 time_init TIMESTAMP,
                 phase INTEGER,
                 name TEXT,
@@ -55,9 +57,7 @@ def save_db(TEST_data):
                 test_radiation REAL,
                 test_PAC INTEGER,
                 test_PACF INTEGER,
-                test_ECPC INTEGER,
-                PA_ids TEXT,
-                ECP_ids TEXT
+                test_ECPC INTEGER
             )''')
 
         # create ECP table
@@ -65,15 +65,15 @@ def save_db(TEST_data):
             CREATE TABLE IF NOT EXISTS ECP (
                 id TEXT NOT NULL PRIMARY KEY,
                 datatype TEXT,
+                test_id TEXT,
+                PA_ids TEXT,
                 time_init TIMESTAMP,
                 phase INTEGER,
                 ECP_number INTEGER,
                 ECPD REAL,
                 ECPR REAL,
                 ECP_PAC INTEGER,
-                ECP_PACF INTEGER,
-                test_id TEXT,
-                PA_ids TEXT
+                ECP_PACF INTEGER
             )''')
 
         # create PA table
@@ -81,6 +81,8 @@ def save_db(TEST_data):
             CREATE TABLE IF NOT EXISTS PA (
                 id TEXT NOT NULL PRIMARY KEY,
                 datatype TEXT,
+                test_id TEXT,
+                ECP_id TEXT,
                 time_init TIMESTAMP,
                 phase INTEGER,
                 ECP_number INTEGER,
@@ -95,9 +97,7 @@ def save_db(TEST_data):
                 P2A REAL,
                 P2B REAL,
                 P2C REAL,
-                P2D REAL,
-                test_id TEXT,
-                ECP_id TEXT
+                P2D REAL
             )''')
 
         conn.commit()
@@ -110,6 +110,8 @@ def save_db(TEST_data):
             INSERT INTO TEST (
                 id,
                 datatype,
+                PA_ids,
+                ECP_ids,
                 time_init,
                 phase,
                 name,
@@ -122,12 +124,12 @@ def save_db(TEST_data):
                 test_radiation,
                 test_PAC,
                 test_PACF,
-                test_ECPC,
-                PA_ids,
-                ECP_ids
+                test_ECPC
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (  TEST_data['id'],
                 TEST_data['datatype'],
+                ",".join(TEST_data['PA_ids']),
+                ",".join(TEST_data['ECP_ids']),
                 datetime.fromtimestamp(round(TEST_data["time_init"], 0)),
                 TEST_data['phase'],
                 TEST_data['name'],
@@ -140,9 +142,7 @@ def save_db(TEST_data):
                 TEST_data['test_radiation'],
                 TEST_data['test_PAC'],
                 TEST_data['test_PACF'],
-                TEST_data['test_ECPC'],
-                ",".join(TEST_data['PA_ids']),
-                ",".join(TEST_data['ECP_ids'])))
+                TEST_data['test_ECPC']))
         
         # insert ECPs into database
         for ECP_data in ECPs:
@@ -150,27 +150,27 @@ def save_db(TEST_data):
                 INSERT INTO ECP (
                     id,
                     datatype,
+                    test_id,
+                    PA_ids,
                     time_init,
                     phase,
                     ECP_number,
                     ECPD,
                     ECPR,
                     ECP_PAC,
-                    ECP_PACF,
-                    test_id,
-                    PA_ids
+                    ECP_PACF
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (  ECP_data['id'],
                     ECP_data['datatype'],
+                    ECP_data['test_id'],
+                    ",".join(ECP_data['PA_ids']),
                     datetime.fromtimestamp(round(ECP_data["time_init"], 0)),
                     ECP_data['phase'],
                     ECP_data['ECP_number'],
                     ECP_data['ECPD'],
                     ECP_data['ECPR'],
                     ECP_data['ECP_PAC'],
-                    ECP_data['ECP_PACF'],
-                    ECP_data['test_id'],
-                    ",".join(ECP_data['PA_ids'])))
+                    ECP_data['ECP_PACF']))
 
         # insert PAs into database
         for PA_data in PAs:
@@ -178,6 +178,8 @@ def save_db(TEST_data):
                 INSERT INTO PA (
                     id,
                     datatype,
+                    test_id,
+                    ECP_id,
                     time_init,
                     phase,
                     ECP_number,
@@ -192,12 +194,12 @@ def save_db(TEST_data):
                     P2A,
                     P2B,
                     P2C,
-                    P2D,
-                    test_id,
-                    ECP_id
+                    P2D
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', (  PA_data["id"],
                     PA_data["datatype"],
+                    PA_data["test_id"],
+                    PA_data["ECP_id"],
                     datetime.fromtimestamp(round(PA_data["time_init"], 0)),
                     PA_data["phase"],
                     PA_data["ECP_number"],
@@ -212,9 +214,7 @@ def save_db(TEST_data):
                     PA_data["P2A"],
                     PA_data["P2B"],
                     PA_data["P2C"],
-                    PA_data["P2D"],
-                    PA_data["test_id"],
-                    PA_data["ECP_id"]))
+                    PA_data["P2D"]))
     except sqlite3.Error as er:
         logger.error(f"-------------------")
         logger.error(f"SQLite traceback  : " + " - ".join([str(x).strip() for x in sys.exc_info()]))
@@ -312,8 +312,7 @@ def ECP(phase, test_id, ECP_number):
         PA_number += 1
     
     return ECP_data
-    
-    
+      
 def PA(phase, test_id, ECP_number, ECP_id, PA_number):
     "PA performs single PA"
 
