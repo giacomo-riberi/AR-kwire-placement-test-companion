@@ -12,8 +12,8 @@ def main():
         exit(0)
     signal.signal(signal.SIGINT, handler)
 
-    logger.info(f"# POSITIONING TEST COMPANION ({version}) #")
-    logger.info(f"What a beautiful day to stick some anti-pigeon spikes into plastic!\n")
+    logger.info(f"# POSITIONING TEST COMPANION ({version})")
+    logger.info(f"# What a beautiful day to stick some anti-pigeon spikes into plastic!\n")
 
     TEST_data = TEST()
 
@@ -26,9 +26,8 @@ def TEST():
 
     global ECPs
 
-    logger.info("# BEGIN POSITIONING TEST FOR A CANDIDATE (ONE SINGLE PHASE) #\n")    
-
-    logger.info(f"# {datetime.now().strftime('%Y/%m/%d - %H:%M:%S')} #")
+    logger.info(f"# BEGIN POSITIONING TEST FOR A CANDIDATE (ONE SINGLE PHASE)")    
+    logger.info(f"# {datetime.now().strftime('%Y/%m/%d - %H:%M:%S')}")
 
     logger.info("DATA COLLECTION")
     test_data = {
