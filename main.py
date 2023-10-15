@@ -12,7 +12,8 @@ def main():
         exit(0)
     signal.signal(signal.SIGINT, handler)
 
-    logger.info(f"# POSITIONING TEST COMPANION ({version}) #\n")
+    logger.info(f"# POSITIONING TEST COMPANION ({version}) #")
+    logger.info(f"What a beautiful day to stick some anti-pigeon spikes into plastic!\n")
 
     TEST_data = TEST()
 
