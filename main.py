@@ -324,6 +324,8 @@ def ECP(phase, test_id, ECP_number):
 def PA(phase, test_id, ECP_number, ECP_id, PA_number):
     "PA performs single PA"
 
+    chrono = utils.chronometer()
+
     def terminatePA(PA_success: bool):
         "terminatePA terminates PA, performs data extraction and candidate extracts K-wire"
 
@@ -350,20 +352,22 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
             "test_id": test_id,
             "ECP_id": ECP_id
         }
-        chrono.start() # start chronometer to include also extraction time in PA
 
-        ci.all("CANDIDATE: extract the K-wire [ENTER when done]: ")
+        # time also extraction time of K-wire in PA
+        ci.all("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
+        chrono.start()
+        ci.all("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
         PA_data["PAD"] = chrono.reset()
+        logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
         return PA_data
 
     logger.info(f"\n------------------------")
     logger.info(f"PA{ECP_number}.{PA_number} START!")
     ci.all("PERFORM:\t reset x-ray machine [ENTER when done]: ")
-    
-    chrono = utils.chronometer()
+    ci.all("PERFORM:\t give instruction to insert K-wire [ENTER when instruction given]: ")
     time_init = chrono.start()
 
-    i = ci.acc("CANDIDATE:\t insert K-wire, checks it and declares it failed[f] or successful[s]: ", ["f", "s"])
+    i = ci.acc("CANDIDATE:\t inserting K-wire... -> checks it and declares it failed [f] or successful [s]: ", ["f", "s"])
     if i.lower() == 'f': # PA FAILED
         logger.info("\t\t |-candidate has FAILED positioning attempt!")
         return terminatePA(False)
