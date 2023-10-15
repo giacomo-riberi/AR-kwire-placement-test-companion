@@ -97,7 +97,15 @@ def save_db(TEST_data):
                 P2A REAL,
                 P2B REAL,
                 P2C REAL,
-                P2D REAL
+                P2D REAL,
+                kw_angl_x_target REAL,
+                kw_angl_y_target REAL,
+                kw_dist_x_target REAL,
+                kw_dist_y_target REAL,
+                kw_dist_struct_A REAL,
+                kw_dist_struct_B REAL,
+                kw_dist_struct_C REAL,
+                kw_dist_struct_D REAL
             )''')
 
         conn.commit()
@@ -128,8 +136,8 @@ def save_db(TEST_data):
             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', (  TEST_data['id'],
                 TEST_data['datatype'],
-                ",".join(TEST_data['PA_ids']),
-                ",".join(TEST_data['ECP_ids']),
+                ";".join(TEST_data['PA_ids']),
+                ";".join(TEST_data['ECP_ids']),
                 datetime.fromtimestamp(round(TEST_data["time_init"], 0)),
                 TEST_data['phase'],
                 TEST_data['name'],
@@ -163,7 +171,7 @@ def save_db(TEST_data):
             ''', (  ECP_data['id'],
                     ECP_data['datatype'],
                     ECP_data['test_id'],
-                    ",".join(ECP_data['PA_ids']),
+                    ";".join(ECP_data['PA_ids']),
                     datetime.fromtimestamp(round(ECP_data["time_init"], 0)),
                     ECP_data['phase'],
                     ECP_data['ECP_number'],
