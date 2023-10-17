@@ -1,10 +1,14 @@
 import time
 import signal
 from datetime import datetime
+import json
 
-from utils.utils import logger, chronometer
+from utils import logger, fusion_TOIMPORT
+from utils.utils import chronometer
 from __init__ import *
 import db
+
+fusion360_toimport_strings: list[str] = []
 
 def main():
     def handler(signum, frame):
@@ -17,7 +21,12 @@ def main():
 
     TEST_data = TEST()
 
+    # save on db at the end
     db.db_save(TEST_data)
+
+    # save on fusion360 to import strings at the end
+    for s in fusion360_toimport_strings:
+        fusion_TOIMPORT.info(s)
 
     logger.info("bye!")
 
@@ -137,6 +146,22 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
             "test_id": test_id,
             "ECP_id": ECP_id
         }
+        fusion360_data = {
+            "PA_data": PA_data,
+            "kwire_target": "K-wire1", # dependent on ECP decision
+            "markers": { # dependent on ECP decision
+                "A": "M:3",
+                "B": "M:4",
+                "C": "M:8",
+                "D": "M:9",
+            },
+            "anatomy_structs": [ # dependent on ECP decision
+                "MeshBody26",
+                "MeshBody3 (2)"
+            ]
+        }
+        ci.all(f"PERFORM:\t test following string on fusion 360 -> {json.dumps(fusion360_data)}")
+        fusion360_toimport_strings.append(json.dumps(fusion360_data))
 
         # time also extraction time of K-wire in PA
         ci.all("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
