@@ -24,16 +24,9 @@ class modLogger(logging.Logger):
 os.makedirs('logs', exist_ok=True)
 
 logging.setLoggerClass(modLogger)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("logger")
 logger.setLevel(logging.DEBUG)
 file_handler = logging.FileHandler(f"logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log")
 file_handler.setLevel(logging.DEBUG)
 file_handler.setFormatter(logging.Formatter('%(asctime)s - [%(levelname)6s] - %(message)s'))
 logger.addHandler(file_handler)
-
-fusion_TOIMPORT = logging.getLogger(__name__)
-fusion_TOIMPORT.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler(f"logs/fusion_TOIMPORT.log")
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(logging.Formatter('%(message)s'))
-fusion_TOIMPORT.addHandler(file_handler)
