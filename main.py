@@ -4,7 +4,7 @@ from datetime import datetime
 import json
 import pyperclip
 
-from utils import logger, fusion_TOIMPORT
+from utils import logger
 from utils.utils import chronometer
 from __init__ import *
 import db
@@ -26,8 +26,10 @@ def main():
     db.db_save(TEST_data)
 
     # save on fusion360 to import strings at the end
-    for s in fusion360_toimport_strings:
-        fusion_TOIMPORT.info(s)
+    with open("logs/fusion_TOIMPORT.log", "a") as f:
+        f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        for s in fusion360_toimport_strings:
+            f.write(s+"\n")
 
     logger.info("bye!")
 
@@ -104,13 +106,13 @@ def ECP(phase, test_id, ECP_number):
         PAs.append(PA_data)
 
         # update ECP_data
-        ECP_data["ECPD"] += PA_data["PAD"]
-        ECP_data["ECPR"] += PA_data["PAR"]
+        ECP_data["ECPD"] += PA_data["PA"]["PAD"]
+        ECP_data["ECPR"] += PA_data["PA"]["PAR"]
         ECP_data["ECP_PAC"] = PA_number
-        ECP_data["ECP_PACF"] += 0 if PA_data["PA_success"] else 1
-        ECP_data["PA_ids"].append(PA_data["id"])
+        ECP_data["ECP_PACF"] += 0 if PA_data["PA"]["PA_success"] else 1
+        ECP_data["PA_ids"].append(PA_data["PA"]["id"])
         
-        if PA_data["PA_success"]:
+        if PA_data["PA"]["PA_success"]:
             break
         PA_number += 1
     
@@ -126,7 +128,7 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
 
         chrono.pause() # pause chronometer to get data
         logger.info(f"DATA COLLECTION - PA{ECP_number}.{PA_number}")
-        data = {
+        PA_data = {
             "PA": {
                 "id": db.db_newid(5),
                 "datatype": "pa",
@@ -156,11 +158,10 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
                 "D": "M:9",
             },
             "anatomy_structs": [        # dependent on ECP research decision
-                "MeshBody26",
                 "MeshBody3 (2)"
             ]
         }
-        data_str = json.dumps(data)
+        data_str = json.dumps(PA_data)
         pyperclip.copy(data_str)
         ci.all(f"PERFORM:\t test following string on fusion 360 (already copied in clipboard) -> \n{data_str}")
         fusion360_toimport_strings.append(data_str)
@@ -169,9 +170,9 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
         ci.all("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
         chrono.start()
         ci.all("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
-        data["PA"]["PAD"] = chrono.reset()
+        PA_data["PA"]["PAD"] = chrono.reset()
         logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
-        return data
+        return PA_data
 
     logger.info(f"\n------------------------")
     logger.info(f"PA{ECP_number}.{PA_number} START!")
