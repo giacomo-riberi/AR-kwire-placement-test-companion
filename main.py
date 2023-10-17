@@ -2,6 +2,7 @@ import time
 import signal
 from datetime import datetime
 import json
+import pyperclip
 
 from utils import logger, fusion_TOIMPORT
 from utils.utils import chronometer
@@ -120,56 +121,57 @@ def PA(phase, test_id, ECP_number, ECP_id, PA_number):
 
     chrono = chronometer()
 
-    def terminatePA(PA_success: bool):
+    def terminatePA(PA_success: bool) -> dict[str, any]:
         "terminatePA terminates PA, performs data extraction and candidate extracts K-wire"
 
         chrono.pause() # pause chronometer to get data
         logger.info(f"DATA COLLECTION - PA{ECP_number}.{PA_number}")
-        PA_data = {
-            "id": db.db_newid(5),
-            "datatype": "pa",
-            "time_init": time_init,
-            "phase": phase,
-            "ECP_number": ECP_number,
-            "PA_number": PA_number,
-            "PA_success": PA_success,
-            # "PAD", # set after K-wire extraction
-            "PAR": ci.flo(" |-- positioning attempt RADIATION [FLOAT]: "),
-            "P1A": ci.flo(" |-- P1A [FLOAT]: "),
-            "P1B": ci.flo(" |-- P1B [FLOAT]: "),
-            "P1C": ci.flo(" |-- P1C [FLOAT]: "),
-            "P1D": ci.flo(" |-- P1D [FLOAT]: "),
-            "P2A": ci.flo(" |-- P2A [FLOAT]: "),
-            "P2B": ci.flo(" |-- P2B [FLOAT]: "),
-            "P2C": ci.flo(" |-- P2C [FLOAT]: "),
-            "P2D": ci.flo(" |-- P2D [FLOAT]: "),
-            "test_id": test_id,
-            "ECP_id": ECP_id
-        }
-        fusion360_data = {
-            "PA_data": PA_data,
-            "kwire_target": "K-wire1", # dependent on ECP decision
-            "markers": { # dependent on ECP decision
+        data = {
+            "PA": {
+                "id": db.db_newid(5),
+                "datatype": "pa",
+                "time_init": time_init,
+                "phase": phase,
+                "ECP_number": ECP_number,
+                "PA_number": PA_number,
+                "PA_success": PA_success,
+                # "PAD", # set after K-wire extraction
+                "PAR": ci.flo(" |-- positioning attempt RADIATION [FLOAT]: "),
+                "P1A": ci.flo(" |-- P1A [FLOAT]: "),
+                "P1B": ci.flo(" |-- P1B [FLOAT]: "),
+                "P1C": ci.flo(" |-- P1C [FLOAT]: "),
+                "P1D": ci.flo(" |-- P1D [FLOAT]: "),
+                "P2A": ci.flo(" |-- P2A [FLOAT]: "),
+                "P2B": ci.flo(" |-- P2B [FLOAT]: "),
+                "P2C": ci.flo(" |-- P2C [FLOAT]: "),
+                "P2D": ci.flo(" |-- P2D [FLOAT]: "),
+                "test_id": test_id,
+                "ECP_id": ECP_id
+            },
+            "kwire_target": "K-wire:1", # dependent on ECP research decision
+            "markers": {                # dependent on ECP research decision
                 "A": "M:3",
                 "B": "M:4",
                 "C": "M:8",
                 "D": "M:9",
             },
-            "anatomy_structs": [ # dependent on ECP decision
+            "anatomy_structs": [        # dependent on ECP research decision
                 "MeshBody26",
                 "MeshBody3 (2)"
             ]
         }
-        ci.all(f"PERFORM:\t test following string on fusion 360 -> {json.dumps(fusion360_data)}")
-        fusion360_toimport_strings.append(json.dumps(fusion360_data))
+        data_str = json.dumps(data)
+        pyperclip.copy(data_str)
+        ci.all(f"PERFORM:\t test following string on fusion 360 (already copied in clipboard) -> \n{data_str}")
+        fusion360_toimport_strings.append(data_str)
 
         # time also extraction time of K-wire in PA
         ci.all("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
         chrono.start()
         ci.all("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
-        PA_data["PAD"] = chrono.reset()
+        data["PA"]["PAD"] = chrono.reset()
         logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
-        return PA_data
+        return data
 
     logger.info(f"\n------------------------")
     logger.info(f"PA{ECP_number}.{PA_number} START!")
