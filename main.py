@@ -1,13 +1,13 @@
 import time
 import signal
 from datetime import datetime
-import json
 import pyperclip
 
 from utils import logger
 from utils.utils import chronometer
 from __init__ import *
 import db
+import data
 
 fusion360_toimport_strings: list[str] = []
 
@@ -42,151 +42,156 @@ def TEST():
     logger.info(f"# {datetime.now().strftime('%Y/%m/%d - %H:%M:%S')}")
 
     logger.info("DATA COLLECTION")
-    test_data = {
-        "id": db.db_newid(3),
-        "datatype": "test",
-        "time_init": time.time(),
-        "phase":                ci.int(" |-- phase [INTEGER]:               "),
-        "name":                 ci.str(" |-- name [STRING]:                 "),
-        "surname":              ci.str(" |-- surname [STRING]:              "),
-        "gender":               ci.acc(" |-- gender [M/F]:                  ", ["m", "f"]).upper(),
-        "age":                  ci.int(" |-- age [INTEGER]:                 "),
-        "specialization_year":  ci.int(" |-- specialization year [INTEGER]: "),
-        "num_operations":       ci.int(" |-- operations count [INTEGER]:    "),
-        "test_duration": 0.0,   # to update
-        "test_radiation": 0.0,  # to update
-        "test_PAC": 0,          # to update
-        "test_PACF": 0,         # to update
-        "test_ECPC": 0,         # to update
-        "PA_ids": [],           # to update
-        "ECP_ids": []           # to update
-    }
+    TEST_data = data.TESTdata(
+        id=db.db_newid(3),
+        ECP_ids=[],          # to update
+        PA_ids=[],           # to update        
+        datatype="TEST",
+        time_init=time.time(),
+        phase=               ci.int(" |-- phase [INTEGER]:               ", 0, 10),
+        name=                ci.str(" |-- name [STRING]:                 "),
+        surname=             ci.str(" |-- surname [STRING]:              "),
+        gender=              ci.acc(" |-- gender [M/F]:                  ", ["m", "f"]).upper(),
+        age=                 ci.int(" |-- age [INTEGER]:                 ", 0, 99),
+        specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 10),
+        num_operations=      ci.int(" |-- operations count [INTEGER]:    ", 0, 1000),
+        test_duration=0.0,   # to update
+        test_radiation=0.0,  # to update
+        test_PAC=0,          # to update
+        test_PACF=0,         # to update
+        test_ECPC=0,         # to update
+    )
 
-    for ECP_number in range(1, 4):
-        ECP_data = ECP(test_data["phase"], test_data["id"], ECP_number)
+    for ECP_number in range(1, 2): #!!!
+        ECP_data = ECP(TEST_data.phase, TEST_data.id, ECP_number)
 
         # add ECP_data to ECPs
         ECPs.append(ECP_data)
 
         # update test_data
-        test_data["test_duration"]  += ECP_data["ECPD"]
-        test_data["test_radiation"] += ECP_data["ECPR"]
-        test_data["test_PAC"]       += ECP_data["ECP_PAC"]
-        test_data["test_PACF"]      += ECP_data["ECP_PACF"]
-        test_data["test_ECPC"]       = ECP_number
-        test_data["PA_ids"].extend(ECP_data["PA_ids"])
-        test_data["ECP_ids"].append(ECP_data["id"])
+        TEST_data.test_duration  += ECP_data.ECPD
+        TEST_data.test_radiation += ECP_data.ECPR
+        TEST_data.test_PAC       += ECP_data.ECP_PAC
+        TEST_data.test_PACF      += ECP_data.ECP_PACF
+        TEST_data.test_ECPC       = ECP_number
+        TEST_data.ECP_ids.append(ECP_data.id)
+        TEST_data.PA_ids.extend(ECP_data.PA_ids)
 
-    return test_data
+    return TEST_data
 
-def ECP(phase, test_id, ECP_number):
+def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
     "ECP performs single ECP with multiple PA"
 
-    global PAs
+    ECP_data = data.ECPdata(
+        TEST_id=TEST_id,
+        PA_ids=[],       # to update
+        id=db.db_newid(4),
+        datatype="ECP",
+        time_init=time.time(),
+        phase=phase,
+        ECP_number=ECP_number,
+        ECPD=0.0,        # to update
+        ECPR=0.0,        # to update
+        ECP_PAC=0,       # to update
+        ECP_PACF=0       # to update
+    )
 
-    ECP_data = {
-        "id": db.db_newid(4),
-        "datatype": "ecp",
-        "time_init": time.time(),
-        "phase": phase,
-        "ECP_number": ECP_number,
-        "ECPD": 0.0,        # to update
-        "ECPR": 0.0,        # to update
-        "ECP_PAC": 0,       # to update
-        "ECP_PACF": 0,      # to update
-        "test_id": test_id,
-        "PA_ids": []        # to update
-    }
-
-    PA_number = 1
+    PA_number = 0
     while True:
-        PA_data = PA(phase, test_id, ECP_number, ECP_data["id"], PA_number)
+        PA_number += 1
+        PA_data = PA(phase, TEST_id, ECP_number, ECP_data.id, PA_number)
 
         # add PA_data to PAs
         PAs.append(PA_data)
 
         # update ECP_data
-        ECP_data["ECPD"] += PA_data["PA"]["PAD"]
-        ECP_data["ECPR"] += PA_data["PA"]["PAR"]
-        ECP_data["ECP_PAC"] = PA_number
-        ECP_data["ECP_PACF"] += 0 if PA_data["PA"]["PA_success"] else 1
-        ECP_data["PA_ids"].append(PA_data["PA"]["id"])
+        ECP_data.ECPD += PA_data.PAD
+        ECP_data.ECPR += PA_data.PAR
+        ECP_data.ECP_PAC = PA_number
+        ECP_data.ECP_PACF += 0 if PA_data.success else 1
+        ECP_data.PA_ids.append(PA_data.id)
         
-        if PA_data["PA"]["PA_success"]:
+        if PA_data.success:
             break
-        PA_number += 1
     
     return ECP_data
       
-def PA(phase, test_id, ECP_number, ECP_id, PA_number):
+def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -> data.PAdata:
     "PA performs single PA"
-
-    chrono = chronometer()
-
-    def terminatePA(PA_success: bool) -> dict[str, any]:
-        "terminatePA terminates PA, performs data extraction and candidate extracts K-wire"
-
-        chrono.pause() # pause chronometer to get data
-        logger.info(f"DATA COLLECTION - PA{ECP_number}.{PA_number}")
-        PA_data = {
-            "PA": {
-                "id": db.db_newid(5),
-                "datatype": "pa",
-                "time_init": time_init,
-                "phase": phase,
-                "ECP_number": ECP_number,
-                "PA_number": PA_number,
-                "PA_success": PA_success,
-                # "PAD", # set after K-wire extraction
-                "PAR": ci.flo(" |-- positioning attempt RADIATION [FLOAT]: "),
-                "P1A": ci.flo(" |-- P1A [FLOAT]: "),
-                "P1B": ci.flo(" |-- P1B [FLOAT]: "),
-                "P1C": ci.flo(" |-- P1C [FLOAT]: "),
-                "P1D": ci.flo(" |-- P1D [FLOAT]: "),
-                "P2A": ci.flo(" |-- P2A [FLOAT]: "),
-                "P2B": ci.flo(" |-- P2B [FLOAT]: "),
-                "P2C": ci.flo(" |-- P2C [FLOAT]: "),
-                "P2D": ci.flo(" |-- P2D [FLOAT]: "),
-                "test_id": test_id,
-                "ECP_id": ECP_id
-            },
-            "kwire_target": "K-wire:1", # dependent on ECP research decision
-            "markers": {                # dependent on ECP research decision
-                "A": "M:3",
-                "B": "M:4",
-                "C": "M:8",
-                "D": "M:9",
-            },
-            "anatomy_structs": [        # dependent on ECP research decision
-                "MeshBody3 (2)"
-            ]
-        }
-        data_str = json.dumps(PA_data)
-        pyperclip.copy(data_str)
-        ci.all(f"PERFORM:\t test following string on fusion 360 (already copied in clipboard) -> \n{data_str}")
-        fusion360_toimport_strings.append(data_str)
-
-        # time also extraction time of K-wire in PA
-        ci.all("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
-        chrono.start()
-        ci.all("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
-        PA_data["PA"]["PAD"] = chrono.reset()
-        logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
-        return PA_data
 
     logger.info(f"\n------------------------")
     logger.info(f"PA{ECP_number}.{PA_number} START!")
     ci.all("PERFORM:\t reset x-ray machine [ENTER when done]: ")
     ci.all("PERFORM:\t give instruction to insert K-wire [ENTER when instruction given]: ")
+
+    chrono = chronometer()
     time_init = chrono.start()
 
+    # insertion of K-wire
     i = ci.acc("CANDIDATE:\t inserting K-wire... -> checks it and declares it failed [f] or successful [s]: ", ["f", "s"])
     if i.lower() == 'f': # PA FAILED
         logger.info("\t\t |-candidate has FAILED positioning attempt!")
-        return terminatePA(False)
+        success = False
     elif i.lower() == 's': # PA SUCCESS
         logger.info("\t\t |-candidate has performed SUCCESSFUL positioning attempt!")
-        return terminatePA(True)
+        success = True
+    
+    # get PA data
+    chrono.pause()
+    logger.info(f"DATA COLLECTION - PA{ECP_number}.{PA_number}")
+    
+    if ECP_number != 1 and ECP_number != 2 and ECP_number != 3:
+        logger.error(f"FATAL: ECP number ({ECP_number}) invalid!")
+
+    PA_data = data.PAdata(
+        TEST_id=test_id,
+        ECP_id=ECP_id,
+        id=db.db_newid(5),
+        datatype="PA",
+        time_init=time_init,
+        phase=phase,
+        ECP_number=ECP_number,
+        PA_number=PA_number,
+        success=success,
+        PAD=-1, # set after K-wire extraction
+        PAR=ci.flo(" |-- positioning attempt RADIATION [FLOAT]: "),
+        P1A=ci.flo(" |-- P1A [FLOAT]: "),
+        P1B=ci.flo(" |-- P1B [FLOAT]: "),
+        P1C=ci.flo(" |-- P1C [FLOAT]: "),
+        P1D=ci.flo(" |-- P1D [FLOAT]: "),
+        P2A=ci.flo(" |-- P2A [FLOAT]: "),
+        P2B=ci.flo(" |-- P2B [FLOAT]: "),
+        P2C=ci.flo(" |-- P2C [FLOAT]: "),
+        P2D=ci.flo(" |-- P2D [FLOAT]: "),
+        ktarget=data.kwire_target_byECP[ECP_number-1],
+        markers=data.markers_byECP[ECP_number-1],
+        anatomy=data.anatomy_structs_byECP[ECP_number-1],
+        fusion_computed=False,
+        angle_kPA_ktarget=-1.0,
+        distance_ep_kPA_ktarget=-1.0,
+        distance_ep_kPA_ktarget_X=-1.0,
+        distance_ep_kPA_ktarget_Y=-1.0,
+        distance_ep_kPA_ktarget_Z=-1.0,
+        distance_id_kPA_ktarget=-1.0
+    )
+
+    # send to fusion 360 for computation
+    data_str = PA_data.dumps()
+    pyperclip.copy(data_str)
+    logger.info(f"PERFORM:\t test following string on fusion 360 (already copied in clipboard) -> \n{data_str}")
+    fusion360_toimport_strings.append(data_str)
+
+    # receive from fusion 360
+    PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ")
+    
+    # K-wire extraction of PA
+    ci.all("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
+    chrono.start()
+    ci.all("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
+    PA_data.PAD = chrono.reset()
+
+    logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
+    return PA_data
     
 if __name__ == "__main__":
     main()

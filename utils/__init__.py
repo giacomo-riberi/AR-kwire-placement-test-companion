@@ -15,11 +15,17 @@ class modLogger(logging.Logger):
         super(modLogger, self).debug(msg.strip(), *args, **kwargs)
         print(msg)
     def debug_noprint(self, msg, *args, **kwargs):
+        "debug but does not print to terminal, logs on file only"
         super(modLogger, self).debug(msg.strip(), *args, **kwargs)
         # no print
     def error(self, msg, *args, **kwargs):
         super(modLogger, self).error(msg.strip(), *args, **kwargs)
         print(msg)
+    def critical(self, msg, *args, **kwargs):
+        "critical will log critical level and quit"
+        super(modLogger, self).critical(msg.strip(), *args, **kwargs)
+        print(msg)
+        quit()
 
 os.makedirs('logs', exist_ok=True)
 

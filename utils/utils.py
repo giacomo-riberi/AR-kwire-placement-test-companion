@@ -1,5 +1,7 @@
-import re, time
+import re, time, json
 from . import logger
+
+import data
 
 class custom_input:
     "input gets custom inputs"
@@ -22,10 +24,10 @@ class custom_input:
         else:
             return self.acc(prompt, accepted_values)
     
-    def int(self, prompt):
-        "accepts integers"
+    def int(self, prompt, min=-1000000, max=1000000):
+        "accepts integers in specified range"
         user_input = input(prompt).strip().lower()
-        if user_input.isdigit():
+        if user_input.isdigit() and int(user_input)>=min and int(user_input)<=max:
             logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return int(user_input)
         else:
@@ -48,6 +50,17 @@ class custom_input:
             return user_input
         else:
             return self.str(prompt)
+    
+    def PAdata_computed(self, prompt) -> data.PAdata:
+        "accepts json string of PA data after fusion 360 computation"
+        user_input = input(prompt)
+        try:
+            PA_data = data.PAdata(**json.loads(user_input))
+            if not PA_data.fusion_computed:
+                raise
+            return PA_data
+        except:
+            return self.PAdata_computed(prompt)
 
 
 class chronometer:
