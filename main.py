@@ -178,10 +178,10 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     )
 
     # send to fusion 360 for computation
-    data_str = PA_data.dumps()
-    pyperclip.copy(data_str)
-    logger.info(f"PERFORM:\t test following string on fusion 360 (already copied in clipboard) -> \n{data_str}")
-    fusion360_toimport_strings.append(data_str)
+    PA_data_str = PA_data.dumps()
+    pyperclip.copy(PA_data_str)
+    logger.info(f"PERFORM:\t test following string on fusion 360 (already copied in clipboard) -> \n{PA_data_str}")
+    fusion360_toimport_strings.append(PA_data_str)
 
     # receive from fusion 360
     PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ")
