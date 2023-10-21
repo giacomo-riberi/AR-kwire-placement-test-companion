@@ -28,7 +28,7 @@ class custom_input:
             logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return False
         else:
-            return self.acc(prompt)
+            return self.boo(prompt)
     
     def int(self, prompt, min=-1000000, max=1000000) -> int:
         "accepts integers in specified range"
