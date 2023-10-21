@@ -57,16 +57,20 @@ class custom_input:
         else:
             return self.str(prompt)
     
-    def PAdata_computed(self, prompt) -> data.PAdata:
+    def PAdata_computed(self, prompt, id_orig) -> data.PAdata:
         "accepts json string of PA data after fusion 360 computation"
         user_input = input(prompt)
         try:
             PA_data = data.PAdata(**json.loads(user_input))
             if not PA_data.fusion_computed:
-                raise
+                raise Exception("data has not been computed by fusion!")
+            if PA_data.id != id_orig:
+                raise Exception("a wild id came back!")
+            logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return PA_data
-        except:
-            return self.PAdata_computed(prompt)
+        except Exception as e:
+            print(f"ERROR: {e}\n")
+            return self.PAdata_computed(prompt, id_orig)
 
 
 class chronometer:

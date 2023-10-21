@@ -74,6 +74,7 @@ def db_save(TEST_data: data.TESTdata):
         logger.error(f"SQLite traceback  : " + " - ".join([str(x).strip() for x in sys.exc_info()]))
         logger.error(f"SQLite error line : " + str(er.__traceback__.tb_lineno))
         logger.error(f"SQLite error      : " + str(er))
+        logger.critical(f"\nexiting. DATA NOT SAVED!")
         sys.exit()
         
     conn.commit()

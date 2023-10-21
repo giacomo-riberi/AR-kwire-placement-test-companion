@@ -184,7 +184,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     fusion360_toimport_strings.append(PA_data_str)
 
     # receive from fusion 360
-    PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ")
+    PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ", PA_data.id)
     
     # K-wire extraction of PA
     ci.str("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
