@@ -9,22 +9,28 @@ class custom_input:
     def __init__(self):
         return
     
-    def all(self, prompt):
-        "accepts everything including empty strings"
-        user_input = input(prompt).strip().lower()
-        logger.debug_noprint(prompt + "\t|" + user_input + "|")
-        return user_input
-    
-    def acc(self, prompt, accepted_values):
-        "accepts scpecific values (case insensitive)"
+    def acc(self, prompt, accepted_values) -> str:
+        "accepts specific values (case insensitive)"
         user_input = input(prompt).strip().lower()
         if user_input in accepted_values:
             logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return user_input
         else:
             return self.acc(prompt, accepted_values)
+
+    def boo(self, prompt) -> bool:
+        "accepts yes/no values (case insensitive)"
+        user_input = input(prompt).strip().lower()
+        if user_input in ["y", "yes", "1"]:
+            logger.debug_noprint(prompt + "\t|" + user_input + "|")
+            return True
+        elif user_input in ["n", "no", "0"]:
+            logger.debug_noprint(prompt + "\t|" + user_input + "|")
+            return False
+        else:
+            return self.acc(prompt)
     
-    def int(self, prompt, min=-1000000, max=1000000):
+    def int(self, prompt, min=-1000000, max=1000000) -> int:
         "accepts integers in specified range"
         user_input = input(prompt).strip().lower()
         if user_input.isdigit() and int(user_input)>=min and int(user_input)<=max:
@@ -33,7 +39,7 @@ class custom_input:
         else:
             return self.int(prompt)
     
-    def flo(self, prompt):
+    def flo(self, prompt) -> float:
         "accepts integers and floats"
         user_input = input(prompt).strip().lower()
         if user_input.isdigit() or re.match(r'^-?\d+(?:\.\d+)$', user_input):
@@ -42,12 +48,12 @@ class custom_input:
         else:
             return self.flo(prompt)
     
-    def str(self, prompt):
-        "accepts non empty strings"
+    def str(self, prompt, minlen=0, maxlen=1000000) -> str:
+        "accepts strings, min and max lenght can be specified"
         user_input = input(prompt).strip().lower()
-        if user_input != "":
+        if minlen <= len(user_input) <= maxlen:
             logger.debug_noprint(prompt + "\t|" + user_input + "|")
-            return user_input
+            return user_input            
         else:
             return self.str(prompt)
     

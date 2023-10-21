@@ -49,9 +49,11 @@ def TEST():
         datatype="TEST",
         time_init=time.time(),
         phase=               ci.int(" |-- phase [INTEGER]:               ", 0, 10),
+        phantom_id=          ci.int(" |-- phantom id [INTEGER]:          ", 0, 20),
         name=                ci.str(" |-- name [STRING]:                 "),
         surname=             ci.str(" |-- surname [STRING]:              "),
         gender=              ci.acc(" |-- gender [M/F]:                  ", ["m", "f"]).upper(),
+        right_handed=        ci.boo(" |-- right-handed [Y/N]:            "),
         age=                 ci.int(" |-- age [INTEGER]:                 ", 0, 99),
         specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 10),
         num_operations=      ci.int(" |-- operations count [INTEGER]:    ", 0, 1000),
@@ -62,7 +64,7 @@ def TEST():
         test_ECPC=0,         # to update
     )
 
-    for ECP_number in range(1, 2): #!!!
+    for ECP_number in range(1, 4):
         ECP_data = ECP(TEST_data.phase, TEST_data.id, ECP_number)
 
         # add ECP_data to ECPs
@@ -121,8 +123,8 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
 
     logger.info(f"\n------------------------")
     logger.info(f"PA{ECP_number}.{PA_number} START!")
-    ci.all("PERFORM:\t reset x-ray machine [ENTER when done]: ")
-    ci.all("PERFORM:\t give instruction to insert K-wire [ENTER when instruction given]: ")
+    ci.str("PERFORM:\t reset x-ray machine [ENTER when done]: ")
+    ci.str("PERFORM:\t give instruction to insert K-wire [ENTER when instruction given]: ")
 
     chrono = chronometer()
     time_init = chrono.start()
@@ -185,9 +187,9 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ")
     
     # K-wire extraction of PA
-    ci.all("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
+    ci.str("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
     chrono.start()
-    ci.all("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
+    ci.str("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
     PA_data.PAD = chrono.reset()
 
     logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")

@@ -95,9 +95,11 @@ class TESTdata(data_elaboration):
     PA_ids: list[str]
     time_init: float
     phase: str
+    phantom_id: int
     name: str
     surname: str
     gender: str
+    right_handed: bool
     age: int
     specialization_year: str
     num_operations: int
