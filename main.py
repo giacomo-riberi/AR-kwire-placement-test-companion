@@ -1,3 +1,6 @@
+# compilation with auto-py-to-exe
+# cd ..; pyinstaller --noconfirm --onefile --console --name "AR kwire placement test companion"--icon ".\AR kwire placement test companion\media\icon.ico" ".\AR kwire placement test companion\main.py"
+
 import time
 import signal
 from datetime import datetime

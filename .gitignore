@@ -1,4 +1,7 @@
 __pycache__/
 logs/
 
+build/
+dist/
+
 *.db
