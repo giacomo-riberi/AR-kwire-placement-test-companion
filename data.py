@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import json
 from datetime import datetime
-from utils import logger 
+from __init__ import *
 
 # dependent on ECP research decision
 kwire_target_byECP: list[str]           = ["K-wire:1",

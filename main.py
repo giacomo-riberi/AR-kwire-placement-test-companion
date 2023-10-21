@@ -1,13 +1,11 @@
-# compilation with auto-py-to-exe
-# cd ..; pyinstaller --noconfirm --onefile --console --name "AR kwire placement test companion"--icon ".\AR kwire placement test companion\media\icon.ico" ".\AR kwire placement test companion\main.py"
+# compilation with auto-py-to-exe (as admin)
+#  C:\Users\Giacomo\AppData\Local\Programs\Python\Python311\Scripts\pyinstaller.exe --noconfirm --onefile --console --paths "." --name "AR kwire placement test companion" --icon ".\media\icon.ico" "main.py"
 
 import time
 import signal
 from datetime import datetime
 import pyperclip
 
-from utils import logger
-from utils.utils import chronometer
 from __init__ import *
 import db
 import data

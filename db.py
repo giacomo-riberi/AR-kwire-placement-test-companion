@@ -2,9 +2,7 @@
 import sqlite3
 import secrets
 import sys
-from datetime import datetime
 
-from utils.utils import logger
 from __init__ import *
 
 def db_newid(id_bytes):
