@@ -11,7 +11,7 @@ from __init__ import *
 import db
 import data
 
-fusion360_toimport_strings: list[str] = []
+ci = custom_input()
 
 def main():
     def handler(signum, frame):
@@ -30,15 +30,13 @@ def main():
     # save on fusion360 to import strings at the end
     with open("logs/fusion_TOIMPORT.log", "a") as f:
         f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-        for s in fusion360_toimport_strings:
+        for s in data.fusion360_imports:
             f.write(s+"\n")
 
     logger.info("bye!")
 
 def TEST():
     "TEST performs 3 ECPs with multiple PA"
-
-    global ECPs
 
     logger.info(f"# BEGIN POSITIONING TEST FOR A CANDIDATE (ONE SINGLE PHASE)")    
     logger.info(f"# {datetime.now().strftime('%Y/%m/%d - %H:%M:%S')}")
@@ -70,7 +68,7 @@ def TEST():
         ECP_data = ECP(TEST_data.phase, TEST_data.id, ECP_number)
 
         # add ECP_data to ECPs
-        ECPs.append(ECP_data)
+        data.ECPs.append(ECP_data)
 
         # update test_data
         TEST_data.TEST_duration  += ECP_data.ECP_D
@@ -107,7 +105,7 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
         PA_data = PA(phase, TEST_id, ECP_number, ECP_data.id, PA_number)
 
         # add PA_data to PAs
-        PAs.append(PA_data)
+        data.PAs.append(PA_data)
 
         # update ECP_data
         ECP_data.ECP_D += PA_data.PA_D
@@ -161,6 +159,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         PA_number=PA_number,
         success=success,
         PA_D=-1.0, # set after K-wire extraction
+        PA_RPC =ci.int(" |-- RADIATION picture count       [FLOAT]: ", min=0),
         PA_RESD=ci.flo(" |-- RADIATION entrance skin dose  [FLOAT]: "),
         PA_RDAP=ci.flo(" |-- RADIATION dose-area product   [FLOAT]: "),
         PA_RmAs=ci.flo(" |-- RADIATION milliampere-seconds [FLOAT]: "),
@@ -173,9 +172,9 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         P2B=ci.flo(" |-- P2B [FLOAT]: "),
         P2C=ci.flo(" |-- P2C [FLOAT]: "),
         P2D=ci.flo(" |-- P2D [FLOAT]: "),
-        confidence_position= ci.flo(" |-- CANDIDATE confidence on position in mm:             ", min=0),
-        confidence_angle=    ci.flo(" |-- CANDIDATE confidence on angle in deg:               ", min=0),
-        estimate_hit=        ci.boo(" |-- CANDIDATE estimate structures hit [Y/N]:            "),
+        confidence_position= ci.flo(" |-- CANDIDATE confidence on position in mm:  ", min=0),
+        confidence_angle=    ci.flo(" |-- CANDIDATE confidence on angle in deg:    ", min=0),
+        estimate_hit=        ci.boo(" |-- CANDIDATE estimate structures hit [Y/N]: "),
         ktarget=data.TEST_design[ECP_number-1].ktarget,
         markers=data.TEST_design[ECP_number-1].markers,
         anatomy=data.TEST_design[ECP_number-1].anatomy,
@@ -192,7 +191,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     PA_data_str = PA_data.dumps()
     pyperclip.copy(PA_data_str)
     logger.info(f"PERFORM:\t test following string on fusion 360 (already copied in clipboard) -> \n{PA_data_str}")
-    fusion360_toimport_strings.append(PA_data_str)
+    data.fusion360_imports.append(PA_data_str)
 
     # receive from fusion 360
     PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ", PA_data.id)

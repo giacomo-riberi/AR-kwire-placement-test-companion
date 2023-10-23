@@ -5,6 +5,9 @@ import json
 
 from logger import logger # local
 
+version = "v1.6"
+db_name = f"positioning_test_data-({version}).db"
+
 class custom_input:
     "input gets custom inputs"
 
@@ -118,10 +121,3 @@ class chronometer:
             return round(self.elapsed_time + (time.time() - self.start_time), 2)
         else:
             return round(self.start_time, 2)
-
-version = "v1.5"
-db_name = f"positioning_test_data-({version}).db"
-
-ECPs: list[data.ECPdata] = []
-PAs: list[data.PAdata] = []
-ci = custom_input()

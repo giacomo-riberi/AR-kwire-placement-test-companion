@@ -5,6 +5,7 @@ import sys
 
 from logger import logger
 from __init__ import *
+import data
 
 def db_newid(id_bytes):
     "newid generates a new id string not present on database of specified byte lenght"
@@ -37,8 +38,6 @@ def db_newid(id_bytes):
 def db_save(TEST_data: data.TESTdata):
     "save_db saves data on database"
 
-    global ECPs, PAs
-
     try:
         conn = sqlite3.connect(db_name) # Create a connection to the SQLite database (or create it if it doesn't exist)
         cursor = conn.cursor() # Create a cursor object to interact with the database
@@ -47,10 +46,10 @@ def db_save(TEST_data: data.TESTdata):
         cursor.execute(TEST_data.db_create_table("TEST"))
 
         # create ECP table
-        cursor.execute(ECPs[0].db_create_table("ECP"))
+        cursor.execute(data.ECPs[0].db_create_table("ECP"))
 
         # create PA table
-        cursor.execute(PAs[0].db_create_table("PA"))
+        cursor.execute(data.PAs[0].db_create_table("PA"))
         
         conn.commit()
     
@@ -61,11 +60,11 @@ def db_save(TEST_data: data.TESTdata):
         cursor.execute(*TEST_data.db_insert_table("TEST"))
         
         # insert ECPs into database
-        for ECP_data in ECPs:
+        for ECP_data in data.ECPs:
             cursor.execute(*ECP_data.db_insert_table("ECP"))
 
         # insert PAs into database
-        for PA_data in PAs:
+        for PA_data in data.PAs:
             cursor.execute(*PA_data.db_insert_table("PA"))
             
     except sqlite3.Error as er:

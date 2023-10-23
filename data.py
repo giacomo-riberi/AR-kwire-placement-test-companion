@@ -134,7 +134,6 @@ class ECPdata(data_elaboration):
     ECP_PAC: float
     ECP_PACF: float
 
-
 @dataclass
 class PAdata(data_elaboration):
     "positioning attempt data"
@@ -148,6 +147,7 @@ class PAdata(data_elaboration):
     PA_number: int
     success: bool
     PA_D: float
+    PA_RPC: int;    "PA radiation picture count"
     PA_RESD: float; "PA radiation entrance surface dose"
     PA_RDAP: float; "PA radiation dose-area product"    # do we want to record that? !!!
     PA_RmAs: float; "PA radiation milliampere-seconds"  # do we want to record that? !!!
@@ -173,3 +173,7 @@ class PAdata(data_elaboration):
     distance_ep_kPA_ktarget_Y: float
     distance_ep_kPA_ktarget_Z: float
     distance_id_kPA_ktarget: float; "delta insertion depth"
+
+ECPs: list[ECPdata] = []
+PAs:  list[PAdata]  = []
+fusion360_imports: list[str] = []
