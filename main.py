@@ -66,7 +66,7 @@ def TEST():
         TEST_ECPC=0,       # to update
     )
 
-    for ECP_number in range(1, 2):#len(data.ECP_design)+1):
+    for ECP_number in range(1, len(data.TEST_design)+1):
         ECP_data = ECP(TEST_data.phase, TEST_data.id, ECP_number)
 
         # add ECP_data to ECPs
