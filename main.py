@@ -6,6 +6,7 @@ import signal
 from datetime import datetime
 import pyperclip
 
+from logger import logger
 from __init__ import *
 import db
 import data
@@ -58,25 +59,25 @@ def TEST():
         age=                 ci.int(" |-- age [INTEGER]:                 ", 0, 99),
         specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 10),
         num_operations=      ci.int(" |-- operations count [INTEGER]:    ", 0, 1000),
-        test_duration=0.0,   # to update
-        test_radiation=0.0,  # to update
-        test_PAC=0,          # to update
-        test_PACF=0,         # to update
-        test_ECPC=0,         # to update
+        TEST_duration=0.0, # to update
+        TEST_RESD=0.0,     # to update
+        TEST_PAC=0,        # to update
+        TEST_PACF=0,       # to update
+        TEST_ECPC=0,       # to update
     )
 
-    for ECP_number in range(1, 4):
+    for ECP_number in range(1, 2):#len(data.ECP_design)+1):
         ECP_data = ECP(TEST_data.phase, TEST_data.id, ECP_number)
 
         # add ECP_data to ECPs
         ECPs.append(ECP_data)
 
         # update test_data
-        TEST_data.test_duration  += ECP_data.ECPD
-        TEST_data.test_radiation += ECP_data.ECPR
-        TEST_data.test_PAC       += ECP_data.ECP_PAC
-        TEST_data.test_PACF      += ECP_data.ECP_PACF
-        TEST_data.test_ECPC       = ECP_number
+        TEST_data.TEST_duration  += ECP_data.ECP_D
+        TEST_data.TEST_RESD      += ECP_data.ECP_RESD
+        TEST_data.TEST_PAC       += ECP_data.ECP_PAC
+        TEST_data.TEST_PACF      += ECP_data.ECP_PACF
+        TEST_data.TEST_ECPC       = ECP_number
         TEST_data.ECP_ids.append(ECP_data.id)
         TEST_data.PA_ids.extend(ECP_data.PA_ids)
 
@@ -87,16 +88,17 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
 
     ECP_data = data.ECPdata(
         TEST_id=TEST_id,
-        PA_ids=[],       # to update
+        PA_ids=[],       # update for each PA
         id=db.db_newid(4),
         datatype="ECP",
         time_init=time.time(),
+        ease_of_placement=-1, # input at the end
         phase=phase,
         ECP_number=ECP_number,
-        ECPD=0.0,        # to update
-        ECPR=0.0,        # to update
-        ECP_PAC=0,       # to update
-        ECP_PACF=0       # to update
+        ECP_D=0.0,        # update for each PA
+        ECP_RESD=0.0,     # update for each PA
+        ECP_PAC=0,       # update for each PA
+        ECP_PACF=0       # update for each PA
     )
 
     PA_number = 0
@@ -108,14 +110,19 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
         PAs.append(PA_data)
 
         # update ECP_data
-        ECP_data.ECPD += PA_data.PAD
-        ECP_data.ECPR += PA_data.PAR
+        ECP_data.ECP_D += PA_data.PA_D
+        ECP_data.ECP_RESD += PA_data.PA_RESD
         ECP_data.ECP_PAC = PA_number
         ECP_data.ECP_PACF += 0 if PA_data.success else 1
         ECP_data.PA_ids.append(PA_data.id)
         
         if PA_data.success:
             break
+    
+    logger.info(f"DATA COLLECTION - ECP{ECP_number}")
+
+    # after multiple PA now the k-wire is in the estimated correct position
+    ECP_data.ease_of_placement=ci.int(" |-- ease of placement [0 difficult - 5 easy]: ", min=0, max=5)
     
     return ECP_data
       
@@ -156,8 +163,11 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         ECP_number=ECP_number,
         PA_number=PA_number,
         success=success,
-        PAD=-1, # set after K-wire extraction
-        PAR=ci.flo(" |-- positioning attempt RADIATION [FLOAT]: "),
+        PA_D=-1.0, # set after K-wire extraction
+        PA_RESD=ci.flo(" |-- RADIATION entrance skin dose  [FLOAT]: "),
+        PA_RDAP=ci.flo(" |-- RADIATION dose-area product   [FLOAT]: "),
+        PA_RmAs=ci.flo(" |-- RADIATION milliampere-seconds [FLOAT]: "),
+        PA_RkVp=ci.flo(" |-- RADIATION kilovoltage peak    [FLOAT]: "),
         P1A=ci.flo(" |-- P1A [FLOAT]: "),
         P1B=ci.flo(" |-- P1B [FLOAT]: "),
         P1C=ci.flo(" |-- P1C [FLOAT]: "),
@@ -166,9 +176,12 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         P2B=ci.flo(" |-- P2B [FLOAT]: "),
         P2C=ci.flo(" |-- P2C [FLOAT]: "),
         P2D=ci.flo(" |-- P2D [FLOAT]: "),
-        ktarget=data.kwire_target_byECP[ECP_number-1],
-        markers=data.markers_byECP[ECP_number-1],
-        anatomy=data.anatomy_structs_byECP[ECP_number-1],
+        confidence_position= ci.flo(" |-- CANDIDATE confidence on position in mm:             ", min=0),
+        confidence_angle=    ci.flo(" |-- CANDIDATE confidence on angle in deg:               ", min=0),
+        estimate_hit=        ci.boo(" |-- CANDIDATE estimate structures hit [Y/N]:            "),
+        ktarget=data.TEST_design[ECP_number-1].ktarget,
+        markers=data.TEST_design[ECP_number-1].markers,
+        anatomy=data.TEST_design[ECP_number-1].anatomy,
         fusion_computed=False,
         angle_kPA_ktarget=-1.0,
         distance_ep_kPA_ktarget=-1.0,
@@ -191,7 +204,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     ci.str("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
     chrono.start()
     ci.str("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
-    PA_data.PAD = chrono.reset()
+    PA_data.PA_D = chrono.reset()
 
     logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
     return PA_data
