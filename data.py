@@ -1,18 +1,27 @@
 from dataclasses import dataclass
 import json
 from datetime import datetime
+
+from logger import logger
 from __init__ import *
 
-# dependent on ECP research decision
-kwire_target_byECP: list[str]           = ["K-wire:1",
-                                           "K-wire:2",
-                                           "K-wire:3"]
-markers_byECP: dict[str, str]           = [{"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"},
-                                           {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"},
-                                           {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"}]
-anatomy_structs_byECP: dict[str, float] = [{"MeshBody26": -1.0, "MeshBody27": -1.0, "MeshBody28": -1.0, "MeshBody29": -1.0},
-                                           {"MeshBody26": -1.0, "MeshBody30": -1.0},
-                                           {"MeshBody28": -1.0, "MeshBody31": -1.0}]
+@dataclass
+class ECP_design:
+    ktarget: str
+    markers: dict[str, str]
+    anatomy: dict[str, float]
+
+TEST_design: list[ECP_design] = [
+    ECP_design("K-wire:1",
+               {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"},
+               {"MeshBody26": -1.0, "MeshBody27": -1.0, "MeshBody28": -1.0, "MeshBody29": -1.0}),
+    ECP_design("K-wire:2",
+               {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"},
+               {"MeshBody26": -1.0, "MeshBody30": -1.0}),
+    ECP_design("K-wire:2",
+               {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"},
+               {"MeshBody28": -1.0, "MeshBody31": -1.0})
+]
 
 @dataclass
 class data_elaboration:
@@ -38,8 +47,8 @@ class data_elaboration:
                 s.append(f"{k} TEXT")
             elif type(v) == dict:
                 if k == "anatomy":
-                    for anat_s in anatomy_structs_byECP:
-                        for kk, vv in anat_s.items():
+                    for ECP_design in TEST_design:
+                        for kk, vv in ECP_design.anatomy.items():
                             s.append(f"{kk} REAL")
                 elif k == "markers":
                     for kk, vv in v.items():
@@ -103,11 +112,11 @@ class TESTdata(data_elaboration):
     age: int
     specialization_year: str
     num_operations: int
-    test_duration: float
-    test_radiation: float
-    test_PAC: int
-    test_PACF: int
-    test_ECPC: int
+    TEST_duration: float
+    TEST_RESD: float; "TEST radiation entrance surface dose"
+    TEST_PAC: int
+    TEST_PACF: int
+    TEST_ECPC: int
 
 @dataclass
 class ECPdata(data_elaboration):
@@ -117,10 +126,11 @@ class ECPdata(data_elaboration):
     id: int
     PA_ids: list[str]
     time_init: float
+    ease_of_placement: int
     phase: str
     ECP_number: int
-    ECPD: float; "ECP duration"
-    ECPR: float; "ECP radiation"
+    ECP_D: float; "ECP duration"
+    ECP_RESD: float; "ECP radiation entrance surface dose"
     ECP_PAC: float
     ECP_PACF: float
 
@@ -137,8 +147,11 @@ class PAdata(data_elaboration):
     ECP_number: int
     PA_number: int
     success: bool
-    PAD: float
-    PAR: float
+    PA_D: float
+    PA_RESD: float; "PA radiation entrance surface dose"
+    PA_RDAP: float; "PA radiation dose-area product"    # do we want to record that? !!!
+    PA_RmAs: float; "PA radiation milliampere-seconds"  # do we want to record that? !!!
+    PA_RkVp: float; "PA radiation kilovoltage peak"     # do we want to record that? !!!
     P1A: float
     P1B: float
     P1C: float
@@ -147,6 +160,9 @@ class PAdata(data_elaboration):
     P2B: float
     P2C: float
     P2D: float
+    confidence_position: float
+    confidence_angle: float
+    estimate_hit: bool
     ktarget: str; "k-wire target component name on fusion 360"
     markers: dict[str, str]
     fusion_computed: bool; "analyzed by fusion 360"
