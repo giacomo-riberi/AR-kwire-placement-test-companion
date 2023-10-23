@@ -149,9 +149,6 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     # get PA data
     chrono.pause()
     logger.info(f"DATA COLLECTION - PA{ECP_number}.{PA_number}")
-    
-    if ECP_number != 1 and ECP_number != 2 and ECP_number != 3:
-        logger.error(f"FATAL: ECP number ({ECP_number}) invalid!")
 
     PA_data = data.PAdata(
         TEST_id=test_id,
