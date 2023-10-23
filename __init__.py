@@ -2,36 +2,8 @@ import data
 import time
 import re
 import json
-from datetime import datetime    
-import logging
-import os
 
-
-class modLogger(logging.Logger):
-    def __init__(self, name, level=logging.NOTSET):
-        super(modLogger,self).__init__(name,level)
-    # def emit(self, record):
-    #     modify record before printing
-    #     print(record.msg)
-    def info(self, msg, *args, **kwargs):
-        super(modLogger, self).info(msg.strip(), *args, **kwargs)
-        print(msg)
-    def debug(self, msg, *args, **kwargs):
-        super(modLogger, self).debug(msg.strip(), *args, **kwargs)
-        print(msg)
-    def debug_noprint(self, msg, *args, **kwargs):
-        "debug but does not print to terminal, logs on file only"
-        super(modLogger, self).debug(msg.strip(), *args, **kwargs)
-        # no print
-    def error(self, msg, *args, **kwargs):
-        super(modLogger, self).error(msg.strip(), *args, **kwargs)
-        print(msg)
-    def critical(self, msg, *args, **kwargs):
-        "critical will log critical level and quit"
-        super(modLogger, self).critical(msg.strip(), *args, **kwargs)
-        print(msg)
-        quit()
-
+from logger import logger # local
 
 class custom_input:
     "input gets custom inputs"
@@ -67,16 +39,16 @@ class custom_input:
             logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return int(user_input)
         else:
-            return self.int(prompt)
+            return self.int(prompt, min, max)
     
-    def flo(self, prompt) -> float:
+    def flo(self, prompt, min=-1000000, max=1000000) -> float:
         "accepts integers and floats"
         user_input = input(prompt).strip().lower()
         if user_input.isdigit() or re.match(r'^-?\d+(?:\.\d+)$', user_input):
             logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return float(user_input)
         else:
-            return self.flo(prompt)
+            return self.flo(prompt, min, max)
     
     def str(self, prompt, minlen=0, maxlen=1000000) -> str:
         "accepts strings, min and max lenght can be specified"
@@ -85,7 +57,7 @@ class custom_input:
             logger.debug_noprint(prompt + "\t|" + user_input + "|")
             return user_input            
         else:
-            return self.str(prompt)
+            return self.str(prompt, minlen, maxlen)
     
     def PAdata_computed(self, prompt, id_orig) -> data.PAdata:
         "accepts json string of PA data after fusion 360 computation"
@@ -101,7 +73,6 @@ class custom_input:
         except Exception as e:
             print(f"ERROR: {e}\n")
             return self.PAdata_computed(prompt, id_orig)
-
 
 class chronometer:
     "chronometer is a chronometer object capable of reset, start, pause, read"
@@ -148,18 +119,9 @@ class chronometer:
         else:
             return round(self.start_time, 2)
 
-version = "v1.4"
+version = "v1.5"
 db_name = f"positioning_test_data-({version}).db"
 
 ECPs: list[data.ECPdata] = []
 PAs: list[data.PAdata] = []
 ci = custom_input()
-
-os.makedirs('logs', exist_ok=True)
-logging.setLoggerClass(modLogger)
-logger = logging.getLogger("logger")
-logger.setLevel(logging.DEBUG)
-file_handler = logging.FileHandler(f"logs/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.log")
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(logging.Formatter('%(asctime)s - [%(levelname)6s] - %(message)s'))
-logger.addHandler(file_handler)
