@@ -175,7 +175,7 @@ class PAdata(data_elaboration):
     distance_ep_kPA_ktarget_X: float
     distance_ep_kPA_ktarget_Y: float
     distance_ep_kPA_ktarget_Z: float
-    distance_id_kPA_ktarget: float; "delta insertion depth"
+    delta_id_kPA_ktarget: float; "delta insertion depth"
 
 ECPs: list[ECPdata] = []
 PAs:  list[PAdata]  = []

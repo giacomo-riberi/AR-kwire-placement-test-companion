@@ -177,9 +177,9 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         P2B=ci.flo(" |-- P2B [FLOAT]: "),
         P2C=ci.flo(" |-- P2C [FLOAT]: "),
         P2D=ci.flo(" |-- P2D [FLOAT]: "),
-        confidence_position= ci.flo(" |-- CANDIDATE confidence on position in mm:  ", min=0),
-        confidence_angle=    ci.flo(" |-- CANDIDATE confidence on angle in deg:    ", min=0),
-        estimate_hit=        ci.boo(" |-- CANDIDATE estimate structures hit [Y/N]: "),
+        confidence_position= ci.flo(" |-- CANDIDATE confidence on entrance position in mm:  ", min=0),
+        confidence_angle=    ci.flo(" |-- CANDIDATE confidence on angle in deg:             ", min=0),
+        estimate_hit=        ci.boo(" |-- CANDIDATE estimate structures hit [Y/N]:          "),
         ktarget=data.TEST_design[ECP_number-1].ktarget,
         markers=data.TEST_design[ECP_number-1].markers,
         anatomy=data.TEST_design[ECP_number-1].anatomy,
@@ -189,7 +189,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         distance_ep_kPA_ktarget_X=-1.0,
         distance_ep_kPA_ktarget_Y=-1.0,
         distance_ep_kPA_ktarget_Z=-1.0,
-        distance_id_kPA_ktarget=-1.0
+        delta_id_kPA_ktarget=-1.0
     )
 
     # send to fusion 360 for computation
