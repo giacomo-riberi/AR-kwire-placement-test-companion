@@ -110,7 +110,8 @@ class TESTdata(data_elaboration):
     gender: str
     right_handed: bool
     age: int
-    specialization_year: str
+    medicine_surge_year: int
+    specialization_year: int
     num_operations: int
     TEST_duration: float
     TEST_RESD: float; "TEST radiation entrance surface dose"

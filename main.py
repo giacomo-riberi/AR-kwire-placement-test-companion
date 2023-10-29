@@ -55,7 +55,8 @@ def TEST():
         gender=              ci.acc(" |-- gender [M/F]:                  ", ["m", "f"]).upper(),
         right_handed=        ci.boo(" |-- right-handed [Y/N]:            "),
         age=                 ci.int(" |-- age [INTEGER]:                 ", 0, 99),
-        specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 10),
+        medicine_surge_year= ci.int(" |-- medsurg year [INTEGER]:        ", 0, 7),
+        specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 6),
         num_operations=      ci.int(" |-- operations count [INTEGER]:    ", 0, 1000),
         TEST_duration=0.0, # to update
         TEST_RESD=0.0,     # to update
