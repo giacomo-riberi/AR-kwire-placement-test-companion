@@ -58,7 +58,8 @@ def TEST():
         medicine_surge_year= ci.int(" |-- medsurg year [INTEGER]:        ", 0, 7),
         specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 6),
         num_operations=      ci.int(" |-- operations count [INTEGER]:    ", 0, 1000),
-        TEST_duration=0.0, # to update
+        TEST_D=0.0,        # to update
+        TEST_RPC=0,         # to update
         TEST_RESD=0.0,     # to update
         TEST_PAC=0,        # to update
         TEST_PACF=0,       # to update
@@ -72,11 +73,12 @@ def TEST():
         data.ECPs.append(ECP_data)
 
         # update test_data
-        TEST_data.TEST_duration  += ECP_data.ECP_D
-        TEST_data.TEST_RESD      += ECP_data.ECP_RESD
-        TEST_data.TEST_PAC       += ECP_data.ECP_PAC
-        TEST_data.TEST_PACF      += ECP_data.ECP_PACF
-        TEST_data.TEST_ECPC       = ECP_number
+        TEST_data.TEST_D    += ECP_data.ECP_D
+        TEST_data.TEST_RPC  += ECP_data.ECP_RPC
+        TEST_data.TEST_RESD += ECP_data.ECP_RESD
+        TEST_data.TEST_PAC  += ECP_data.ECP_PAC
+        TEST_data.TEST_PACF += ECP_data.ECP_PACF
+        TEST_data.TEST_ECPC  = ECP_number
         TEST_data.ECP_ids.append(ECP_data.id)
         TEST_data.PA_ids.extend(ECP_data.PA_ids)
 
@@ -94,8 +96,9 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
         ease_of_placement=-1, # input at the end
         phase=phase,
         ECP_number=ECP_number,
-        ECP_D=0.0,        # update for each PA
-        ECP_RESD=0.0,     # update for each PA
+        ECP_D=0.0,       # update for each PA
+        ECP_RPC=0,       
+        ECP_RESD=0.0,    # update for each PA
         ECP_PAC=0,       # update for each PA
         ECP_PACF=0       # update for each PA
     )
@@ -110,6 +113,7 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
 
         # update ECP_data
         ECP_data.ECP_D += PA_data.PA_D
+        ECP_data.ECP_RPC += PA_data.PA_RPC
         ECP_data.ECP_RESD += PA_data.PA_RESD
         ECP_data.ECP_PAC = PA_number
         ECP_data.ECP_PACF += 0 if PA_data.success else 1

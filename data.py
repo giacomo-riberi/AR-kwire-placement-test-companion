@@ -113,7 +113,8 @@ class TESTdata(data_elaboration):
     medicine_surge_year: int
     specialization_year: int
     num_operations: int
-    TEST_duration: float
+    TEST_D: float
+    TEST_RPC: int; "TEST radiation picture count"
     TEST_RESD: float; "TEST radiation entrance surface dose"
     TEST_PAC: int
     TEST_PACF: int
@@ -131,6 +132,7 @@ class ECPdata(data_elaboration):
     phase: str
     ECP_number: int
     ECP_D: float; "ECP duration"
+    ECP_RPC: int; "ECP radiation picture count"
     ECP_RESD: float; "ECP radiation entrance surface dose"
     ECP_PAC: float
     ECP_PACF: float
