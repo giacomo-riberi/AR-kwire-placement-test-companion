@@ -14,7 +14,7 @@ class modLogger(logging.Logger):
     def debug(self, msg, *args, **kwargs):
         super(modLogger, self).debug(msg.strip(), *args, **kwargs)
         print(msg)
-    def debug_noprint(self, msg, *args, **kwargs):
+    def debug_input(self, msg, *args, **kwargs):
         "debug but does not print to terminal, logs on file only"
         super(modLogger, self).debug(msg.strip(), *args, **kwargs)
         # no print

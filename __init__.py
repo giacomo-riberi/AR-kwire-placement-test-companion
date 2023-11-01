@@ -18,7 +18,7 @@ class custom_input:
         "accepts specific values (case insensitive)"
         user_input = input(prompt).strip().lower()
         if user_input in accepted_values:
-            logger.debug_noprint(prompt + "\t|" + user_input + "|")
+            logger.debug_input(prompt + "\t|" + user_input + "|")
             return user_input
         else:
             return self.acc(prompt, accepted_values)
@@ -27,10 +27,10 @@ class custom_input:
         "accepts yes/no values (case insensitive)"
         user_input = input(prompt).strip().lower()
         if user_input in ["y", "yes", "1"]:
-            logger.debug_noprint(prompt + "\t|" + user_input + "|")
+            logger.debug_input(prompt + "\t|" + user_input + "|")
             return True
         elif user_input in ["n", "no", "0"]:
-            logger.debug_noprint(prompt + "\t|" + user_input + "|")
+            logger.debug_input(prompt + "\t|" + user_input + "|")
             return False
         else:
             return self.boo(prompt)
@@ -39,7 +39,7 @@ class custom_input:
         "accepts integers in specified range"
         user_input = input(prompt).strip().lower()
         if user_input.isdigit() and int(user_input)>=min and int(user_input)<=max:
-            logger.debug_noprint(prompt + "\t|" + user_input + "|")
+            logger.debug_input(prompt + "\t|" + user_input + "|")
             return int(user_input)
         else:
             return self.int(prompt, min, max)
@@ -48,7 +48,7 @@ class custom_input:
         "accepts integers and floats"
         user_input = input(prompt).strip().lower()
         if user_input.isdigit() or re.match(r'^-?\d+(?:\.\d+)$', user_input):
-            logger.debug_noprint(prompt + "\t|" + user_input + "|")
+            logger.debug_input(prompt + "\t|" + user_input + "|")
             return float(user_input)
         else:
             return self.flo(prompt, min, max)
@@ -57,7 +57,7 @@ class custom_input:
         "accepts strings, min and max lenght can be specified"
         user_input = input(prompt).strip().lower()
         if minlen <= len(user_input) <= maxlen:
-            logger.debug_noprint(prompt + "\t|" + user_input + "|")
+            logger.debug_input(prompt + "\t|" + user_input + "|")
             return user_input            
         else:
             return self.str(prompt, minlen, maxlen)
@@ -71,7 +71,7 @@ class custom_input:
                 raise Exception("data has not been computed by fusion!")
             if PA_data.id != id_orig:
                 raise Exception("a wild id came back!")
-            logger.debug_noprint(prompt + "\t|" + user_input + "|")
+            logger.debug_input(prompt + "\t|" + user_input + "|")
             return PA_data
         except Exception as e:
             print(f"ERROR: {e}\n")
