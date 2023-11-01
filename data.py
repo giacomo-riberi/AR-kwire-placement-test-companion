@@ -179,6 +179,6 @@ class PAdata(data_elaboration):
     distance_ep_kPA_ktarget_Z: float
     delta_id_kPA_ktarget: float; "delta insertion depth"
 
-ECPs: list[ECPdata] = []
-PAs:  list[PAdata]  = []
-fusion360_imports: list[str] = []
+ECPs_toinsert:     list[ECPdata] = []
+PAs_toinsert:      list[PAdata]  = []
+fusion360_imports: list[str]     = []

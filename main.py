@@ -76,7 +76,7 @@ def TEST():
         ECP_data = ECP(TEST_data.phase, TEST_data.id, ECP_number)
 
         # add ECP_data to ECPs
-        data.ECPs.append(ECP_data)
+        data.ECPs_toinsert.append(ECP_data)
 
         # update test_data
         TEST_data.TEST_D    += ECP_data.ECP_D
@@ -121,7 +121,7 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
         PA_data = PA(phase, TEST_id, ECP_number, ECP_data.id, PA_number)
 
         # add PA_data to PAs
-        data.PAs.append(PA_data)
+        data.PAs_toinsert.append(PA_data)
 
         # update ECP_data
         ECP_data.ECP_D += PA_data.PA_D

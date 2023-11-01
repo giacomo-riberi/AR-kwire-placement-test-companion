@@ -1,7 +1,7 @@
 
 import sqlite3
 import secrets
-import sys
+import sys, os
 
 from logger import logger
 from __init__ import *
@@ -9,10 +9,13 @@ import data
 
 def db_newid(id_bytes):
     "newid generates a new id string not present on database of specified byte lenght"
-    
-    def idexist(id):
-        "idexist checks if id exists in any table of database"
 
+    new_id = secrets.token_hex(id_bytes)
+
+    # check new_id against database, if exist
+    if os.path.exists(db_name):
+        connection = sqlite3.connect(db_name)
+        cursor = connection.cursor()
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
         tables = cursor.fetchall()
         for table in tables:
@@ -20,23 +23,27 @@ def db_newid(id_bytes):
             cursor.execute(f"SELECT COUNT(*) FROM {table_name} WHERE id = ?", (id,))
             count = cursor.fetchone()[0]
             if count > 0:
-                return True
-        return False
+                new_id = db_newid(id_bytes)
+        connection.close()
     
-    connection = sqlite3.connect(db_name)
-    cursor = connection.cursor()
-
-    tmp_id = secrets.token_hex(id_bytes)
-    while idexist(tmp_id):
-        tmp_id = secrets.token_hex(id_bytes)
-
-    connection.close()
-
-    return tmp_id
+    # check new_id against ECP and PA runtime variables
+    for ECP in data.ECPs_toinsert:
+        if ECP.id == new_id:
+            new_id = db_newid(id_bytes)
+    
+    for PA in data.PAs_toinsert:
+        if PA.id == new_id:
+            new_id = db_newid(id_bytes)
+    
+    return new_id
 
 
 def db_save(TEST_data: data.TESTdata):
     "save_db saves data on database"
+
+    if len(data.ECPs_toinsert) <= 0 or len(data.PAs_toinsert) <= 0:
+        logger.critical("no ECPs/PAs to insert into database!")
+        quit()
 
     try:
         conn = sqlite3.connect(db_name) # Create a connection to the SQLite database (or create it if it doesn't exist)
@@ -46,10 +53,10 @@ def db_save(TEST_data: data.TESTdata):
         cursor.execute(TEST_data.db_create_table("TEST"))
 
         # create ECP table
-        cursor.execute(data.ECPs[0].db_create_table("ECP"))
+        cursor.execute(data.ECPs_toinsert[0].db_create_table("ECP"))
 
         # create PA table
-        cursor.execute(data.PAs[0].db_create_table("PA"))
+        cursor.execute(data.PAs_toinsert[0].db_create_table("PA"))
         
         conn.commit()
     
@@ -60,11 +67,11 @@ def db_save(TEST_data: data.TESTdata):
         cursor.execute(*TEST_data.db_insert_table("TEST"))
         
         # insert ECPs into database
-        for ECP_data in data.ECPs:
+        for ECP_data in data.ECPs_toinsert:
             cursor.execute(*ECP_data.db_insert_table("ECP"))
 
         # insert PAs into database
-        for PA_data in data.PAs:
+        for PA_data in data.PAs_toinsert:
             cursor.execute(*PA_data.db_insert_table("PA"))
             
     except sqlite3.Error as er:
