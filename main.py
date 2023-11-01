@@ -38,33 +38,39 @@ def main():
 def TEST():
     "TEST performs 3 ECPs with multiple PA"
 
-    logger.info(f"# BEGIN POSITIONING TEST FOR A CANDIDATE (ONE SINGLE PHASE)")    
+    id = db.db_newid(3)
+
+    logger.info(f"# BEGIN POSITIONING TEST FOR A CANDIDATE, ONE SINGLE PHASE ({id})")    
     logger.info(f"# {datetime.now().strftime('%Y/%m/%d - %H:%M:%S')}")
 
     logger.info("DATA COLLECTION")
-    TEST_data = data.TESTdata(
-        id=db.db_newid(3),
-        ECP_ids=[],          # to update
-        PA_ids=[],           # to update        
-        datatype="TEST",
-        time_init=time.time(),
-        phase=               ci.int(" |-- phase [INTEGER]:               ", 0, 10),
-        phantom_id=          ci.int(" |-- phantom id [INTEGER]:          ", 0, 20),
-        name=                ci.str(" |-- name [STRING]:                 "),
-        surname=             ci.str(" |-- surname [STRING]:              "),
-        gender=              ci.acc(" |-- gender [M/F]:                  ", ["m", "f"]).upper(),
-        right_handed=        ci.boo(" |-- right-handed [Y/N]:            "),
-        age=                 ci.int(" |-- age [INTEGER]:                 ", 0, 99),
-        medicine_surge_year= ci.int(" |-- medsurg year [INTEGER]:        ", 0, 7),
-        specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 6),
-        num_operations=      ci.int(" |-- operations count [INTEGER]:    ", 0, 1000),
-        TEST_D=0.0,        # to update
-        TEST_RPC=0,         # to update
-        TEST_RESD=0.0,     # to update
-        TEST_PAC=0,        # to update
-        TEST_PACF=0,       # to update
-        TEST_ECPC=0,       # to update
-    )
+    while True:
+        TEST_data = data.TESTdata(
+            id=id,
+            ECP_ids=[],          # to update
+            PA_ids=[],           # to update
+            comment="",
+            datatype="TEST",
+            time_init=time.time(),
+            phase=               ci.int(" |-- phase [INTEGER]:               ", 0, 10),
+            phantom_id=          ci.str(" |-- phantom id [STRING]:           ", 2),
+            name=                ci.str(" |-- name [STRING]:                 "),
+            surname=             ci.str(" |-- surname [STRING]:              "),
+            gender=              ci.acc(" |-- gender [M/F]:                  ", ["m", "f"]).upper(),
+            right_handed=        ci.boo(" |-- right-handed [Y/N]:            "),
+            age=                 ci.int(" |-- age [INTEGER]:                 ", 0, 99),
+            medicine_surge_year= ci.int(" |-- medsurg year [INTEGER]:        ", 0, 7),
+            specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 6),
+            num_operations=      ci.int(" |-- operations count [INTEGER]:    ", 0, 1000),
+            TEST_D=0.0,        # to update
+            TEST_RPC=0,        # to update
+            TEST_RESD=0.0,     # to update
+            TEST_PAC=0,        # to update
+            TEST_PACF=0,       # to update
+            TEST_ECPC=0,       # to update
+        )
+        if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
+            break
 
     for ECP_number in range(1, len(data.TEST_design)+1):
         ECP_data = ECP(TEST_data.phase, TEST_data.id, ECP_number)
@@ -81,16 +87,22 @@ def TEST():
         TEST_data.TEST_ECPC  = ECP_number
         TEST_data.ECP_ids.append(ECP_data.id)
         TEST_data.PA_ids.extend(ECP_data.PA_ids)
+    
+    TEST_data.comment = ci.str(f"\tTECHNICAL:\t comment on TEST ({id}) [STRING]: ")
 
     return TEST_data
 
 def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
     "ECP performs single ECP with multiple PA"
 
+    id = db.db_newid(4)
+    logger.info(f"\n########################")
+    logger.info(f"ECP{ECP_number} START! ({id})")
+
     ECP_data = data.ECPdata(
         TEST_id=TEST_id,
         PA_ids=[],       # update for each PA
-        id=db.db_newid(4),
+        id=id,
         datatype="ECP",
         time_init=time.time(),
         ease_of_placement=-1, # input at the end
@@ -122,7 +134,7 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
         if PA_data.success:
             break
     
-    logger.info(f"DATA COLLECTION - ECP{ECP_number}")
+    logger.info(f"DATA COLLECTION - ECP{ECP_number} - ({id})")
 
     # after multiple PA now the k-wire is in the estimated correct position
     ECP_data.ease_of_placement=ci.int(" |-- ease of placement [0 difficult - 5 easy]: ", min=0, max=5)
@@ -132,8 +144,9 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
 def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -> data.PAdata:
     "PA performs single PA"
 
+    id = db.db_newid(5)
     logger.info(f"\n------------------------")
-    logger.info(f"PA{ECP_number}.{PA_number} START!")
+    logger.info(f"PA{ECP_number}.{PA_number} START! ({id})")
     ci.str("PERFORM:\t reset x-ray machine [ENTER when done]: ")
     ci.str("PERFORM:\t give instruction to insert K-wire [ENTER when instruction given]: ")
 
@@ -143,55 +156,59 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     # insertion of K-wire
     i = ci.acc("CANDIDATE:\t inserting K-wire... -> checks it and declares it failed [f] or successful [s]: ", ["f", "s"])
     if i.lower() == 'f': # PA FAILED
-        logger.info("\t\t |-candidate has FAILED positioning attempt!")
+        logger.info("\t\t \_candidate has FAILED positioning attempt!")
         success = False
     elif i.lower() == 's': # PA SUCCESS
-        logger.info("\t\t |-candidate has performed SUCCESSFUL positioning attempt!")
+        logger.info("\t\t \_candidate has performed SUCCESSFUL positioning attempt!")
         success = True
     
     # get PA data
     chrono.pause()
-    logger.info(f"DATA COLLECTION - PA{ECP_number}.{PA_number}")
+    logger.info(f"DATA COLLECTION - PA{ECP_number}.{PA_number} - ({id})")
 
-    PA_data = data.PAdata(
-        TEST_id=test_id,
-        ECP_id=ECP_id,
-        id=db.db_newid(5),
-        datatype="PA",
-        time_init=time_init,
-        phase=phase,
-        ECP_number=ECP_number,
-        PA_number=PA_number,
-        success=success,
-        PA_D=-1.0, # set after K-wire extraction
-        PA_RPC =ci.int(" |-- RADIATION picture count       [FLOAT]: ", min=0),
-        PA_RESD=ci.flo(" |-- RADIATION entrance skin dose  [FLOAT]: "),
-        PA_RDAP=ci.flo(" |-- RADIATION dose-area product   [FLOAT]: "),
-        PA_RmAs=ci.flo(" |-- RADIATION milliampere-seconds [FLOAT]: "),
-        PA_RkVp=ci.flo(" |-- RADIATION kilovoltage peak    [FLOAT]: "),
-        P1A=ci.flo(" |-- P1A [FLOAT]: "),
-        P1B=ci.flo(" |-- P1B [FLOAT]: "),
-        P1C=ci.flo(" |-- P1C [FLOAT]: "),
-        P1D=ci.flo(" |-- P1D [FLOAT]: "),
-        P2A=ci.flo(" |-- P2A [FLOAT]: "),
-        P2B=ci.flo(" |-- P2B [FLOAT]: "),
-        P2C=ci.flo(" |-- P2C [FLOAT]: "),
-        P2D=ci.flo(" |-- P2D [FLOAT]: "),
-        confidence_position= ci.flo(" |-- CANDIDATE confidence on entrance position in mm:  ", min=0),
-        confidence_angle=    ci.flo(" |-- CANDIDATE confidence on angle in deg:             ", min=0),
-        estimate_hit=        ci.boo(" |-- CANDIDATE estimate structures hit [Y/N]:          "),
-        ktarget=data.TEST_design[ECP_number-1].ktarget,
-        markers=data.TEST_design[ECP_number-1].markers,
-        anatomy=data.TEST_design[ECP_number-1].anatomy,
-        fusion_computed=False,
-        angle_kPA_ktarget=-1.0,
-        distance_ep_kPA_ktarget=-1.0,
-        distance_ep_kPA_ktarget_X=-1.0,
-        distance_ep_kPA_ktarget_Y=-1.0,
-        distance_ep_kPA_ktarget_Z=-1.0,
-        delta_id_kPA_ktarget=-1.0
-    )
-
+    while True:
+        PA_data = data.PAdata(
+            TEST_id=test_id,
+            ECP_id=ECP_id,
+            id=id,
+            comment="",
+            datatype="PA",
+            time_init=time_init,
+            phase=phase,
+            ECP_number=ECP_number,
+            PA_number=PA_number,
+            success=success,
+            PA_D=-1.0, # set after K-wire extraction
+            PA_RPC =ci.int(" |-- RADIATION picture count       [INT]  : ", min=0),
+            PA_RESD=ci.flo(" |-- RADIATION entrance skin dose  [FLOAT]: "),
+            PA_RDAP=ci.flo(" |-- RADIATION dose-area product   [FLOAT]: "),
+            PA_RmAs=ci.flo(" |-- RADIATION milliampere-seconds [FLOAT]: "),
+            PA_RkVp=ci.flo(" |-- RADIATION kilovoltage peak    [FLOAT]: "),
+            P1A=ci.flo(" |-- P1A [FLOAT]: "),
+            P1B=ci.flo(" |-- P1B [FLOAT]: "),
+            P1C=ci.flo(" |-- P1C [FLOAT]: "),
+            P1D=ci.flo(" |-- P1D [FLOAT]: "),
+            P2A=ci.flo(" |-- P2A [FLOAT]: "),
+            P2B=ci.flo(" |-- P2B [FLOAT]: "),
+            P2C=ci.flo(" |-- P2C [FLOAT]: "),
+            P2D=ci.flo(" |-- P2D [FLOAT]: "),
+            confidence_position= ci.flo(" |-- CANDIDATE: confidence on entrance position in mm? [FLOAT]: ", min=0),
+            confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:            ", min=0),
+            estimate_hit=        ci.boo(" |-- CANDIDATE: estimate structures hit [Y/N]?:                 "),
+            ktarget=data.TEST_design[ECP_number-1].ktarget,
+            markers=data.TEST_design[ECP_number-1].markers,
+            anatomy=data.TEST_design[ECP_number-1].anatomy,
+            fusion_computed=False,
+            angle_kPA_ktarget=-1.0,
+            distance_ep_kPA_ktarget=-1.0,
+            distance_ep_kPA_ktarget_X=-1.0,
+            distance_ep_kPA_ktarget_Y=-1.0,
+            distance_ep_kPA_ktarget_Z=-1.0,
+            delta_id_kPA_ktarget=-1.0
+        )
+        if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
+            break
+    
     # send to fusion 360 for computation
     PA_data_str = PA_data.dumps()
     pyperclip.copy(PA_data_str)
@@ -206,6 +223,8 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     chrono.start()
     ci.str("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
     PA_data.PA_D = chrono.reset()
+
+    PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
 
     logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
     return PA_data

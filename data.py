@@ -102,9 +102,10 @@ class TESTdata(data_elaboration):
     id: str
     ECP_ids: list[str]
     PA_ids: list[str]
+    comment: bool;  "used to mark data on database for later technical analysis"
     time_init: float
     phase: str
-    phantom_id: int
+    phantom_id: str
     name: str
     surname: str
     gender: str
@@ -144,6 +145,7 @@ class PAdata(data_elaboration):
     TEST_id: int
     ECP_id: int
     id: int
+    comment: str; "used to mark data on database for later technical analysis"
     time_init: float
     phase: str
     ECP_number: int
