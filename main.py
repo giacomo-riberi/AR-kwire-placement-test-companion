@@ -166,6 +166,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     chrono.pause()
     logger.info(f"DATA COLLECTION - PA{ECP_number}.{PA_number} - ({id})")
 
+    # cycle until all PA data input is correct
     while True:
         PA_data = data.PAdata(
             TEST_id=test_id,
@@ -192,6 +193,15 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: "),
             P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: "),
             P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: "),
+            max_mean=1.0, # !!! must be updated when real data starts coming in
+            max_SD=0.3,   # !!! must be updated when real data starts coming in
+            max_SE=0.2,   # !!! must be updated when real data starts coming in
+            P1_mean=-1.0, # computed by fusion
+            P1_SD=-1.0,   # computed by fusion
+            P1_SE=-1.0,   # computed by fusion
+            P2_mean=-1.0, # computed by fusion
+            P2_SD=-1.0,   # computed by fusion
+            P2_SE=-1.0,   # computed by fusion
             confidence_position= ci.flo(" |-- CANDIDATE: confidence on entrance position in mm? [FLOAT]: ", min=0),
             confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:            ", min=0),
             estimate_hit=        ci.boo(" |-- CANDIDATE: estimate structures hit [Y/N]?:                 "),
@@ -199,24 +209,42 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             markers=data.TEST_design[ECP_number-1].markers,
             anatomy=data.TEST_design[ECP_number-1].anatomy,
             fusion_computed=False,
-            angle_kPA_ktarget=-1.0,
-            distance_ep_kPA_ktarget=-1.0,
-            distance_ep_kPA_ktarget_X=-1.0,
-            distance_ep_kPA_ktarget_Y=-1.0,
-            distance_ep_kPA_ktarget_Z=-1.0,
-            delta_id_kPA_ktarget=-1.0
+            angle_kPA_ktarget=-1.0,         # computed by fusion
+            distance_ep_kPA_ktarget=-1.0,   # computed by fusion
+            distance_ep_kPA_ktarget_X=-1.0, # computed by fusion
+            distance_ep_kPA_ktarget_Y=-1.0, # computed by fusion
+            distance_ep_kPA_ktarget_Z=-1.0, # computed by fusion
+            delta_id_kPA_ktarget=-1.0       # computed by fusion
         )
         if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
             break
     
-    # send to fusion 360 for computation
-    PA_data_str = PA_data.dumps()
-    pyperclip.copy(PA_data_str)
-    logger.info(f"PERFORM:\t test following string on fusion 360 (already copied in clipboard) -> \n{PA_data_str}")
-    data.fusion360_imports.append(PA_data_str)
+    # cycle until fusion accepts measurement errors
+    while True:
+        # send to fusion 360 for computation
+        PA_data_str = PA_data.dumps()
+        pyperclip.copy(PA_data_str)
+        logger.info(f"PERFORM:\t test following string on fusion 360 (already copied in clipboard) -> \n{PA_data_str}")
 
-    # receive from fusion 360
-    PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ", PA_data.id)
+        # receive from fusion 360
+        PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ", PA_data.id)
+
+        if PA_data.P1_mean > PA_data.max_mean or PA_data.P1_SD > PA_data.max_SD or PA_data.P1_SE > PA_data.max_SE:
+            logger.info("\tTECHNICAL:\t ATTENTION: P1 measurement error is above max allowed! Please take measurement again:")
+            PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
+            PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
+            PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
+            PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
+        elif PA_data.P2_mean > PA_data.max_mean or PA_data.P2_SD > PA_data.max_SD or PA_data.P2_SE > PA_data.max_SE:
+            logger.info("\tTECHNICAL:\t ATTENTION: P2 measurement error is above max allowed! Please take measurement again:")
+            PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
+            PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
+            PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
+            PA_data.P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
+        else:
+            # P1 and P2 measurement errors are below max allowed
+            data.fusion360_imports.append(PA_data_str)
+            break
     
     # K-wire extraction of PA
     ci.str("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
