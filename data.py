@@ -112,7 +112,10 @@ class TESTdata(data_elaboration):
     age: int
     medicine_surge_year: int
     specialization_year: int
-    num_operations: int
+    exp_operation_count: int
+    exp_vr: int
+    exp_ar: int
+    exp_3D_editor: int
     TEST_D: float
     TEST_RPC: int; "TEST radiation picture count"
     TEST_RESD: float; "TEST radiation entrance surface dose"

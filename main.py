@@ -61,7 +61,10 @@ def TEST():
             age=                 ci.int(" |-- age [INTEGER]:                 ", 0, 99),
             medicine_surge_year= ci.int(" |-- medsurg year [INTEGER]:        ", 0, 7),
             specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 6),
-            num_operations=      ci.int(" |-- operations count [INTEGER]:    ", 0, 1000),
+            exp_operation_count= ci.int(" |-- exp operation count [INTEGER]: ", 0, 1000),
+            exp_vr=              ci.int(" |-- exp Virtual Reality [0 - 5]:   ", 0, 1000),
+            exp_ar=              ci.int(" |-- exp Augmente Reality [0 - 5]:  ", 0, 1000),
+            exp_3D_editor=       ci.int(" |-- exp 3D editors [0 - 5]:        ", 0, 1000),
             TEST_D=0.0,        # to update
             TEST_RPC=0,        # to update
             TEST_RESD=0.0,     # to update
@@ -237,6 +240,16 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
         elif PA_data.P2_mean > PA_data.max_mean or PA_data.P2_SD > PA_data.max_SD or PA_data.P2_SE > PA_data.max_SE:
             logger.info("\tTECHNICAL:\t ATTENTION: P2 measurement error is above max allowed! Please take measurement again:")
+            PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
+            PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
+            PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
+            PA_data.P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
+        elif ci.boo("\tTECHNICAL:\t want to remeasure P1? [Y/N]: "):
+            PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
+            PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
+            PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
+            PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
+        elif ci.boo("\tTECHNICAL:\t want to remeasure P2? [Y/N]: "):
             PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
             PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
             PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
