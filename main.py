@@ -184,10 +184,6 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             success=success,
             PA_D=-1.0, # set after K-wire extraction
             PA_RPC =ci.int(" |-- RADIATION picture count       [INT]  : ", min=0),
-            PA_RESD=ci.flo(" |-- RADIATION entrance skin dose  [FLOAT]: "),
-            PA_RDAP=ci.flo(" |-- RADIATION dose-area product   [FLOAT]: "),
-            PA_RmAs=ci.flo(" |-- RADIATION milliampere-seconds [FLOAT]: "),
-            PA_RkVp=ci.flo(" |-- RADIATION kilovoltage peak    [FLOAT]: "),
             P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: "),
             P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: "),
             P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: "),

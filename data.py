@@ -155,10 +155,8 @@ class PAdata(data_elaboration):
     success: bool
     PA_D: float
     PA_RPC: int;    "PA radiation picture count"
-    PA_RESD: float; "PA radiation entrance surface dose"
-    PA_RDAP: float; "PA radiation dose-area product"    # do we want to record that? !!!
-    PA_RmAs: float; "PA radiation milliampere-seconds"  # do we want to record that? !!!
-    PA_RkVp: float; "PA radiation kilovoltage peak"     # do we want to record that? !!!
+    # PA_RESD: float; "PA radiation entrance surface dose"
+    # PA_RDAP: float; "PA radiation dose-area product"    # do we want to record that? !!!
     P1A: float
     P1B: float
     P1C: float
