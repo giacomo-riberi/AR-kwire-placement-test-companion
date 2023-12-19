@@ -251,10 +251,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             data.fusion360_imports.append(PA_data_str)
             break
     
-    # K-wire extraction of PA
-    ci.str("PERFORM:\t give instruction to extract K-wire [ENTER when instruction given]: ")
-    chrono.start()
-    ci.str("CANDIDATE:\t extracting the K-wire... [ENTER when done]: ")
+    # k-wire extraction of PA is not counted in PA_D
     PA_data.PA_D = chrono.reset()
 
     PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
