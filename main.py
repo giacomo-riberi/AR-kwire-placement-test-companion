@@ -155,10 +155,10 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     # insertion of K-wire
     i = ci.acc("CANDIDATE:\t inserting K-wire... -> checks it and declares it failed [f] or successful [s]: ", ["f", "s"])
     if i.lower() == 'f': # PA FAILED
-        logger.info("\t\t \_candidate has FAILED positioning attempt!")
+        logger.info("\t\t \\_candidate has FAILED positioning attempt!")
         success = False
     elif i.lower() == 's': # PA SUCCESS
-        logger.info("\t\t \_candidate has performed SUCCESSFUL positioning attempt!")
+        logger.info("\t\t \\_candidate has performed SUCCESSFUL positioning attempt!")
         success = True
     
     # get PA data

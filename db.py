@@ -19,7 +19,7 @@ def db_newid(id_bytes):
         tables = cursor.fetchall()
         for table in tables:
             table_name = table[0]
-            cursor.execute(f"SELECT COUNT(*) FROM {table_name} WHERE id = ?", (id,))
+            cursor.execute(f"SELECT COUNT(*) FROM {table_name} WHERE id = ?", (new_id,))
             count = cursor.fetchone()[0]
             if count > 0:
                 new_id = db_newid(id_bytes)
