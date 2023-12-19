@@ -96,29 +96,29 @@ class data_elaboration:
         s = []
         for k, v in vars(self).items():
             if k == "id":
-                s.append(f"{k} TEXT NOT NULL PRIMARY KEY")
+                s.append(f"`{k}` TEXT NOT NULL PRIMARY KEY")
             elif k == "time_init":
-                s.append(f"{k} TIMESTAMP")
+                s.append(f"`{k}` TIMESTAMP")
             elif type(v) == int:
-                s.append(f"{k} INTEGER")
+                s.append(f"`{k}` INTEGER")
             elif type(v) == float:
-                s.append(f"{k} REAL")
+                s.append(f"`{k}` REAL")
+            elif type(v) == bool:
+                s.append(f"`{k}` BOOL")
             elif type(v) == str:
-                s.append(f"{k} TEXT")
+                s.append(f"`{k}` TEXT")
             elif type(v) == list:
-                s.append(f"{k} TEXT")
+                s.append(f"`{k}` TEXT")
             elif type(v) == dict:
                 if k == "anatomy":
                     for ECP_design in TEST_design:
                         for kk, vv in ECP_design.anatomy.items():
-                            s.append(f"{kk.replace(" ", "_")} REAL")
+                            s.append(f"`{kk}` REAL")
                 elif k == "markers":
                     for kk, vv in v.items():
-                        s.append(f"{kk} TEXT")
+                        s.append(f"`{kk}` TEXT")
                 else:
                     logger.critical(f"db_create_table: unsupported dict key: {type(v)} {k} {v}")
-            elif type(v) == bool:
-                s.append(f"{k} BOOL")
             else:
                 logger.critical(f"db_create_table: unsupported value type: {type(v)} {k} {v}")
         s = list(dict.fromkeys(s)) # remove duplicates
@@ -130,29 +130,29 @@ class data_elaboration:
         dbvals: list[any] = []
         for k, v in vars(self).items():
             if k == "id":
-                dbkeys.append(k)
+                dbkeys.append(f"`{k}`")
                 dbvals.append(v)
             elif k == "time_init":
-                dbkeys.append(k)
+                dbkeys.append(f"`{k}`")
                 dbvals.append(f"{datetime.fromtimestamp(round(v, 0))}")
             elif type(v) == int:
-                dbkeys.append(k)
+                dbkeys.append(f"`{k}`")
                 dbvals.append(v)
             elif type(v) == float:
-                dbkeys.append(k)
+                dbkeys.append(f"`{k}`")
+                dbvals.append(v)
+            elif type(v) == bool:
+                dbkeys.append(f"`{k}`")
                 dbvals.append(v)
             elif type(v) == str:
-                dbkeys.append(k) #!!! ``
+                dbkeys.append(f"`{k}`")
                 dbvals.append(v)
             elif type(v) == list:
-                dbkeys.append(k)
+                dbkeys.append(f"`{k}`")
                 dbvals.append(";".join(v))
             elif type(v) == dict:
-                dbkeys.extend([kk.replace(" ", "_") for kk in v.keys()])
+                dbkeys.extend([f"`{kk}`" for kk in v.keys()])
                 dbvals.extend(v.values())
-            elif type(v) == bool:
-                dbkeys.append(k)
-                dbvals.append(v)
             else:
                 logger.error(f"db_create_table: unsupported value type: {type(v)} {k} {v}")
         return f"INSERT INTO {table} (" + ", ".join(dbkeys) + f") VALUES ({','.join(['?'] * len(dbkeys))})", tuple(dbvals)
