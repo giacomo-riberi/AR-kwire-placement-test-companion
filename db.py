@@ -1,4 +1,3 @@
-
 import sqlite3
 import secrets
 import sys, os
@@ -59,7 +58,6 @@ def db_save(TEST_data: data.TESTdata):
         cursor.execute(data.PAs_toinsert[0].db_create_table("PA"))
         
         conn.commit()
-    
     
         ### DON'T COMMIT UNTIL ALL INSERTIONS ARE DONE! ###
 

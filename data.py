@@ -21,7 +21,7 @@ TEST_design: list[ECP_design] = [
                 "basilic vein": -1.0,
                 "random artery 1": -1.0,
                 "median cubital vein": -1.0,
-                "median cubital vein (1)": -1.0,
+                "median cubital vein 1": -1.0,
                 "inferior ulnar collateral artery": -1.0,
                 "radial collateral artery": -1.0,
                 "middle collateral artery": -1.0,
@@ -52,7 +52,7 @@ TEST_design: list[ECP_design] = [
                 "random artery 1": -1.0,
                 "random artery 2": -1.0,
                 "median cubital vein": -1.0,
-                "median cubital vein (1)": -1.0,
+                "median cubital vein 1": -1.0,
                 "median antebrachial vein": -1.0,
                    
                 "anterior interosseous nerve of forearm": -1.0,
@@ -65,7 +65,7 @@ TEST_design: list[ECP_design] = [
                 "superficial branch of radial nerve": -1.0,
                 "deep branch of radial nerve": -1.0,
                }),
-    ECP_design("K-wire:2",
+    ECP_design("K-wire:3",
                {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
                {"middle collateral artery": -1.0,
                 "random artery 1": -1.0,
@@ -111,7 +111,7 @@ class data_elaboration:
                 if k == "anatomy":
                     for ECP_design in TEST_design:
                         for kk, vv in ECP_design.anatomy.items():
-                            s.append(f"{kk} REAL")
+                            s.append(f"{kk.replace(" ", "_")} REAL")
                 elif k == "markers":
                     for kk, vv in v.items():
                         s.append(f"{kk} TEXT")
@@ -142,13 +142,13 @@ class data_elaboration:
                 dbkeys.append(k)
                 dbvals.append(v)
             elif type(v) == str:
-                dbkeys.append(k)
+                dbkeys.append(k) #!!! ``
                 dbvals.append(v)
             elif type(v) == list:
                 dbkeys.append(k)
                 dbvals.append(";".join(v))
             elif type(v) == dict:
-                dbkeys.extend(v.keys())
+                dbkeys.extend([kk.replace(" ", "_") for kk in v.keys()])
                 dbvals.extend(v.values())
             elif type(v) == bool:
                 dbkeys.append(k)
@@ -164,7 +164,7 @@ class TESTdata(data_elaboration):
     id: str
     ECP_ids: list[str]
     PA_ids: list[str]
-    comment: bool;  "used to mark data on database for later technical analysis"
+    comment: bool; "used to mark data on database for later technical analysis"
     time_init: float
     phase: str
     phantom_id: str
@@ -181,7 +181,6 @@ class TESTdata(data_elaboration):
     exp_3D_editor: int
     TEST_D: float
     TEST_RPC: int; "TEST radiation picture count"
-    TEST_RESD: float; "TEST radiation entrance surface dose"
     TEST_PAC: int
     TEST_PACF: int
     TEST_ECPC: int
@@ -199,7 +198,6 @@ class ECPdata(data_elaboration):
     ECP_number: int
     ECP_D: float; "ECP duration"
     ECP_RPC: int; "ECP radiation picture count"
-    ECP_RESD: float; "ECP radiation entrance surface dose"
     ECP_PAC: float
     ECP_PACF: float
 
@@ -218,8 +216,6 @@ class PAdata(data_elaboration):
     success: bool
     PA_D: float
     PA_RPC: int;    "PA radiation picture count"
-    # PA_RESD: float; "PA radiation entrance surface dose"
-    # PA_RDAP: float; "PA radiation dose-area product"    # do we want to record that? !!!
     P1A: float
     P1B: float
     P1C: float

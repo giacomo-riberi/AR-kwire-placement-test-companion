@@ -67,7 +67,6 @@ def TEST():
             exp_3D_editor=       ci.int(" |-- exp 3D editors [0 - 5]:        ", 0, 1000),
             TEST_D=0.0,        # to update
             TEST_RPC=0,        # to update
-            TEST_RESD=0.0,     # to update
             TEST_PAC=0,        # to update
             TEST_PACF=0,       # to update
             TEST_ECPC=0,       # to update
@@ -84,7 +83,6 @@ def TEST():
         # update test_data
         TEST_data.TEST_D    += ECP_data.ECP_D
         TEST_data.TEST_RPC  += ECP_data.ECP_RPC
-        TEST_data.TEST_RESD += ECP_data.ECP_RESD
         TEST_data.TEST_PAC  += ECP_data.ECP_PAC
         TEST_data.TEST_PACF += ECP_data.ECP_PACF
         TEST_data.TEST_ECPC  = ECP_number
@@ -113,7 +111,6 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
         ECP_number=ECP_number,
         ECP_D=0.0,       # update for each PA
         ECP_RPC=0,       
-        ECP_RESD=0.0,    # update for each PA
         ECP_PAC=0,       # update for each PA
         ECP_PACF=0       # update for each PA
     )
@@ -129,7 +126,6 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
         # update ECP_data
         ECP_data.ECP_D += PA_data.PA_D
         ECP_data.ECP_RPC += PA_data.PA_RPC
-        ECP_data.ECP_RESD += PA_data.PA_RESD
         ECP_data.ECP_PAC = PA_number
         ECP_data.ECP_PACF += 0 if PA_data.success else 1
         ECP_data.PA_ids.append(PA_data.id)
