@@ -224,6 +224,14 @@ class PAdata(data_elaboration):
     P2B: float
     P2C: float
     P2D: float
+    P1A_V: float
+    P1B_V: float
+    P1C_V: float
+    P1D_V: float
+    P2A_V: float
+    P2B_V: float
+    P2C_V: float
+    P2D_V: float
     max_mean: float
     max_SD:   float
     max_SE:   float

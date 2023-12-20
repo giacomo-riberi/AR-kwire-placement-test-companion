@@ -188,6 +188,14 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: "),
             P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: "),
             P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: "),
+            P1A_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
+            P1B_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
+            P1C_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
+            P1D_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
+            P2A_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
+            P2B_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
+            P2C_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
+            P2D_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
             max_mean=1.0, # !!! must be updated when real data starts coming in
             max_SD=0.3,   # !!! must be updated when real data starts coming in
             max_SE=0.2,   # !!! must be updated when real data starts coming in
