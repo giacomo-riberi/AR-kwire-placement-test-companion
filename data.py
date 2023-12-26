@@ -13,7 +13,7 @@ class ECP_design:
 
 # relative to phantom v2.3.5
 TEST_design: list[ECP_design] = [
-    ECP_design("K-wire:1",
+    ECP_design("k-wire:1",
                {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
                {"brachial artery": -1.0,
                 "brachial vein": -1.0,
@@ -36,7 +36,7 @@ TEST_design: list[ECP_design] = [
                 "posterior antebrachial cutaneous nerve": -1.0,
                 "anterior interosseous nerve of forearm": -1.0,
                }),
-    ECP_design("K-wire:2",
+    ECP_design("k-wire:2",
                {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"},
                {"cephalic vein": -1.0,
                 "basilic vein": -1.0,
@@ -65,7 +65,7 @@ TEST_design: list[ECP_design] = [
                 "superficial branch of radial nerve": -1.0,
                 "deep branch of radial nerve": -1.0,
                }),
-    ECP_design("K-wire:3",
+    ECP_design("k-wire:3",
                {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
                {"middle collateral artery": -1.0,
                 "random artery 1": -1.0,

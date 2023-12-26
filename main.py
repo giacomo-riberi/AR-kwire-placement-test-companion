@@ -63,7 +63,7 @@ def TEST():
             specialization_year= ci.int(" |-- specialization year [INTEGER]: ", 0, 6),
             exp_operation_count= ci.int(" |-- exp operation count [INTEGER]: ", 0, 1000),
             exp_vr=              ci.int(" |-- exp Virtual Reality [0 - 5]:   ", 0, 1000),
-            exp_ar=              ci.int(" |-- exp Augmente Reality [0 - 5]:  ", 0, 1000),
+            exp_ar=              ci.int(" |-- exp Augmented Reality [0 - 5]: ", 0, 1000),
             exp_3D_editor=       ci.int(" |-- exp 3D editors [0 - 5]:        ", 0, 1000),
             TEST_D=0.0,        # to update
             TEST_RPC=0,        # to update
@@ -147,13 +147,13 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     logger.info(f"\n------------------------")
     logger.info(f"PA{ECP_number}.{PA_number} START! ({id})")
     ci.str("PERFORM:\t reset x-ray machine [ENTER when done]: ")
-    ci.str("PERFORM:\t give instruction to insert K-wire [ENTER when instruction given]: ")
+    ci.str("PERFORM:\t give instruction to insert k-wire [ENTER when instruction given]: ")
 
     chrono = chronometer()
     time_init = chrono.start()
 
-    # insertion of K-wire
-    i = ci.acc("CANDIDATE:\t inserting K-wire... -> checks it and declares it failed [f] or successful [s]: ", ["f", "s"])
+    # insertion of k-wire
+    i = ci.acc("CANDIDATE:\t inserting k-wire... -> checks it and declares it failed [f] or successful [s]: ", ["f", "s"])
     if i.lower() == 'f': # PA FAILED
         logger.info("\t\t \\_candidate has FAILED positioning attempt!")
         success = False
@@ -178,16 +178,16 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             ECP_number=ECP_number,
             PA_number=PA_number,
             success=success,
-            PA_D=-1.0, # set after K-wire extraction
+            PA_D=-1.0, # set after k-wire extraction
             PA_RPC =ci.int(" |-- RADIATION picture count       [INT]  : ", min=0),
-            P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: "),
-            P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: "),
-            P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: "),
-            P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: "),
-            P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: "),
-            P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: "),
-            P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: "),
-            P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: "),
+            P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ") - 0.8, # -0.8 as it's removing half a diameter of kwire 
+            P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ") - 0.8,
+            P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ") - 0.8,
+            P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ") - 0.8,
+            P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ") - 0.8,
+            P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ") - 0.8,
+            P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ") - 0.8,
+            P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ") - 0.8,
             P1A_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
             P1B_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
             P1C_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
