@@ -208,16 +208,16 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             confidence_position= ci.flo(" |-- CANDIDATE: confidence on entrance position in mm? [FLOAT]: ", min=0),
             confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:            ", min=0),
             estimate_hit=        ci.boo(" |-- CANDIDATE: estimate structures hit [Y/N]?:                 "),
-            ktarget=data.TEST_design[ECP_number-1].ktarget,
+            target=data.TEST_design[ECP_number-1].ktarget,
             markers=data.TEST_design[ECP_number-1].markers,
             anatomy=data.TEST_design[ECP_number-1].anatomy,
             fusion_computed=False,
-            angle_kPA_ktarget=-1.0,         # computed by fusion
-            distance_ep_kPA_ktarget=-1.0,   # computed by fusion
-            distance_ep_kPA_ktarget_X=-1.0, # computed by fusion
-            distance_ep_kPA_ktarget_Y=-1.0, # computed by fusion
-            distance_ep_kPA_ktarget_Z=-1.0, # computed by fusion
-            delta_id_kPA_ktarget=-1.0       # computed by fusion
+            angle_PA_target=-1.0,          # computed by fusion
+            distance_P2e_PA_target=-1.0,   # computed by fusion
+            distance_P2e_PA_target_X=-1.0, # computed by fusion
+            distance_P2e_PA_target_Y=-1.0, # computed by fusion
+            distance_P2e_PA_target_Z=-1.0, # computed by fusion
+            delta_id_PA_target=-1.0        # computed by fusion
         )
         if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
             break

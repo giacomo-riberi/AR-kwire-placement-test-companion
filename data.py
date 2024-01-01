@@ -13,7 +13,7 @@ class ECP_design:
 
 # relative to phantom v2.3.5
 TEST_design: list[ECP_design] = [
-    ECP_design("k-wire:1",
+    ECP_design("ECP:1",
                {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
                {"brachial artery": -1.0,
                 "brachial vein": -1.0,
@@ -36,7 +36,7 @@ TEST_design: list[ECP_design] = [
                 "posterior antebrachial cutaneous nerve": -1.0,
                 "anterior interosseous nerve of forearm": -1.0,
                }),
-    ECP_design("k-wire:2",
+    ECP_design("ECP:2",
                {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"},
                {"cephalic vein": -1.0,
                 "basilic vein": -1.0,
@@ -65,7 +65,7 @@ TEST_design: list[ECP_design] = [
                 "superficial branch of radial nerve": -1.0,
                 "deep branch of radial nerve": -1.0,
                }),
-    ECP_design("k-wire:3",
+    ECP_design("ECP:3",
                {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
                {"middle collateral artery": -1.0,
                 "random artery 1": -1.0,
@@ -244,16 +244,16 @@ class PAdata(data_elaboration):
     confidence_position: float
     confidence_angle: float
     estimate_hit: bool
-    ktarget: str; "k-wire target component name on fusion 360"
+    target: str; "k-wire target component name on fusion 360"
     markers: dict[str, str]
     fusion_computed: bool; "analyzed by fusion 360"
     anatomy: dict[str, float]
-    angle_kPA_ktarget: float
-    distance_ep_kPA_ktarget: float; "distance skin entrance point"
-    distance_ep_kPA_ktarget_X: float
-    distance_ep_kPA_ktarget_Y: float
-    distance_ep_kPA_ktarget_Z: float
-    delta_id_kPA_ktarget: float; "delta insertion depth"
+    angle_PA_target: float
+    distance_P2e_PA_target: float; "distance skin entrance point"
+    distance_P2e_PA_target_X: float
+    distance_P2e_PA_target_Y: float
+    distance_P2e_PA_target_Z: float
+    delta_id_PA_target: float; "delta insertion depth"
 
 ECPs_toinsert:     list[ECPdata] = []
 PAs_toinsert:      list[PAdata]  = []
