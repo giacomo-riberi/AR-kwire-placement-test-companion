@@ -175,6 +175,7 @@ class TESTdata(data_elaboration):
     age: int
     medicine_surge_year: int
     specialization_year: int
+    surgeon_year: int
     exp_operation_count: int
     exp_vr: int
     exp_ar: int

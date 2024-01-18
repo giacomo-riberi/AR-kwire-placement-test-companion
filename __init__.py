@@ -38,10 +38,15 @@ class custom_input:
     def int(self, prompt, min=-1000000, max=1000000) -> int:
         "accepts integers in specified range"
         user_input = input(prompt).strip().lower()
-        if user_input.isdigit() and int(user_input)>=min and int(user_input)<=max:
-            logger.debug_input(prompt + "\t|" + user_input + "|")
-            return int(user_input)
-        else:
+
+        try:
+            user_int = int(user_input)
+            if min <= user_int <= max:
+                logger.debug_input(prompt + "\t|" + user_input + "|")
+                return user_int
+            else:
+                raise
+        except Exception:
             return self.int(prompt, min, max)
     
     def flo(self, prompt, min=-1000000, max=1000000) -> float:
