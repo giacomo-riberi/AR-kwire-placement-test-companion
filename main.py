@@ -52,7 +52,7 @@ def TEST():
             comment="",
             datatype="TEST",
             time_init=time.time(),
-            phase=               ci.int(" |-- phase [INTEGER]:               ", 0, 10),
+            phase=               ci.int(" |-- phase [INTEGER]:               ", 0, 9),
             phantom_id=          ci.str(" |-- phantom id [STRING]:           ", 2),
             name=                ci.str(" |-- name [STRING]:                 "),
             surname=             ci.str(" |-- surname [STRING]:              "),
