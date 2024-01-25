@@ -64,7 +64,7 @@ def TEST():
             surgeon_year=        ci.int(" |-- surgeon year [-1 : 100]:       ", -1, 100),
             exp_operation_count= ci.int(" |-- exp operation count [INTEGER]: ", 0, 1000),
             glasses=             ci.boo(" |-- glasses [Y/N]:                 "),
-            glasses_type=        ci.acc(" |-- glasses type [Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]:", ["m", "h", "as", "p", "s", "am", "c"]),
+            glasses_type=        ci.acc(" |-- glasses type [Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: ", ["m", "h", "as", "p", "s", "am", "c"]),
             glasses_power=       ci.flo(" |-- glasses power [-1 : 100]:      ", -1, 100),
             exp_vr=              ci.int(" |-- exp Virtual Reality [0 : 5]:   ", 0, 5),
             exp_ar=              ci.int(" |-- exp Augmented Reality [0 : 5]: ", 0, 5),
@@ -192,19 +192,26 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ") - 0.8,
             P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ") - 0.8,
             P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ") - 0.8,
+            
+            # computed by fusion
+            P2eA=-1.0,
+            P2eB=-1.0,
+            P2eC=-1.0,
+            P2eD=-1.0,
+
             P1A_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
             P1B_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
             P1C_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
             P1D_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
-            P2A_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
-            P2B_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
-            P2C_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
-            P2D_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
-            max_mean=2.0, # !!! must be updated when real data starts coming in
-            max_SD=0.6,   # !!! must be updated when real data starts coming in
-            max_SE=0.4,   # !!! must be updated when real data starts coming in
-
+            P2eA_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
+            P2eB_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
+            P2eC_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
+            P2eD_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
+            
             # computed by fusion
+            max_mean=2.0, # !!! must be updated when real data starts coming in
+            max_SD=1,   # !!! must be updated when real data starts coming in
+            max_SE=0.6,   # !!! must be updated when real data starts coming in
             P1_mean=-1.0,
             P1_SD=-1.0,
             P1_SE=-1.0,

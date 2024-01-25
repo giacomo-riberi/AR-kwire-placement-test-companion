@@ -1,9 +1,6 @@
 __pycache__/
-logs/
 
 build/
 dist/
 
-*.db
 *.spec
-*.log
