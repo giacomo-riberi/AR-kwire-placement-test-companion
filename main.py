@@ -203,25 +203,38 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             max_mean=1.0, # !!! must be updated when real data starts coming in
             max_SD=0.3,   # !!! must be updated when real data starts coming in
             max_SE=0.2,   # !!! must be updated when real data starts coming in
-            P1_mean=-1.0, # computed by fusion
-            P1_SD=-1.0,   # computed by fusion
-            P1_SE=-1.0,   # computed by fusion
-            P2_mean=-1.0, # computed by fusion
-            P2_SD=-1.0,   # computed by fusion
-            P2_SE=-1.0,   # computed by fusion
+
+            # computed by fusion
+            P1_mean=-1.0,
+            P1_SD=-1.0,
+            P1_SE=-1.0,
+            P2_mean=-1.0,
+            P2_SD=-1.0,
+            P2_SE=-1.0,
+
             confidence_position= ci.flo(" |-- CANDIDATE: confidence on entrance position in mm? [FLOAT]: ", min=0),
             confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:            ", min=0),
             estimate_hit=        ci.boo(" |-- CANDIDATE: estimate structures hit [Y/N]?:                 "),
             target=data.TEST_design[ECP_number-1].ktarget,
             markers=data.TEST_design[ECP_number-1].markers,
             anatomy=data.TEST_design[ECP_number-1].anatomy,
+
+            # computed by fusion
             fusion_computed=False,
-            angle_PA_target=-1.0,          # computed by fusion
-            distance_P2e_PA_target=-1.0,   # computed by fusion
-            distance_P2e_PA_target_X=-1.0, # computed by fusion
-            distance_P2e_PA_target_Y=-1.0, # computed by fusion
-            distance_P2e_PA_target_Z=-1.0, # computed by fusion
-            delta_id_PA_target=-1.0        # computed by fusion
+            angle_PA_target=-1.0,
+            distance_P1_PA_target=-1.0,
+            distance_P1_PA_target_X=-1.0,
+            distance_P1_PA_target_Y=-1.0,
+            distance_P1_PA_target_Z=-1.0,
+            distance_P2_PA_target=-1.0,
+            distance_P2_PA_target_X=-1.0,
+            distance_P2_PA_target_Y=-1.0,
+            distance_P2_PA_target_Z=-1.0,
+            distance_P2e_PA_target=-1.0,
+            distance_P2e_PA_target_X=-1.0,
+            distance_P2e_PA_target_Y=-1.0,
+            distance_P2e_PA_target_Z=-1.0,
+            delta_id_PA_target=-1.0
         )
         if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
             break
