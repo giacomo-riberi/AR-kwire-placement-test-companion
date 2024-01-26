@@ -1,6 +1,7 @@
 # compilation with auto-py-to-exe (as admin)
 #  C:\Users\Giacomo\AppData\Local\Programs\Python\Python311\Scripts\pyinstaller.exe --noconfirm --onefile --console --paths "." --name "AR kwire placement test companion" --icon ".\media\icon.ico" "main.py"
 
+import sys
 import time
 import signal
 from datetime import datetime
@@ -13,7 +14,26 @@ import data
 
 ci = custom_input()
 
+def checkargv():
+    logger.info(f"flags: {sys.argv[1:]}")
+
+    if len(sys.argv) <= 1:
+        return
+        
+    if "--testdb" in sys.argv:
+        data.TEST_toinsert = data.TESTdata(datatype="test")
+        data.ECPs_toinsert.append(data.ECPdata(datatype="test"))
+        data.PAs_toinsert.append(data.PAdata(datatype="test"))
+
+        db.db_save()
+        print(f"now check database and delete test data")
+    else:
+        print(f"unknown flags")
+    quit()
+
 def main():
+    checkargv()
+
     def handler(signum, frame):
         logger.info("\nexiting. DATA NOT SAVED!")
         exit(0)
@@ -22,10 +42,10 @@ def main():
     logger.info(f"# POSITIONING TEST COMPANION ({version})")
     logger.info(f"# What a beautiful day to stick some anti-pigeon spikes into plastic!\n")
 
-    TEST_data = TEST()
+    data.TEST_toinsert = TEST()
 
     # save on db at the end
-    db.db_save(TEST_data)
+    db.db_save()
 
     # save on fusion360 to import strings at the end
     with open("logs/fusion_TOIMPORT.log", "a") as f:
@@ -40,7 +60,7 @@ def TEST():
 
     id = db.db_newid(3)
 
-    logger.info(f"# BEGIN POSITIONING TEST FOR A CANDIDATE, ONE SINGLE PHASE ({id})")    
+    logger.info(f"# BEGIN POSITIONING TEST FOR A CANDIDATE, ONE SINGLE PHASE ({id})")
     logger.info(f"# {datetime.now().strftime('%Y/%m/%d - %H:%M:%S')}")
 
     logger.info("DATA COLLECTION")

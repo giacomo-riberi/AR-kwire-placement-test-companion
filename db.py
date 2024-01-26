@@ -37,7 +37,7 @@ def db_newid(id_bytes):
     return new_id
 
 
-def db_save(TEST_data: data.TESTdata):
+def db_save():
     "save_db saves data on database"
 
     if len(data.ECPs_toinsert) <= 0 or len(data.PAs_toinsert) <= 0:
@@ -49,7 +49,7 @@ def db_save(TEST_data: data.TESTdata):
         cursor = conn.cursor() # Create a cursor object to interact with the database
 
         # create TEST table
-        cursor.execute(TEST_data.db_create_table("TEST"))
+        cursor.execute(data.TEST_toinsert.db_create_table("TEST"))
 
         # create ECP table
         cursor.execute(data.ECPs_toinsert[0].db_create_table("ECP"))
@@ -62,7 +62,7 @@ def db_save(TEST_data: data.TESTdata):
         ### DON'T COMMIT UNTIL ALL INSERTIONS ARE DONE! ###
 
         # insert TEST_data into database
-        cursor.execute(*TEST_data.db_insert_table("TEST"))
+        cursor.execute(*data.TEST_toinsert.db_insert_table("TEST"))
         
         # insert ECPs into database
         for ECP_data in data.ECPs_toinsert:

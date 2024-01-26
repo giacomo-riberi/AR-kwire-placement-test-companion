@@ -1,9 +1,13 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, fields
 import json
 from datetime import datetime
+import faker
+import random
 
 from logger import logger
 from __init__ import *
+
+fake = faker.Faker()
 
 @dataclass
 class ECP_design:
@@ -87,6 +91,30 @@ TEST_design: list[ECP_design] = [
 ]
 
 class data_elaboration:
+    def __init__(self, **kwargs):
+        if len(kwargs) != 1 and len(kwargs) != len(fields(self)):
+            raise ValueError(f"Invalid number of arguments ({len(kwargs)} out of {len(fields(self))}). Please provide values for one or all attributes.")
+        for field in fields(self):
+            setattr(self, field.name, kwargs.get(field.name, self.generate_random_value(field)))
+            
+    def generate_random_value(self, field):            
+        if field.type == int:
+            return random.randint(1, 100)
+        elif field.type == float:
+            return random.uniform(0.0, 1.0)
+        elif field.type == bool:
+            return random.choice([True, False])
+        elif field.type == str:
+            return ''.join(random.choices('abcdefghijklmnopqrstuvwxyz ', k=10))
+        elif field.type == list[str]:
+            return [''.join(random.choices('abcdefghijklmnopqrstuvwxyz ', k=5)) for _ in range(3)]
+        elif field.type == dict[str, str]:
+            return {f"key_{i}": ''.join(random.choices('abcdefghijklmnopqrstuvwxyz ', k=5)) for _ in range(3) for i in range(3)}
+        elif field.type == dict[str, float]:
+            return {f"key_{i}": random.uniform(0.0, 1.0) for _ in range(3) for i in range(3)}
+        else:
+            logger.critical(f"generate_random_value: unsupported value type: {field.type}")
+
     def dumps(self) -> str:
             "dump data into json string"
             return json.dumps(self, default=lambda o: o.__dict__, sort_keys=False)
@@ -154,17 +182,21 @@ class data_elaboration:
                 dbkeys.extend([f"`{kk}`" for kk in v.keys()])
                 dbvals.extend(v.values())
             else:
-                logger.error(f"db_create_table: unsupported value type: {type(v)} {k} {v}")
+                logger.critical(f"db_create_table: unsupported value type: {type(v)} {k} {v}")
         return f"INSERT INTO {table} (" + ", ".join(dbkeys) + f") VALUES ({','.join(['?'] * len(dbkeys))})", tuple(dbvals)
 
 @dataclass
 class TESTdata(data_elaboration):
     "test data"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    
     datatype: str
     id: str
     ECP_ids: list[str]
     PA_ids: list[str]
-    comment: bool; "used to mark data on database for later technical analysis"
+    comment: str; "used to mark data on database for later technical analysis"
     time_init: float
     phase: str
     phantom_id: str
@@ -178,7 +210,7 @@ class TESTdata(data_elaboration):
     surgeon_year: int
     exp_operation_count: int
 
-    glasses: float
+    glasses: bool
     glasses_type: str
     glasses_power: float
 
@@ -194,6 +226,10 @@ class TESTdata(data_elaboration):
 @dataclass
 class ECPdata(data_elaboration):
     "estimated correct position data"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    
     datatype: str
     TEST_id: int
     id: int
@@ -210,6 +246,10 @@ class ECPdata(data_elaboration):
 @dataclass
 class PAdata(data_elaboration):
     "positioning attempt data"
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
     datatype: str
     TEST_id: int
     ECP_id: int
@@ -280,6 +320,7 @@ class PAdata(data_elaboration):
     
     delta_id_PA_target: float; "delta insertion depth"
 
+TEST_toinsert:     TESTdata      = None
 ECPs_toinsert:     list[ECPdata] = []
 PAs_toinsert:      list[PAdata]  = []
 fusion360_imports: list[str]     = []
