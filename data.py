@@ -109,9 +109,9 @@ class data_elaboration:
         elif field.type == list[str]:
             return [''.join(random.choices('abcdefghijklmnopqrstuvwxyz ', k=5)) for _ in range(3)]
         elif field.type == dict[str, str]:
-            return {f"key_{i}": ''.join(random.choices('abcdefghijklmnopqrstuvwxyz ', k=5)) for _ in range(3) for i in range(3)}
+            return random.choice(TEST_design).markers
         elif field.type == dict[str, float]:
-            return {f"key_{i}": random.uniform(0.0, 1.0) for _ in range(3) for i in range(3)}
+            return random.choice(TEST_design).anatomy
         else:
             logger.critical(f"generate_random_value: unsupported value type: {field.type}")
 
@@ -231,8 +231,8 @@ class ECPdata(data_elaboration):
         super().__init__(**kwargs)
     
     datatype: str
-    TEST_id: int
-    id: int
+    TEST_id: str
+    id: str
     PA_ids: list[str]
     time_init: float
     ease_of_placement: int
@@ -251,9 +251,9 @@ class PAdata(data_elaboration):
         super().__init__(**kwargs)
 
     datatype: str
-    TEST_id: int
-    ECP_id: int
-    id: int
+    TEST_id: str
+    ECP_id: str
+    id: str
     comment: str; "used to mark data on database for later technical analysis"
     time_init: float
     phase: int
