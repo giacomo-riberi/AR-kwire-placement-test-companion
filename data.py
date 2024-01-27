@@ -101,7 +101,7 @@ class data_elaboration:
         if field.type == int:
             return random.randint(1, 100)
         elif field.type == float:
-            return random.uniform(0.0, 100.0)
+            return round(random.uniform(0.0, 100.0), 5)
         elif field.type == bool:
             return random.choice([True, False])
         elif field.type == str:
