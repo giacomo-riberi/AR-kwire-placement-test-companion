@@ -4,7 +4,7 @@ from datetime import datetime
 
 class modLogger(logging.Logger):
     def __init__(self, name, level=logging.NOTSET):
-        super(modLogger,self).__init__(name,level)
+        super(modLogger, self).__init__(name, level)
     # def emit(self, record):
     #     modify record before printing
     #     print(record.msg)

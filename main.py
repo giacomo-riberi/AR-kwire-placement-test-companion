@@ -26,7 +26,7 @@ def checkargv():
         data.PAs_toinsert.append(data.PAdata(datatype="--testdb"))
 
         db.db_save()
-        print(f"now check database and delete test data")
+        print(f"now check database and delete \"--testdb\" datatype entries")
     else:
         print(f"unknown flags")
     quit()
