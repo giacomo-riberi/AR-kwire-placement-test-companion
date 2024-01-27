@@ -49,15 +49,20 @@ class custom_input:
         except Exception:
             return self.int(prompt, min, max)
     
-    def flo(self, prompt, min=-1000000, max=1000000) -> float:
+    def flo(self, prompt, min=-1000000, max=1000000) -> float: # !!! must accept -1
         "accepts integers and floats"
         user_input = input(prompt).strip().lower()
-        if user_input.isdigit() or re.match(r'^-?\d+(?:\.\d+)$', user_input):
-            logger.debug_input(prompt + "\t|" + user_input + "|")
-            return float(user_input)
-        else:
+
+        try:
+            user_float = float(user_input)
+            if min <= user_float <= max:
+                logger.debug_input(prompt + "\t|" + user_input + "|")
+                return user_float
+            else:
+                raise
+        except Exception:
             return self.flo(prompt, min, max)
-    
+        
     def str(self, prompt, minlen=0, maxlen=1000000) -> str:
         "accepts strings, min and max lenght can be specified"
         user_input = input(prompt).strip().lower()
