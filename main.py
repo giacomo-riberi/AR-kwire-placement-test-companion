@@ -63,7 +63,7 @@ def TEST():
     logger.info(f"# BEGIN POSITIONING TEST FOR A CANDIDATE, ONE SINGLE PHASE ({id})")
     logger.info(f"# {datetime.now().strftime('%Y/%m/%d - %H:%M:%S')}")
 
-    logger.info("DATA COLLECTION")
+    logger.info(f"DATA COLLECTION - TEST - ({id})")
     while True:
         TEST_data = data.TESTdata(
             id=id,
@@ -72,23 +72,23 @@ def TEST():
             comment="",
             datatype="TEST",
             time_init=time.time(),
-            phase=               ci.int(" |-- phase [INTEGER]:               ", 0, 9),
-            phantom_id=          ci.str(" |-- phantom id [STRING]:           ", 2),
-            name=                ci.str(" |-- name [STRING]:                 "),
-            surname=             ci.str(" |-- surname [STRING]:              "),
-            gender=              ci.acc(" |-- gender [M/F]:                  ", ["m", "f"]),
-            right_handed=        ci.boo(" |-- right-handed [Y/N]:            "),
-            age=                 ci.int(" |-- age [INTEGER]:                 ", 0, 99),
-            medicine_surge_year= ci.int(" |-- medsurg year [-1 : 6]:         ", -1, 6),
-            specialization_year= ci.int(" |-- specialization year [-1 : 5]:  ", -1, 5),
-            surgeon_year=        ci.int(" |-- surgeon year [-1 : 100]:       ", -1, 100),
-            exp_operation_count= ci.int(" |-- exp operation count [INTEGER]: ", 0, 1000),
-            glasses=             ci.boo(" |-- glasses [Y/N]:                 "),
-            glasses_type=        ci.acc(" |-- glasses type [Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: ", ["m", "h", "as", "p", "s", "am", "c"]),
-            glasses_power=       ci.flo(" |-- glasses power [-1 : 100]:      ", -1, 100),
-            exp_vr=              ci.int(" |-- exp Virtual Reality [0 : 5]:   ", 0, 5),
-            exp_ar=              ci.int(" |-- exp Augmented Reality [0 : 5]: ", 0, 5),
-            exp_3D_editor=       ci.int(" |-- exp 3D editors [0 : 5]:        ", 0, 5),
+            phase=               ci.int(" |-- phase [INTEGER]:                ", 0, 9),
+            phantom_id=          ci.str(" |-- phantom id [STRING]:            ", 2),
+            name=                ci.str(" |-- name [STRING]:                  "),
+            surname=             ci.str(" |-- surname [STRING]:               "),
+            gender=              ci.acc(" |-- gender [M/F]:                   ", ["m", "f"]),
+            right_handed=        ci.boo(" |-- right-handed [Y/N]:             "),
+            age=                 ci.int(" |-- age [INTEGER]:                  ", 0, 99),
+            medicine_surge_year= ci.int(" |-- medsurg year        [-1 : 6]:   ", -1, 6),
+            specialization_year= ci.int(" |-- specialization year [-1 : 5]:   ", -1, 5),
+            surgeon_year=        ci.int(" |-- surgeon year        [-1 : 100]: ", -1, 100),
+            exp_operation_count= ci.int(" |-- exp operation count [INTEGER]:  ", 0, 1000),
+            glasses=             ci.boo(" |-- glasses [Y/N]:                  "),
+            glasses_type=        ci.acc(" |-- glasses type [None [] / Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: ", ["", "m", "h", "as", "p", "s", "am", "c"]),
+            glasses_power=       ci.flo(" |-- glasses power [-1 : 100]:       ", -1, 100),
+            exp_vr=              ci.int(" |-- exp Virtual Reality   [0 : 5]:  ", 0, 5),
+            exp_ar=              ci.int(" |-- exp Augmented Reality [0 : 5]:  ", 0, 5),
+            exp_3D_editor=       ci.int(" |-- exp 3D editors        [0 : 5]:  ", 0, 5),
 
             realism_xray=       -1.0,   # update post test
             realism_ar=         -1.0,   # update post test
@@ -125,6 +125,7 @@ def TEST():
         TEST_data.ECP_ids.append(ECP_data.id)
         TEST_data.PA_ids.extend(ECP_data.PA_ids)
     
+    logger.info(f"DATA COLLECTION - TEST - ({id})")
     TEST_data.realism_xray=       ci.int(" |-- realism xray    [-1 : 5]:            ", -1, 5)
     TEST_data.realism_ar=         ci.int(" |-- realism AR      [-1 : 5]:            ", -1, 5)
     TEST_data.realism_phantom=    ci.int(" |-- realism phantom [-1 : 5]:            ", -1, 5)
@@ -294,13 +295,13 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         # receive from fusion 360
         PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ", PA_data.id)
 
-        if PA_data.P1_mean > PA_data.max_mean or PA_data.P1_SD > PA_data.max_SD or PA_data.P1_SE > PA_data.max_SE:
+        if PA_data.P1_mean > PA_data.P1_mean_max:
             logger.info("\tTECHNICAL:\t ATTENTION: P1 measurement error is above max allowed! Please take measurement again:")
             PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
             PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
             PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
             PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
-        elif PA_data.P2_mean > PA_data.max_mean or PA_data.P2_SD > PA_data.max_SD or PA_data.P2_SE > PA_data.max_SE:
+        elif PA_data.P2_mean > PA_data.P2_mean_max:
             logger.info("\tTECHNICAL:\t ATTENTION: P2 measurement error is above max allowed! Please take measurement again:")
             PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
             PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
