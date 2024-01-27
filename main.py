@@ -125,16 +125,16 @@ def TEST():
         TEST_data.ECP_ids.append(ECP_data.id)
         TEST_data.PA_ids.extend(ECP_data.PA_ids)
     
-    TEST_data.realism_xray=       ci.int(" |-- realism xray    [0 : 5]:            ", 0, 5)
-    TEST_data.realism_ar=         ci.int(" |-- realism AR      [0 : 5]:            ", 0, 5)
-    TEST_data.realism_phantom=    ci.int(" |-- realism phantom [0 : 5]:            ", 0, 5)
+    TEST_data.realism_xray=       ci.int(" |-- realism xray    [-1 : 5]:            ", -1, 5)
+    TEST_data.realism_ar=         ci.int(" |-- realism AR      [-1 : 5]:            ", -1, 5)
+    TEST_data.realism_phantom=    ci.int(" |-- realism phantom [-1 : 5]:            ", -1, 5)
 
-    TEST_data.sim_quality_xray=   ci.int(" |-- simulation quality xray    [0 : 5]: ", 0, 5)
-    TEST_data.sim_quality_ar=     ci.int(" |-- simulation quality ar      [0 : 5]: ", 0, 5)
-    TEST_data.sim_quality_phantom=ci.int(" |-- simulation quality phantom [0 : 5]: ", 0, 5)
+    TEST_data.sim_quality_xray=   ci.int(" |-- simulation quality xray    [-1 : 5]: ", -1, 5)
+    TEST_data.sim_quality_ar=     ci.int(" |-- simulation quality AR      [-1 : 5]: ", -1, 5)
+    TEST_data.sim_quality_phantom=ci.int(" |-- simulation quality phantom [-1 : 5]: ", -1, 5)
 
-    TEST_data.comfort_xray=       ci.int(" |-- comfort xray [0 : 5]:               ", 0, 5)
-    TEST_data.comfort_ar=         ci.int(" |-- comfort ar   [0 : 5]:               ", 0, 5)
+    TEST_data.comfort_xray=       ci.int(" |-- comfort xray [-1 : 5]:               ", -1, 5)
+    TEST_data.comfort_ar=         ci.int(" |-- comfort ar   [-1 : 5]:               ", -1, 5)
     
     TEST_data.comment = ci.str(f"\tTECHNICAL:\t comment on TEST ({id}) [STRING]: ")
 
