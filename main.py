@@ -21,9 +21,9 @@ def checkargv():
         return
         
     if "--testdb" in sys.argv:
-        data.TEST_toinsert = data.TESTdata(datatype="test")
-        data.ECPs_toinsert.append(data.ECPdata(datatype="test"))
-        data.PAs_toinsert.append(data.PAdata(datatype="test"))
+        data.TEST_toinsert = data.TESTdata(datatype="--testdb")
+        data.ECPs_toinsert.append(data.ECPdata(datatype="--testdb"))
+        data.PAs_toinsert.append(data.PAdata(datatype="--testdb"))
 
         db.db_save()
         print(f"now check database and delete test data")
@@ -49,7 +49,7 @@ def main():
 
     # save on fusion360 to import strings at the end
     with open("logs/fusion_TOIMPORT.log", "a") as f:
-        f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
+        f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {version}\n")
         for s in data.fusion360_imports:
             f.write(s+"\n")
 
@@ -89,11 +89,23 @@ def TEST():
             exp_vr=              ci.int(" |-- exp Virtual Reality [0 : 5]:   ", 0, 5),
             exp_ar=              ci.int(" |-- exp Augmented Reality [0 : 5]: ", 0, 5),
             exp_3D_editor=       ci.int(" |-- exp 3D editors [0 : 5]:        ", 0, 5),
-            TEST_D=0.0,        # to update
-            TEST_RPC=0,        # to update
-            TEST_PAC=0,        # to update
-            TEST_PACF=0,       # to update
-            TEST_ECPC=0,       # to update
+
+            realism_xray=       -1.0,   # update post test
+            realism_ar=         -1.0,   # update post test
+            realism_phantom=    -1.0,   # update post test
+
+            sim_quality_xray=   -1.0,   # update post test
+            sim_quality_ar=     -1.0,   # update post test
+            sim_quality_phantom=-1.0,   # update post test
+
+            comfort_xray=       -1.0,   # update post test
+            comfort_ar=         -1.0,   # update post test
+
+            TEST_D=             -1.0,   # update after each ECP
+            TEST_RPC=           -1,     # update after each ECP
+            TEST_PAC=           -1,     # update after each ECP
+            TEST_PACF=          -1,     # update after each ECP
+            TEST_ECPC=          -1,     # update after each ECP
         )
         if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
             break
@@ -112,6 +124,17 @@ def TEST():
         TEST_data.TEST_ECPC  = ECP_number
         TEST_data.ECP_ids.append(ECP_data.id)
         TEST_data.PA_ids.extend(ECP_data.PA_ids)
+    
+    TEST_data.realism_xray=       ci.int(" |-- realism xray    [0 : 5]:            ", 0, 5)
+    TEST_data.realism_ar=         ci.int(" |-- realism AR      [0 : 5]:            ", 0, 5)
+    TEST_data.realism_phantom=    ci.int(" |-- realism phantom [0 : 5]:            ", 0, 5)
+
+    TEST_data.sim_quality_xray=   ci.int(" |-- simulation quality xray    [0 : 5]: ", 0, 5)
+    TEST_data.sim_quality_ar=     ci.int(" |-- simulation quality ar      [0 : 5]: ", 0, 5)
+    TEST_data.sim_quality_phantom=ci.int(" |-- simulation quality phantom [0 : 5]: ", 0, 5)
+
+    TEST_data.comfort_xray=       ci.int(" |-- comfort xray [0 : 5]:               ", 0, 5)
+    TEST_data.comfort_ar=         ci.int(" |-- comfort ar   [0 : 5]:               ", 0, 5)
     
     TEST_data.comment = ci.str(f"\tTECHNICAL:\t comment on TEST ({id}) [STRING]: ")
 
@@ -229,15 +252,10 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2eD_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
             
             # computed by fusion
-            max_mean=2.0, # !!! must be updated when real data starts coming in
-            max_SD=1,   # !!! must be updated when real data starts coming in
-            max_SE=0.6,   # !!! must be updated when real data starts coming in
+            P1_mean_max=1.0,
             P1_mean=-1.0,
-            P1_SD=-1.0,
-            P1_SE=-1.0,
+            P2_mean_max=2.0,
             P2_mean=-1.0,
-            P2_SD=-1.0,
-            P2_SE=-1.0,
 
             confidence_position= ci.flo(" |-- CANDIDATE: confidence on entrance position in mm? [FLOAT]: ", min=0),
             confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:            ", min=0),

@@ -217,6 +217,18 @@ class TESTdata(data_elaboration):
     exp_vr: int
     exp_ar: int
     exp_3D_editor: int
+
+    realism_xray: int
+    realism_ar: int
+    realism_phantom: int
+
+    sim_quality_xray: int
+    sim_quality_ar: int
+    sim_quality_phantom: int
+
+    comfort_xray: int
+    comfort_ar: int
+
     TEST_D: float
     TEST_RPC: int; "TEST radiation picture count"
     TEST_PAC: int
@@ -285,15 +297,11 @@ class PAdata(data_elaboration):
     P2eC_V: float
     P2eD_V: float
 
-    max_mean: float
-    max_SD:   float
-    max_SE:   float
+    P1_mean_max: float
     P1_mean:  float
-    P1_SD:    float
-    P1_SE:    float
+    P2_mean_max: float
     P2_mean:  float
-    P2_SD:    float
-    P2_SE:    float
+    
     confidence_position: float
     confidence_angle: float
     estimate_hit: bool
