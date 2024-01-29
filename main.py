@@ -47,10 +47,16 @@ def main():
     # save on db at the end
     db.db_save()
 
-    # save on fusion360 to import strings at the end
-    with open("logs/fusion_TOIMPORT.log", "a") as f:
+    # save on fusion360 to import data
+    with open("logs/fusion360_imports.log", "a") as f:
         f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {version}\n")
         for s in data.fusion360_imports:
+            f.write(s+"\n")
+    
+    # save on companion to import data
+    with open("logs/companion_imports.log", "a") as f:
+        f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {version}\n")
+        for s in data.companion_imports:
             f.write(s+"\n")
 
     logger.info("bye!")
@@ -228,6 +234,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             success=success,
             PA_D=-1.0, # set after k-wire extraction
             PA_RPC =ci.int(" |-- RADIATION picture count       [INT]  : ", min=0),
+
             P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ") - 0.8, # -0.8 as it's removing half a diameter of kwire 
             P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ") - 0.8,
             P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ") - 0.8,
@@ -238,19 +245,27 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ") - 0.8,
             
             # computed by fusion
+            P1A_F=-1.0,
+            P1B_F=-1.0,
+            P1C_F=-1.0,
+            P1D_F=-1.0,
+            P2A_F=-1.0,
+            P2B_F=-1.0,
+            P2C_F=-1.0,
+            P2D_F=-1.0,
             P2eA=-1.0,
             P2eB=-1.0,
             P2eC=-1.0,
             P2eD=-1.0,
 
-            P1A_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
-            P1B_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
-            P1C_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
-            P1D_V=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
-            P2eA_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
-            P2eB_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
-            P2eC_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
-            P2eD_V=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
+            P1A_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
+            P1B_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
+            P1C_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
+            P1D_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
+            P2eA_U=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
+            P2eB_U=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
+            P2eC_U=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
+            P2eD_U=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
             
             # computed by fusion
             P1_mean_max=1.0,
@@ -324,6 +339,26 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     
     # k-wire extraction of PA is not counted in PA_D
     PA_data.PA_D = chrono.reset()
+
+    data.companion_imports.append(f"""
+        \r{PA_data.P1A}
+        \r{PA_data.P1B}
+        \r{PA_data.P1C}
+        \r{PA_data.P1D}
+        \r{PA_data.P2A}
+        \r{PA_data.P2B}
+        \r{PA_data.P2C}
+        \r{PA_data.P2D}
+
+        \r{PA_data.P1A_F}
+        \r{PA_data.P1B_F}
+        \r{PA_data.P1C_F}
+        \r{PA_data.P1D_F}
+        \r{PA_data.P2A_F}
+        \r{PA_data.P2B_F}
+        \r{PA_data.P2C_F}
+        \r{PA_data.P2D_F}
+        """)
 
     PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
 
