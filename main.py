@@ -6,6 +6,7 @@ import time
 import signal
 from datetime import datetime
 import pyperclip
+import textwrap
 
 from logger import logger
 from __init__ import *
@@ -340,25 +341,27 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     # k-wire extraction of PA is not counted in PA_D
     PA_data.PA_D = chrono.reset()
 
-    data.companion_imports.append(f"""
-        \r{PA_data.P1A}
-        \r{PA_data.P1B}
-        \r{PA_data.P1C}
-        \r{PA_data.P1D}
-        \r{PA_data.P2A}
-        \r{PA_data.P2B}
-        \r{PA_data.P2C}
-        \r{PA_data.P2D}
-
-        \r{PA_data.P1A_F}
-        \r{PA_data.P1B_F}
-        \r{PA_data.P1C_F}
-        \r{PA_data.P1D_F}
-        \r{PA_data.P2A_F}
-        \r{PA_data.P2B_F}
-        \r{PA_data.P2C_F}
-        \r{PA_data.P2D_F}
-        """)
+    data.companion_imports.append(textwrap.dedent(f"""
+        ###### PA{ECP_number}.{PA_number} - ({id}) ######
+        // following 8 values have already +0.8 inside (ready to paste in companion)
+        {PA_data.P1A+0.8}
+        {PA_data.P1B+0.8}
+        {PA_data.P1C+0.8}
+        {PA_data.P1D+0.8}
+        {PA_data.P2A+0.8}
+        {PA_data.P2B+0.8}
+        {PA_data.P2C+0.8}
+        {PA_data.P2D+0.8}
+        ------
+        {PA_data.P1A_U}
+        {PA_data.P1B_U}
+        {PA_data.P1C_U}
+        {PA_data.P1D_U}
+        {PA_data.P2eA_U}
+        {PA_data.P2eB_U}
+        {PA_data.P2eC_U}
+        {PA_data.P2eD_U}
+        """))
 
     PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
 
