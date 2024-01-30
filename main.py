@@ -208,13 +208,20 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     time_init = chrono.start()
 
     # insertion of k-wire
-    i = ci.acc("CANDIDATE:\t inserting k-wire... -> checks it and declares it failed [f] or successful [s]: ", ["f", "s"])
-    if i.lower() == 'f': # PA FAILED
-        logger.info("\t\t \\_candidate has FAILED positioning attempt!")
-        success = False
-    elif i.lower() == 's': # PA SUCCESS
-        logger.info("\t\t \\_candidate has performed SUCCESSFUL positioning attempt!")
-        success = True
+    while True:
+        i = ci.acc("CANDIDATE:\t inserting k-wire... -> checks it and declares it failed [f] or successful [s] (restart timer [r]): ", ["f", "s", "r"])
+        if i.lower() == 'f': # PA FAILED
+            logger.info("\t\t \\_candidate has FAILED positioning attempt!")
+            success = False
+            break
+        elif i.lower() == 's': # PA SUCCESS
+            logger.info("\t\t \\_candidate has performed SUCCESSFUL positioning attempt!")
+            success = True
+            break
+        elif i.lower() == 'r': # restart timer
+            logger.info("\t\t \\_restart timer!")
+            _ = chrono.reset()
+            time_init = chrono.start()
     
     # get PA data
     chrono.pause()
