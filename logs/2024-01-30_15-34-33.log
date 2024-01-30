@@ -1,0 +1,31 @@
+2024-01-30 15:34:33,992 - [  INFO] - flags: []
+2024-01-30 15:34:33,993 - [  INFO] - # POSITIONING TEST COMPANION (v1.21)
+2024-01-30 15:34:33,994 - [  INFO] - # What a beautiful day to stick some anti-pigeon spikes into plastic!
+2024-01-30 15:34:33,997 - [  INFO] - # BEGIN POSITIONING TEST FOR A CANDIDATE, ONE SINGLE PHASE (99db52)
+2024-01-30 15:34:33,998 - [  INFO] - # 2024/01/30 - 15:34:33
+2024-01-30 15:34:33,998 - [  INFO] - DATA COLLECTION - TEST - (99db52)
+2024-01-30 15:34:36,112 - [ DEBUG] - |-- phase [INTEGER]:                	|0|
+2024-01-30 15:34:39,813 - [ DEBUG] - |-- phantom id [STRING]:            	|01|
+2024-01-30 15:34:43,445 - [ DEBUG] - |-- name [STRING]:                  	|elisa|
+2024-01-30 15:34:45,181 - [ DEBUG] - |-- surname [STRING]:               	|dutto|
+2024-01-30 15:34:46,458 - [ DEBUG] - |-- gender [M/F]:                   	|f|
+2024-01-30 15:34:53,898 - [ DEBUG] - |-- right-handed [Y/N]:             	|y|
+2024-01-30 15:34:58,396 - [ DEBUG] - |-- age [INTEGER]:                  	|49|
+2024-01-30 15:35:02,363 - [ DEBUG] - |-- medsurg year        [-1 : 6]:   	|-1|
+2024-01-30 15:35:05,530 - [ DEBUG] - |-- specialization year [-1 : 5]:   	|-1|
+2024-01-30 15:35:16,688 - [ DEBUG] - |-- surgeon year        [-1 : 100]: 	|19|
+2024-01-30 15:35:32,461 - [ DEBUG] - |-- exp operation count [INTEGER]:  	|500|
+2024-01-30 15:35:35,842 - [ DEBUG] - |-- glasses [Y/N]:                  	|y|
+2024-01-30 15:35:47,274 - [ DEBUG] - |-- glasses type [None [] / Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: 	|p|
+2024-01-30 15:35:51,855 - [ DEBUG] - |-- glasses power [-1 : 100]:       	|2|
+2024-01-30 15:36:00,286 - [ DEBUG] - |-- exp Virtual Reality   [0 : 5]:  	|0|
+2024-01-30 15:36:11,670 - [ DEBUG] - |-- exp Augmented Reality [0 : 5]:  	|1|
+2024-01-30 15:36:28,861 - [ DEBUG] - |-- exp 3D editors        [0 : 5]:  	|2|
+2024-01-30 15:36:30,204 - [ DEBUG] - TECHNICAL:	 is data entered correct? [Y/N]: 	|y|
+2024-01-30 15:36:30,205 - [  INFO] - ########################
+2024-01-30 15:36:30,206 - [  INFO] - ECP1 START! (eb3180ea)
+2024-01-30 15:36:30,207 - [  INFO] - ------------------------
+2024-01-30 15:36:30,208 - [  INFO] - PA1.1 START! (7a9912de6c)
+2024-01-30 15:36:37,483 - [ DEBUG] - PERFORM:	 reset x-ray machine [ENTER when done]: 	||
+2024-01-30 15:37:16,984 - [ DEBUG] - PERFORM:	 give instruction to insert k-wire [ENTER when instruction given]: 	||
+2024-01-30 15:37:56,123 - [  INFO] - exiting. DATA NOT SAVED!

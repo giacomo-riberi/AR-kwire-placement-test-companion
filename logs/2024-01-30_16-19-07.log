@@ -1,0 +1,29 @@
+2024-01-30 16:19:07,604 - [  INFO] - flags: []
+2024-01-30 16:19:07,605 - [  INFO] - # POSITIONING TEST COMPANION (v1.21)
+2024-01-30 16:19:07,605 - [  INFO] - # What a beautiful day to stick some anti-pigeon spikes into plastic!
+2024-01-30 16:19:07,607 - [  INFO] - # BEGIN POSITIONING TEST FOR A CANDIDATE, ONE SINGLE PHASE (713b9c)
+2024-01-30 16:19:07,607 - [  INFO] - # 2024/01/30 - 16:19:07
+2024-01-30 16:19:07,608 - [  INFO] - DATA COLLECTION - TEST - (713b9c)
+2024-01-30 16:19:19,945 - [ DEBUG] - |-- phase [INTEGER]:                	|0|
+2024-01-30 16:19:21,501 - [ DEBUG] - |-- phantom id [STRING]:            	|01|
+2024-01-30 16:19:23,606 - [ DEBUG] - |-- name [STRING]:                  	|elisa|
+2024-01-30 16:19:25,217 - [ DEBUG] - |-- surname [STRING]:               	|dutto|
+2024-01-30 16:19:26,351 - [ DEBUG] - |-- gender [M/F]:                   	|f|
+2024-01-30 16:19:43,907 - [ DEBUG] - |-- right-handed [Y/N]:             	|y|
+2024-01-30 16:19:47,821 - [ DEBUG] - |-- age [INTEGER]:                  	|49|
+2024-01-30 16:19:50,628 - [ DEBUG] - |-- medsurg year        [-1 : 6]:   	|-1|
+2024-01-30 16:19:51,918 - [ DEBUG] - |-- specialization year [-1 : 5]:   	|-1|
+2024-01-30 16:19:54,894 - [ DEBUG] - |-- surgeon year        [-1 : 100]: 	|19|
+2024-01-30 16:19:57,467 - [ DEBUG] - |-- exp operation count [INTEGER]:  	|500|
+2024-01-30 16:20:00,214 - [ DEBUG] - |-- glasses [Y/N]:                  	|y|
+2024-01-30 16:20:02,417 - [ DEBUG] - |-- glasses type [None [] / Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: 	|p|
+2024-01-30 16:20:04,354 - [ DEBUG] - |-- glasses power [-1 : 100]:       	|2|
+2024-01-30 16:20:05,713 - [ DEBUG] - |-- exp Virtual Reality   [0 : 5]:  	|0|
+2024-01-30 16:20:06,549 - [ DEBUG] - |-- exp Augmented Reality [0 : 5]:  	|1|
+2024-01-30 16:20:07,307 - [ DEBUG] - |-- exp 3D editors        [0 : 5]:  	|2|
+2024-01-30 16:20:08,729 - [ DEBUG] - TECHNICAL:	 is data entered correct? [Y/N]: 	|y|
+2024-01-30 16:20:08,730 - [  INFO] - ########################
+2024-01-30 16:20:08,730 - [  INFO] - ECP1 START! (49fda2ca)
+2024-01-30 16:20:08,731 - [  INFO] - ------------------------
+2024-01-30 16:20:08,731 - [  INFO] - PA1.1 START! (a5334095fb)
+2024-01-30 16:20:12,995 - [  INFO] - exiting. DATA NOT SAVED!
