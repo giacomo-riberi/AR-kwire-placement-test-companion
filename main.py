@@ -108,11 +108,11 @@ def TEST():
             comfort_xray=       -1.0,   # update post test
             comfort_ar=         -1.0,   # update post test
 
-            TEST_D=             -1.0,   # update after each ECP
-            TEST_RPC=           -1,     # update after each ECP
-            TEST_PAC=           -1,     # update after each ECP
-            TEST_PACF=          -1,     # update after each ECP
-            TEST_ECPC=          -1,     # update after each ECP
+            TEST_D=             0,   # update after each ECP
+            TEST_RPC=           0,     # update after each ECP
+            TEST_PAC=           0,     # update after each ECP
+            TEST_PACF=          0,     # update after each ECP
+            TEST_ECPC=          0,     # update after each ECP
         )
         if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
             break
