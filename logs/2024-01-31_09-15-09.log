@@ -1,0 +1,24 @@
+2024-01-31 09:15:09,612 - [  INFO] - flags: []
+2024-01-31 09:15:09,612 - [  INFO] - # POSITIONING TEST COMPANION (v1.21)
+2024-01-31 09:15:09,613 - [  INFO] - # What a beautiful day to stick some anti-pigeon spikes into plastic!
+2024-01-31 09:15:09,614 - [  INFO] - # BEGIN POSITIONING TEST FOR A CANDIDATE, ONE SINGLE PHASE (25f132)
+2024-01-31 09:15:09,614 - [  INFO] - # 2024/01/31 - 09:15:09
+2024-01-31 09:15:09,615 - [  INFO] - DATA COLLECTION - TEST - (25f132)
+2024-01-31 09:15:38,299 - [ DEBUG] - |-- phase [INTEGER]:                	|1|
+2024-01-31 09:15:39,555 - [ DEBUG] - |-- phantom id [STRING]:            	|01|
+2024-01-31 09:15:41,924 - [ DEBUG] - |-- name [STRING]:                  	|sofia|
+2024-01-31 09:15:44,637 - [ DEBUG] - |-- surname [STRING]:               	|garruto|
+2024-01-31 09:15:45,859 - [ DEBUG] - |-- gender [M/F]:                   	|f|
+2024-01-31 09:15:46,763 - [ DEBUG] - |-- right-handed [Y/N]:             	|y|
+2024-01-31 09:15:47,871 - [ DEBUG] - |-- age [INTEGER]:                  	|29|
+2024-01-31 09:15:49,719 - [ DEBUG] - |-- medsurg year        [-1 : 6]:   	|-1|
+2024-01-31 09:15:50,651 - [ DEBUG] - |-- specialization year [-1 : 5]:   	|4|
+2024-01-31 09:15:53,295 - [ DEBUG] - |-- surgeon year        [-1 : 100]: 	|-1|
+2024-01-31 09:15:56,102 - [ DEBUG] - |-- exp operation count [INTEGER]:  	|2|
+2024-01-31 09:15:57,846 - [ DEBUG] - |-- glasses [Y/N]:                  	|y|
+2024-01-31 09:15:58,864 - [ DEBUG] - |-- glasses type [None [] / Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: 	|m|
+2024-01-31 09:16:00,793 - [ DEBUG] - |-- glasses power [-1 : 100]:       	|5|
+2024-01-31 09:16:01,845 - [ DEBUG] - |-- exp Virtual Reality   [0 : 5]:  	|1|
+2024-01-31 09:16:03,660 - [ DEBUG] - |-- exp Augmented Reality [0 : 5]:  	|0|
+2024-01-31 09:16:05,129 - [ DEBUG] - |-- exp 3D editors        [0 : 5]:  	|0|
+2024-01-31 09:16:12,878 - [  INFO] - exiting. DATA NOT SAVED!
