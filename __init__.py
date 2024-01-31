@@ -26,10 +26,10 @@ class custom_input:
     def boo(self, prompt) -> bool:
         "accepts yes/no values (case insensitive)"
         user_input = input(prompt).strip().lower()
-        if user_input in ["y", "yes", "1"]:
+        if user_input in ["y", "yes", "1", "true"]:
             logger.debug_input(prompt + "\t|" + user_input + "|")
             return True
-        elif user_input in ["n", "no", "0"]:
+        elif user_input in ["n", "no", "0", "false"]:
             logger.debug_input(prompt + "\t|" + user_input + "|")
             return False
         else:
