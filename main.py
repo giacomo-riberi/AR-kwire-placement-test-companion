@@ -261,6 +261,11 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             PA_number=PA_number,
             success=success,
             PA_D=-1.0, # set after k-wire extraction
+
+            # confidence evaluation
+            confidence_position= ci.flo(" |-- CANDIDATE: confidence on entrance position in mm? [FLOAT]: ", min=0),
+            confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:            ", min=0),
+            estimate_hit=        ci.boo(" |-- CANDIDATE: estimate structures hit [Y/N]?:                 "),
             PA_RPC =ci.int(" |-- RADIATION picture count       [INT]  : ", min=0),
 
             P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ") - 0.8, # -0.8 as it's removing half a diameter of kwire 
@@ -286,6 +291,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2eC=-1.0,
             P2eD=-1.0,
 
+            # computed by unity
             P1A_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
             P1B_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
             P1C_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
@@ -301,9 +307,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2_mean_max=2.0,
             P2_mean=-1.0,
 
-            confidence_position= ci.flo(" |-- CANDIDATE: confidence on entrance position in mm? [FLOAT]: ", min=0),
-            confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:            ", min=0),
-            estimate_hit=        ci.boo(" |-- CANDIDATE: estimate structures hit [Y/N]?:                 "),
+            # ECP info
             target=data.TEST_design[ECP_number-1].ktarget,
             markers=data.TEST_design[ECP_number-1].markers,
             anatomy=data.TEST_design[ECP_number-1].anatomy,
