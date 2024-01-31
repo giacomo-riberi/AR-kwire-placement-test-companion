@@ -146,6 +146,26 @@ def TEST():
     
     TEST_data.comment = ci.str(f"\tTECHNICAL:\t comment on TEST ({id}) [STRING]: ")
 
+    # print input-ready stats for next phase round with same candidate
+    print(textwrap.dedent(f"""
+    {TEST_data.phase}
+    {TEST_data.phantom_id}
+    {TEST_data.name}
+    {TEST_data.surname}
+    {TEST_data.gender}
+    {TEST_data.right_handed}
+    {TEST_data.age}
+    {TEST_data.medicine_surge_year}
+    {TEST_data.specialization_year}
+    {TEST_data.surgeon_year}
+    {TEST_data.exp_operation_count}
+    {TEST_data.glasses}
+    {TEST_data.glasses_type}
+    {TEST_data.glasses_power}
+    {TEST_data.exp_vr}
+    {TEST_data.exp_ar}
+    {TEST_data.exp_3D_editor}"""))
+
     return TEST_data
 
 def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
