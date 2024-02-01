@@ -260,7 +260,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             ECP_number=ECP_number,
             PA_number=PA_number,
             success=success,
-            PA_D=-1.0, # set after k-wire extraction
+            PA_D=-1.0, # set after PA conclusion
 
             # confidence evaluation
             confidence_position= ci.flo(" |-- CANDIDATE: confidence on entrance position in mm? [FLOAT]: ", min=0),
@@ -395,6 +395,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         """))
 
     PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
+    ci.str(f"\tTECHNICAL:\t remove kwire from phanotm [ENTER when done]: ")
 
     logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
     return PA_data
