@@ -1,0 +1,17 @@
+2024-02-01 15:01:27,532 - [  INFO] - flags: []
+2024-02-01 15:01:27,533 - [  INFO] - # POSITIONING TEST COMPANION (v1.21)
+2024-02-01 15:01:27,533 - [  INFO] - # What a beautiful day to stick some anti-pigeon spikes into plastic!
+2024-02-01 15:01:27,535 - [  INFO] - # BEGIN POSITIONING TEST FOR A CANDIDATE, ONE SINGLE PHASE (e25d28)
+2024-02-01 15:01:27,536 - [  INFO] - # 2024/02/01 - 15:01:27
+2024-02-01 15:01:27,536 - [  INFO] - DATA COLLECTION - TEST - (e25d28)
+2024-02-01 15:01:36,904 - [ DEBUG] - |-- phase [INTEGER]:                	|1|
+2024-02-01 15:01:38,465 - [ DEBUG] - |-- phantom id [STRING]:            	|02|
+2024-02-01 15:01:38,465 - [ DEBUG] - |-- name [STRING]:                  	|emily|
+2024-02-01 15:01:38,466 - [ DEBUG] - |-- surname [STRING]:               	|apostolidou|
+2024-02-01 15:01:38,466 - [ DEBUG] - |-- gender [M/F]:                   	|f|
+2024-02-01 15:01:38,467 - [ DEBUG] - |-- right-handed [Y/N]:             	|true|
+2024-02-01 15:01:38,467 - [ DEBUG] - |-- age [INTEGER]:                  	|25|
+2024-02-01 15:01:38,468 - [ DEBUG] - |-- medsurg year        [-1 : 6]:   	|6|
+2024-02-01 15:01:38,469 - [ DEBUG] - |-- specialization year [-1 : 5]:   	|0|
+2024-02-01 15:01:38,470 - [ DEBUG] - |-- surgeon year        [-1 : 100]: 	|0|
+2024-02-01 15:01:45,762 - [  INFO] - exiting. DATA NOT SAVED!

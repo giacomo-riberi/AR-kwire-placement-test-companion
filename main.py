@@ -134,15 +134,15 @@ def TEST():
     
     logger.info(f"DATA COLLECTION - TEST - ({id})")
     TEST_data.realism_xray=       ci.int(" |-- realism xray    [-1 : 5]:            ", -1, 5)
-    TEST_data.realism_ar=         ci.int(" |-- realism AR      [-1 : 5]:            ", -1, 5)
-    TEST_data.realism_phantom=    ci.int(" |-- realism phantom [-1 : 5]:            ", -1, 5)
-
     TEST_data.sim_quality_xray=   ci.int(" |-- simulation quality xray    [-1 : 5]: ", -1, 5)
-    TEST_data.sim_quality_ar=     ci.int(" |-- simulation quality AR      [-1 : 5]: ", -1, 5)
-    TEST_data.sim_quality_phantom=ci.int(" |-- simulation quality phantom [-1 : 5]: ", -1, 5)
-
     TEST_data.comfort_xray=       ci.int(" |-- comfort xray [-1 : 5]:               ", -1, 5)
+
+    TEST_data.realism_ar=         ci.int(" |-- realism AR      [-1 : 5]:            ", -1, 5)
+    TEST_data.sim_quality_ar=     ci.int(" |-- simulation quality AR      [-1 : 5]: ", -1, 5)
     TEST_data.comfort_ar=         ci.int(" |-- comfort ar   [-1 : 5]:               ", -1, 5)
+    
+    TEST_data.realism_phantom=    ci.int(" |-- realism phantom [-1 : 5]:            ", -1, 5)
+    TEST_data.sim_quality_phantom=ci.int(" |-- simulation quality phantom [-1 : 5]: ", -1, 5)
     
     TEST_data.comment = ci.str(f"\tTECHNICAL:\t comment on TEST ({id}) [STRING]: ")
 
@@ -263,9 +263,9 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             PA_D=-1.0, # set after PA conclusion
 
             # confidence evaluation
-            confidence_position= ci.flo(" |-- CANDIDATE: confidence on entrance position in mm? [FLOAT]: ", min=0),
-            confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:            ", min=0),
-            estimate_hit=        ci.boo(" |-- CANDIDATE: estimate structures hit [Y/N]?:                 "),
+            confidence_position= ci.flo(" |-- CANDIDATE: entrance point distance from entrance point target? [FLOAT]: ", min=0),
+            confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:                         ", min=0),
+            estimate_hit=        ci.boo(" |-- CANDIDATE: estimate structures hit [Y/N]?:                              "),
             PA_RPC =ci.int(" |-- RADIATION picture count       [INT]  : ", min=0),
 
             P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ") - 0.8, # -0.8 as it's removing half a diameter of kwire 
@@ -344,7 +344,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
 
         if PA_data.P1_mean > PA_data.P1_mean_max:
             logger.info("\tTECHNICAL:\t ATTENTION: P1 measurement error is above max allowed! Please take measurement again:")
-            PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
+            PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ") # !!! attenzione non ce lo -0.8mm
             PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
             PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
             PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
