@@ -5,7 +5,7 @@ import json
 
 from logger import logger # local
 
-version = "v1.21"
+version = "v1.22"
 db_name = f"./db/positioning_test_data-({version}).db"
 
 class custom_input:
@@ -14,16 +14,16 @@ class custom_input:
     def __init__(self):
         return
     
-    def acc(self, prompt, accepted_values) -> str:
+    def acc(self, prompt: str, accepted_values) -> str:
         "accepts specific values (case insensitive)"
-        user_input = input(prompt).strip().lower()
+        user_input = input(f"{prompt} {accepted_values}: ").strip().lower()
         if user_input in accepted_values:
             logger.debug_input(prompt + "\t|" + user_input + "|")
             return user_input
         else:
             return self.acc(prompt, accepted_values)
 
-    def boo(self, prompt) -> bool:
+    def boo(self, prompt: str) -> bool:
         "accepts yes/no values (case insensitive)"
         user_input = input(prompt).strip().lower()
         if user_input in ["y", "yes", "1", "true"]:
@@ -35,7 +35,7 @@ class custom_input:
         else:
             return self.boo(prompt)
     
-    def int(self, prompt, min=-1000000, max=1000000) -> int:
+    def int(self, prompt: str, min=-1000000, max=1000000) -> int:
         "accepts integers in specified range"
         user_input = input(prompt).strip().lower()
 
@@ -49,21 +49,24 @@ class custom_input:
         except Exception:
             return self.int(prompt, min, max)
     
-    def flo(self, prompt, min=-1000000, max=1000000) -> float: # !!! must accept -1
-        "accepts integers and floats"
+    def flo(self, prompt: str, default: float=None, min: float=-1000000.0, max: float=1000000) -> float:
+        "accepts integers and floats"        
         user_input = input(prompt).strip().lower()
+
+        if user_input == "":
+            user_input = default
 
         try:
             user_float = float(user_input)
             if min <= user_float <= max:
-                logger.debug_input(prompt + "\t|" + user_input + "|")
+                logger.debug_input(prompt + f"{prompt}\t|{user_input}|")
                 return user_float
             else:
                 raise
-        except Exception:
-            return self.flo(prompt, min, max)
+        except Exception as e:
+            return self.flo(prompt, default, min, max)
         
-    def str(self, prompt, minlen=0, maxlen=1000000) -> str:
+    def str(self, prompt: str, minlen=0, maxlen=1000000) -> str:
         "accepts strings, min and max lenght can be specified"
         user_input = input(prompt).strip().lower()
         if minlen <= len(user_input) <= maxlen:

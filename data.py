@@ -242,6 +242,9 @@ class PAdata(data_elaboration):
     ECP_number: int
     PA_number: int
     success: bool
+
+    entered_articulation: int; "kwire entered articulation cavity, manually added after 3d model analysis (-1 means not analyzed)"
+
     PA_D: float
     PA_RPC: int;    "PA radiation picture count"
 
@@ -276,6 +279,7 @@ class PAdata(data_elaboration):
     P2eC_U: float
     P2eD_U: float
 
+    values_from_unity: str
     P1_mean_max: float
     P1_mean:  float
     P2_mean_max: float

@@ -83,7 +83,7 @@ def TEST():
             phantom_id=          ci.str(" |-- phantom id [STRING]:            ", 2),
             name=                ci.str(" |-- name [STRING]:                  "),
             surname=             ci.str(" |-- surname [STRING]:               "),
-            gender=              ci.acc(" |-- gender [M/F]:                   ", ["m", "f"]),
+            gender=              ci.acc(" |-- gender                          ", ["m", "f"]),
             right_handed=        ci.boo(" |-- right-handed [Y/N]:             "),
             age=                 ci.int(" |-- age [INTEGER]:                  ", 0, 99),
             medicine_surge_year= ci.int(" |-- medsurg year        [-1 : 6]:   ", -1, 6),
@@ -92,7 +92,7 @@ def TEST():
             exp_operation_count= ci.int(" |-- exp operation count [INTEGER]:  ", 0, 1000),
             glasses=             ci.boo(" |-- glasses [Y/N]:                  "),
             glasses_type=        ci.acc(" |-- glasses type [None [] / Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: ", ["", "m", "h", "as", "p", "s", "am", "c"]),
-            glasses_power=       ci.flo(" |-- glasses power [-1 : 100]:       ", -1, 100),
+            glasses_power=       ci.flo(" |-- glasses power [-1 : 100]        ", -1, 100),
             exp_vr=              ci.int(" |-- exp Virtual Reality   [0 : 5]:  ", 0, 5),
             exp_ar=              ci.int(" |-- exp Augmented Reality [0 : 5]:  ", 0, 5),
             exp_3D_editor=       ci.int(" |-- exp 3D editors        [0 : 5]:  ", 0, 5),
@@ -229,7 +229,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
 
     # insertion of k-wire
     while True:
-        i = ci.acc("CANDIDATE:\t inserting k-wire... -> checks it and declares it failed [f] or successful [s] (restart timer [r]): ", ["f", "s", "r"])
+        i = ci.acc("CANDIDATE:\t inserting k-wire... -> checks it and declares it Failed or Successful (Restart timer)", ["f", "s", "r"])
         if i.lower() == 'f': # PA FAILED
             logger.info("\t\t \\_candidate has FAILED positioning attempt!")
             success = False
@@ -260,6 +260,9 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             ECP_number=ECP_number,
             PA_number=PA_number,
             success=success,
+
+            entered_articulation=-1, # manually added after 3d model analysis
+
             PA_D=-1.0, # set after PA conclusion
 
             # confidence evaluation
@@ -276,6 +279,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ") - 0.8,
             P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ") - 0.8,
             P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ") - 0.8,
+            values_from_unity= ci.acc(f" |-- P from unity", ["", "1", "2"]),
             
             # computed by fusion
             P1A_F=-1.0,
@@ -342,32 +346,38 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         # receive from fusion 360
         PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ", PA_data.id)
 
-        if PA_data.P1_mean > PA_data.P1_mean_max:
-            logger.info("\tTECHNICAL:\t ATTENTION: P1 measurement error is above max allowed! Please take measurement again:")
-            PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ") # !!! attenzione non ce lo -0.8mm
-            PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
-            PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
-            PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
-        elif PA_data.P2_mean > PA_data.P2_mean_max:
-            logger.info("\tTECHNICAL:\t ATTENTION: P2 measurement error is above max allowed! Please take measurement again:")
-            PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
-            PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
-            PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
-            PA_data.P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
-        elif ci.boo("\tTECHNICAL:\t want to remeasure P1? [Y/N]: "):
-            PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
-            PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
-            PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
-            PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
-        elif ci.boo("\tTECHNICAL:\t want to remeasure P2? [Y/N]: "):
-            PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
-            PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
-            PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
-            PA_data.P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
-        else:
-            # P1 and P2 measurement errors are below max allowed
-            data.fusion360_imports.append(PA_data_str)
-            break
+        if PA_data.P1_mean > PA_data.P1_mean_max or PA_data.P2_mean > PA_data.P2_mean_max:
+            if PA_data.P1_mean > PA_data.P1_mean_max:
+                logger.info("\tTECHNICAL:\t ATTENTION: P1 measurement error is above max allowed! Please remeasure or import from unity")
+                PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
+                PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
+                PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
+                PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
+                PA_data.values_from_unity= ci.acc(f" |-- P from unity", ["", "1"])
+            if PA_data.P2_mean > PA_data.P2_mean_max:
+                logger.info("\tTECHNICAL:\t ATTENTION: P2 measurement error is above max allowed! Please remeasure or import from unity")
+                PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
+                PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
+                PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
+                PA_data.P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
+                PA_data.values_from_unity= ci.acc(f" |-- P from unity", ["", "2"])
+            continue
+        
+        if ci.boo("\tTECHNICAL:\t want to remeasure P1 and/or P2? [Y/N]: "):
+            PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1A)
+            PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1B)
+            PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1C)
+            PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1D)
+            PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2A)
+            PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2B)
+            PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2C)
+            PA_data.P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2D)
+            PA_data.values_from_unity= ci.acc(f" |-- P from unity", ["", "1", "2"])
+            continue
+
+        # P1 and P2 measurement errors are below max allowed
+        data.fusion360_imports.append(PA_data_str)
+        break
     
     # k-wire extraction of PA is not counted in PA_D
     PA_data.PA_D = chrono.reset()
