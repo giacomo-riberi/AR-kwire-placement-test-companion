@@ -83,3 +83,35 @@ def db_save():
     conn.commit()
     conn.close()
     logger.info("SAVED ON DATABASE!")
+
+
+def db_update():
+    try:
+        conn = sqlite3.connect(db_name) 
+        cursor = conn.cursor()
+        
+        PA_data = data.PAdata(**json.loads(input(f"ATTENTION! TECHNICAL - enter data from fusion 360 to update PA db entry: ")))
+        if not PA_data.fusion_computed:
+            raise("data not computed by fusion")
+        
+        cursor.execute(PA_data.db_update_table("PA", PA_data.id))
+    
+    except sqlite3.Error as e:
+        logger.error(f"-------------------")
+        logger.error(f"SQLite traceback  : " + " - ".join([str(x).strip() for x in sys.exc_info()]))
+        logger.error(f"SQLite error line : " + str(e.__traceback__.tb_lineno))
+        logger.error(f"SQLite error      : " + str(e))
+        logger.critical(f"\nexiting. DATA NOT UPDATED!")
+        sys.exit()
+    
+    except Exception as e:
+        logger.error(f"-------------------")
+        logger.error(f"{e}")
+        logger.critical(f"\nexiting. DATA NOT UPDATED!")
+    
+    conn.commit()
+    conn.close()
+    logger.info(f"UPDATED DATABASE PA entry {PA_data.id}!")
+
+
+db_update()

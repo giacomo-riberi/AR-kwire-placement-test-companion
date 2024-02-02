@@ -153,7 +153,40 @@ class data_elaboration:
                 dbvals.extend(v.values())
             else:
                 logger.critical(f"db_create_table: unsupported value type: {type(v)} {k} {v}")
-        return f"INSERT INTO {table} (" + ", ".join(dbkeys) + f") VALUES ({','.join(['?'] * len(dbkeys))})", tuple(dbvals)
+        return f"INSERT INTO {table} ({', '.join(dbkeys)}) VALUES ({','.join(['?'] * len(dbkeys))})", tuple(dbvals)
+    
+    def db_update_table(self, table, id) -> str:
+        dbkeys: list[str] = []
+        dbvals: list[any] = []
+        for k, v in vars(self).items():
+            if k == "id":
+                dbkeys.append(f"`{k}`")
+                dbvals.append(v)
+            elif k == "time_init":
+                dbkeys.append(f"`{k}`")
+                dbvals.append(f"{datetime.fromtimestamp(round(v, 0))}")
+            elif type(v) == int:
+                dbkeys.append(f"`{k}`")
+                dbvals.append(v)
+            elif type(v) == float:
+                dbkeys.append(f"`{k}`")
+                dbvals.append(v)
+            elif type(v) == bool:
+                dbkeys.append(f"`{k}`")
+                dbvals.append(1 if v else 0)
+            elif type(v) == str:
+                dbkeys.append(f"`{k}`")
+                dbvals.append(v)
+            elif type(v) == list:
+                dbkeys.append(f"`{k}`")
+                dbvals.append(";".join(v))
+            elif type(v) == dict:
+                dbkeys.extend([f"`{kk}`" for kk in v.keys()])
+                dbvals.extend(v.values())
+            else:
+                logger.critical(f"db_create_table: unsupported value type: {type(v)} {k} {v}")
+
+        return f"UPDATE {table} SET {', '.join([f"{key} = '{value}'" for key, value in zip(dbkeys, dbvals)])} WHERE id = '{id}';"
 
 @dataclass
 class TESTdata(data_elaboration):
