@@ -26,8 +26,10 @@ def checkargv():
         data.ECPs_toinsert.append(data.ECPdata(datatype="--testdb"))
         data.PAs_toinsert.append(data.PAdata(datatype="--testdb"))
 
-        db.db_save()
+        db.db_save_all()
         print(f"now check database and delete \"--testdb\" datatype entries")
+    elif "--upddb" in sys.argv:
+        db.db_update()
     else:
         print(f"unknown flags")
     quit()
@@ -46,7 +48,7 @@ def main():
     data.TEST_toinsert = TEST()
 
     # save on db at the end
-    db.db_save()
+    db.db_save_all()
 
     # save on fusion360 to import data
     with open("logs/fusion360_imports.log", "a") as f:

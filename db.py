@@ -6,11 +6,7 @@ from logger import logger
 from __init__ import *
 import data
 
-def db_newid(id_bytes):
-    "newid generates a new id string not present on database of specified byte lenght"
-
-    new_id = secrets.token_hex(id_bytes)
-
+def db_idexist(id) -> bool:
     # check new_id against database, if exist
     if os.path.exists(db_name):
         connection = sqlite3.connect(db_name)
@@ -19,13 +15,25 @@ def db_newid(id_bytes):
         tables = cursor.fetchall()
         for table in tables:
             table_name = table[0]
-            cursor.execute(f"SELECT COUNT(*) FROM {table_name} WHERE id = ?", (new_id,))
+            cursor.execute(f"SELECT COUNT(*) FROM {table_name} WHERE id = ?", (id,))
             count = cursor.fetchone()[0]
             if count > 0:
-                new_id = db_newid(id_bytes)
+                return True
         connection.close()
+    return False
+
+def db_newid(id_bytes):
+    "newid generates a new id string not present on database of specified byte lenght"
+
+    # check new_id against database
+    new_id = secrets.token_hex(id_bytes)
+    while db_idexist(new_id):
+        new_id = db_newid(id_bytes)
     
-    # check new_id against ECP and PA runtime variables
+    # check new_id against TEXT, ECP and PA runtime variables
+    if data.TEST_toinsert.id == new_id:
+        new_id = db_newid(id_bytes)
+
     for ECP in data.ECPs_toinsert:
         if ECP.id == new_id:
             new_id = db_newid(id_bytes)
@@ -37,7 +45,7 @@ def db_newid(id_bytes):
     return new_id
 
 
-def db_save():
+def db_save_all():
     "save_db saves data on database"
 
     if len(data.ECPs_toinsert) <= 0 or len(data.PAs_toinsert) <= 0:
@@ -92,7 +100,10 @@ def db_update():
         
         PA_data = data.PAdata(**json.loads(input(f"ATTENTION! TECHNICAL - enter data from fusion 360 to update PA db entry: ")))
         if not PA_data.fusion_computed:
-            raise("data not computed by fusion")
+            raise Exception("data not computed by fusion")
+        
+        if not db_idexist(PA_data.id):
+            raise Exception("id does NOT exist on database")
         
         cursor.execute(PA_data.db_update_table("PA", PA_data.id))
     
@@ -112,6 +123,3 @@ def db_update():
     conn.commit()
     conn.close()
     logger.info(f"UPDATED DATABASE PA entry {PA_data.id}!")
-
-
-db_update()
