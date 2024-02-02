@@ -203,6 +203,9 @@ class TESTdata(data_elaboration):
     time_init: float
     phase: str
     phantom_id: str
+    country: str
+    city: str
+    institute: str
     name: str
     surname: str
     gender: str

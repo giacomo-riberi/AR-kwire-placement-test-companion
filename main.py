@@ -15,25 +15,6 @@ import data
 
 ci = custom_input()
 
-def checkargv():
-    logger.info(f"flags: {sys.argv[1:]}")
-
-    if len(sys.argv) <= 1:
-        return
-        
-    if "--testdb" in sys.argv:
-        data.TEST_toinsert = data.TESTdata(datatype="--testdb")
-        data.ECPs_toinsert.append(data.ECPdata(datatype="--testdb"))
-        data.PAs_toinsert.append(data.PAdata(datatype="--testdb"))
-
-        db.db_save_all()
-        print(f"now check database and delete \"--testdb\" datatype entries")
-    elif "--upddb" in sys.argv:
-        db.db_update()
-    else:
-        print(f"unknown flags")
-    quit()
-
 def main():
     checkargv()
 
@@ -64,6 +45,25 @@ def main():
 
     logger.info("bye!")
 
+def checkargv():
+    logger.info(f"flags: {sys.argv[1:]}")
+
+    if len(sys.argv) <= 1:
+        return
+        
+    if "--testdb" in sys.argv:
+        data.TEST_toinsert = data.TESTdata(datatype="--testdb")
+        data.ECPs_toinsert.append(data.ECPdata(datatype="--testdb"))
+        data.PAs_toinsert.append(data.PAdata(datatype="--testdb"))
+
+        db.db_save_all()
+        print(f"now check database and delete \"--testdb\" datatype entries")
+    elif "--upddb" in sys.argv:
+        db.db_update()
+    else:
+        print(f"unknown flags")
+    quit()
+
 def TEST():
     "TEST performs 3 ECPs with multiple PA"
 
@@ -83,6 +83,9 @@ def TEST():
             time_init=time.time(),
             phase=               ci.int(" |-- phase [INTEGER]:                ", 0, 9),
             phantom_id=          ci.str(" |-- phantom id [STRING]:            ", 2),
+            country=             ci.str(" |-- country    [STRING]:            "),
+            city=                ci.str(" |-- city       [STRING]:            "),
+            institute=           ci.str(" |-- institute  [STRING]:            "),
             name=                ci.str(" |-- name [STRING]:                  "),
             surname=             ci.str(" |-- surname [STRING]:               "),
             gender=              ci.acc(" |-- gender                          ", ["m", "f"]),
