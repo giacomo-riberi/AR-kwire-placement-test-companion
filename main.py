@@ -26,7 +26,7 @@ def main():
     logger.info(f"# POSITIONING TEST COMPANION ({version})")
     logger.info(f"# What a beautiful day to stick some anti-pigeon spikes into plastic!\n")
 
-    data.TEST_toinsert = TEST()
+    data.PHASE_toinsert = phase()
 
     # save on db at the end
     db.db_save_all()
@@ -52,7 +52,7 @@ def checkargv():
         return
         
     if "--testdb" in sys.argv:
-        data.TEST_toinsert = data.TESTdata(datatype="--testdb")
+        data.PHASE_toinsert = data.PHASEdata(datatype="--testdb")
         data.ECPs_toinsert.append(data.ECPdata(datatype="--testdb"))
         data.PAs_toinsert.append(data.PAdata(datatype="--testdb"))
 
@@ -64,7 +64,7 @@ def checkargv():
         print(f"unknown flags")
     quit()
 
-def TEST():
+def phase():
     "TEST performs 3 ECPs with multiple PA"
 
     id = db.db_newid(3)
@@ -74,12 +74,12 @@ def TEST():
 
     logger.info(f"DATA COLLECTION - TEST - ({id})")
     while True:
-        TEST_data = data.TESTdata(
+        PHASE_data = data.PHASEdata(
             id=id,
             ECP_ids=[],          # to update
             PA_ids=[],           # to update
             comment="",
-            datatype="TEST",
+            datatype="PHASE",
             time_init=time.time(),
             phase=               ci.int(" |-- phase [INTEGER]:                ", 0, 9),
             phantom_id=          ci.str(" |-- phantom id [STRING]:            ", 2),
@@ -113,67 +113,67 @@ def TEST():
             comfort_xray=       -1.0,   # update post test
             comfort_ar=         -1.0,   # update post test
 
-            TEST_D=             0,   # update after each ECP
-            TEST_RPC=           0,     # update after each ECP
-            TEST_PAC=           0,     # update after each ECP
-            TEST_PACF=          0,     # update after each ECP
-            TEST_ECPC=          0,     # update after each ECP
+            PHASE_D=             0,   # update after each ECP
+            PHASE_RPC=           0,     # update after each ECP
+            PHASE_PAC=           0,     # update after each ECP
+            PHASE_PACF=          0,     # update after each ECP
+            PHASE_ECPC=          0,     # update after each ECP
         )
         if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
             break
 
-    for ECP_number in range(1, len(data.TEST_design)+1):
-        ECP_data = ECP(TEST_data.phase, TEST_data.id, ECP_number)
+    for ECP_number in range(1, len(data.PHASE_design)+1):
+        ECP_data = ECP(PHASE_data.phase, PHASE_data.id, ECP_number)
 
         # add ECP_data to ECPs
         data.ECPs_toinsert.append(ECP_data)
 
         # update test_data
-        TEST_data.TEST_D    += ECP_data.ECP_D
-        TEST_data.TEST_RPC  += ECP_data.ECP_RPC
-        TEST_data.TEST_PAC  += ECP_data.ECP_PAC
-        TEST_data.TEST_PACF += ECP_data.ECP_PACF
-        TEST_data.TEST_ECPC  = ECP_number
-        TEST_data.ECP_ids.append(ECP_data.id)
-        TEST_data.PA_ids.extend(ECP_data.PA_ids)
+        PHASE_data.PHASE_D    += ECP_data.ECP_D
+        PHASE_data.PHASE_RPC  += ECP_data.ECP_RPC
+        PHASE_data.PHASE_PAC  += ECP_data.ECP_PAC
+        PHASE_data.PHASE_PACF += ECP_data.ECP_PACF
+        PHASE_data.PHASE_ECPC  = ECP_number
+        PHASE_data.ECP_ids.append(ECP_data.id)
+        PHASE_data.PA_ids.extend(ECP_data.PA_ids)
     
     logger.info(f"DATA COLLECTION - TEST - ({id})")
-    TEST_data.realism_xray=       ci.int(" |-- realism xray    [-1 : 5]:            ", -1, 5)
-    TEST_data.sim_quality_xray=   ci.int(" |-- simulation quality xray    [-1 : 5]: ", -1, 5)
-    TEST_data.comfort_xray=       ci.int(" |-- comfort xray [-1 : 5]:               ", -1, 5)
+    PHASE_data.realism_xray=       ci.int(" |-- realism xray    [-1 : 5]:            ", -1, 5)
+    PHASE_data.sim_quality_xray=   ci.int(" |-- simulation quality xray    [-1 : 5]: ", -1, 5)
+    PHASE_data.comfort_xray=       ci.int(" |-- comfort xray [-1 : 5]:               ", -1, 5)
 
-    TEST_data.realism_ar=         ci.int(" |-- realism AR      [-1 : 5]:            ", -1, 5)
-    TEST_data.sim_quality_ar=     ci.int(" |-- simulation quality AR      [-1 : 5]: ", -1, 5)
-    TEST_data.comfort_ar=         ci.int(" |-- comfort ar   [-1 : 5]:               ", -1, 5)
+    PHASE_data.realism_ar=         ci.int(" |-- realism AR      [-1 : 5]:            ", -1, 5)
+    PHASE_data.sim_quality_ar=     ci.int(" |-- simulation quality AR      [-1 : 5]: ", -1, 5)
+    PHASE_data.comfort_ar=         ci.int(" |-- comfort ar   [-1 : 5]:               ", -1, 5)
     
-    TEST_data.realism_phantom=    ci.int(" |-- realism phantom [-1 : 5]:            ", -1, 5)
-    TEST_data.sim_quality_phantom=ci.int(" |-- simulation quality phantom [-1 : 5]: ", -1, 5)
+    PHASE_data.realism_phantom=    ci.int(" |-- realism phantom [-1 : 5]:            ", -1, 5)
+    PHASE_data.sim_quality_phantom=ci.int(" |-- simulation quality phantom [-1 : 5]: ", -1, 5)
     
-    TEST_data.comment = ci.str(f"\tTECHNICAL:\t comment on TEST ({id}) [STRING]: ")
+    PHASE_data.comment = ci.str(f"\tTECHNICAL:\t comment on TEST ({id}) [STRING]: ")
 
     # print input-ready stats for next phase round with same candidate
     print(textwrap.dedent(f"""
-    {TEST_data.phase}
-    {TEST_data.phantom_id}
-    {TEST_data.name}
-    {TEST_data.surname}
-    {TEST_data.gender}
-    {TEST_data.right_handed}
-    {TEST_data.age}
-    {TEST_data.medicine_surge_year}
-    {TEST_data.specialization_year}
-    {TEST_data.surgeon_year}
-    {TEST_data.exp_operation_count}
-    {TEST_data.glasses}
-    {TEST_data.glasses_type}
-    {TEST_data.glasses_power}
-    {TEST_data.exp_vr}
-    {TEST_data.exp_ar}
-    {TEST_data.exp_3D_editor}"""))
+    {PHASE_data.phase}
+    {PHASE_data.phantom_id}
+    {PHASE_data.name}
+    {PHASE_data.surname}
+    {PHASE_data.gender}
+    {PHASE_data.right_handed}
+    {PHASE_data.age}
+    {PHASE_data.medicine_surge_year}
+    {PHASE_data.specialization_year}
+    {PHASE_data.surgeon_year}
+    {PHASE_data.exp_operation_count}
+    {PHASE_data.glasses}
+    {PHASE_data.glasses_type}
+    {PHASE_data.glasses_power}
+    {PHASE_data.exp_vr}
+    {PHASE_data.exp_ar}
+    {PHASE_data.exp_3D_editor}"""))
 
-    return TEST_data
+    return PHASE_data
 
-def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
+def ECP(phase, PHASE_id, ECP_number) -> data.ECPdata:
     "ECP performs single ECP with multiple PA"
 
     id = db.db_newid(4)
@@ -181,7 +181,7 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
     logger.info(f"ECP{ECP_number} START! ({id})")
 
     ECP_data = data.ECPdata(
-        TEST_id=TEST_id,
+        PHASE_id=PHASE_id,
         PA_ids=[],       # update for each PA
         id=id,
         datatype="ECP",
@@ -198,7 +198,7 @@ def ECP(phase, TEST_id, ECP_number) -> data.ECPdata:
     PA_number = 0
     while True:
         PA_number += 1
-        PA_data = PA(phase, TEST_id, ECP_number, ECP_data.id, PA_number)
+        PA_data = PA(phase, PHASE_id, ECP_number, ECP_data.id, PA_number)
 
         # add PA_data to PAs
         data.PAs_toinsert.append(PA_data)
@@ -255,7 +255,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     # cycle until all PA data input is correct
     while True:
         PA_data = data.PAdata(
-            TEST_id=test_id,
+            PHASE_id=test_id,
             ECP_id=ECP_id,
             id=id,
             comment="",
@@ -277,14 +277,14 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             PA_RPC =ci.int(" |-- RADIATION picture count [INT] : ", min=0),
             
             values_from_unity= ci.acc(f" |-- P from unity", ["", "1", "2", "12"]),
-            P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: "),
-            P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: "),
-            P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: "),
-            P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: "),
-            P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: "),
-            P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: "),
-            P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: "),
-            P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: "),
+            P1A=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['A']} [FLOAT]: "),
+            P1B=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['B']} [FLOAT]: "),
+            P1C=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['C']} [FLOAT]: "),
+            P1D=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['D']} [FLOAT]: "),
+            P2A=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['A']} [FLOAT]: "),
+            P2B=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['B']} [FLOAT]: "),
+            P2C=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['C']} [FLOAT]: "),
+            P2D=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['D']} [FLOAT]: "),
             
             # computed by fusion
             P1A_F=-1.0,
@@ -301,14 +301,14 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2eD=-1.0,
 
             # computed by unity
-            P1A_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
-            P1B_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
-            P1C_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
-            P1D_U=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
-            P2eA_U=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
-            P2eB_U=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
-            P2eC_U=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
-            P2eD_U=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
+            P1A_U=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
+            P1B_U=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
+            P1C_U=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
+            P1D_U=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
+            P2eA_U=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
+            P2eB_U=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
+            P2eC_U=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
+            P2eD_U=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
             
             # computed by fusion
             P1_mean_max=1.0,
@@ -317,9 +317,9 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2_mean=-1.0,
 
             # ECP info
-            target=data.TEST_design[ECP_number-1].ktarget,
-            markers=data.TEST_design[ECP_number-1].markers,
-            anatomy=data.TEST_design[ECP_number-1].anatomy,
+            target=data.PHASE_design[ECP_number-1].ktarget,
+            markers=data.PHASE_design[ECP_number-1].markers,
+            anatomy=data.PHASE_design[ECP_number-1].anatomy,
 
             # computed by fusion
             fusion_computed=False,
@@ -353,14 +353,14 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
 
         def measurePmarkers():
             PA_data.values_from_unity= ci.acc(f" |-- P from unity", ["", "1", "2", "12"])
-            PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1A)
-            PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1B)
-            PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1C)
-            PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1D)
-            PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2A)
-            PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2B)
-            PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2C)
-            PA_data.P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2D)
+            PA_data.P1A=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['A']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1A)
+            PA_data.P1B=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['B']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1B)
+            PA_data.P1C=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['C']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1C)
+            PA_data.P1D=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['D']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1D)
+            PA_data.P2A=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['A']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2A)
+            PA_data.P2B=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['B']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2B)
+            PA_data.P2C=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['C']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2C)
+            PA_data.P2D=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['D']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2D)
 
         if PA_data.P1_mean > PA_data.P1_mean_max or PA_data.P2_mean > PA_data.P2_mean_max:
             if PA_data.P1_mean > PA_data.P1_mean_max:

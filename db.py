@@ -31,7 +31,7 @@ def db_newid(id_bytes):
         new_id = db_newid(id_bytes)
     
     # check new_id against TEXT, ECP and PA runtime variables
-    if data.TEST_toinsert.id == new_id:
+    if data.PHASE_toinsert.id == new_id:
         new_id = db_newid(id_bytes)
 
     for ECP in data.ECPs_toinsert:
@@ -57,7 +57,7 @@ def db_save_all():
         cursor = conn.cursor() # Create a cursor object to interact with the database
 
         # create TEST table
-        cursor.execute(data.TEST_toinsert.db_create_table("TEST"))
+        cursor.execute(data.PHASE_toinsert.db_create_table("TEST"))
 
         # create ECP table
         cursor.execute(data.ECPs_toinsert[0].db_create_table("ECP"))
@@ -69,8 +69,8 @@ def db_save_all():
     
         ### DON'T COMMIT UNTIL ALL INSERTIONS ARE DONE! ###
 
-        # insert TEST_data into database
-        cursor.execute(*data.TEST_toinsert.db_insert_table("TEST"))
+        # insert PHASE_data into database
+        cursor.execute(*data.PHASE_toinsert.db_insert_table("TEST"))
         
         # insert ECPs into database
         for ECP_data in data.ECPs_toinsert:

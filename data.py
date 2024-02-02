@@ -48,7 +48,7 @@ anatomy_eval: dict[str, str] = {
     "ulnar nerve": -1.0,
 }
 
-TEST_design: list[ECP_design] = [
+PHASE_design: list[ECP_design] = [
     ECP_design("ECP:1",
                {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
                anatomy_eval),
@@ -79,9 +79,9 @@ class data_elaboration:
         elif field.type == list[str]:
             return [''.join(random.choices('abcdefghijklmnopqrstuvwxyz ', k=5)) for _ in range(3)]
         elif field.type == dict[str, str]:
-            return random.choice(TEST_design).markers
+            return random.choice(PHASE_design).markers
         elif field.type == dict[str, float]:
-            return random.choice(TEST_design).anatomy
+            return random.choice(PHASE_design).anatomy
         else:
             logger.critical(f"generate_random_value: unsupported value type: {field.type}")
 
@@ -109,7 +109,7 @@ class data_elaboration:
                 s.append(f"`{k}` TEXT")
             elif type(v) == dict:
                 if k == "anatomy":
-                    for ECP_design in TEST_design:
+                    for ECP_design in PHASE_design:
                         for kk, vv in ECP_design.anatomy.items():
                             s.append(f"`{kk}` REAL")
                 elif k == "markers":
@@ -189,7 +189,7 @@ class data_elaboration:
         return f"UPDATE {table} SET {', '.join([f"{key} = '{value}'" for key, value in zip(dbkeys, dbvals)])} WHERE id = '{id}';"
 
 @dataclass
-class TESTdata(data_elaboration):
+class PHASEdata(data_elaboration):
     "test data"
 
     def __init__(self, **kwargs):
@@ -235,11 +235,11 @@ class TESTdata(data_elaboration):
     comfort_xray: int
     comfort_ar: int
 
-    TEST_D: float
-    TEST_RPC: int; "TEST radiation picture count"
-    TEST_PAC: int
-    TEST_PACF: int
-    TEST_ECPC: int
+    PHASE_D: float
+    PHASE_RPC: int; "TEST radiation picture count"
+    PHASE_PAC: int
+    PHASE_PACF: int
+    PHASE_ECPC: int
 
 @dataclass
 class ECPdata(data_elaboration):
@@ -249,7 +249,7 @@ class ECPdata(data_elaboration):
         super().__init__(**kwargs)
     
     datatype: str
-    TEST_id: str
+    PHASE_id: str
     id: str
     PA_ids: list[str]
     time_init: float
@@ -269,7 +269,7 @@ class PAdata(data_elaboration):
         super().__init__(**kwargs)
 
     datatype: str
-    TEST_id: str
+    PHASE_id: str
     ECP_id: str
     id: str
     comment: str; "used to mark data on database for later technical analysis"
@@ -347,7 +347,7 @@ class PAdata(data_elaboration):
     
     delta_id_PA_target: float; "delta insertion depth"
 
-TEST_toinsert:     TESTdata      = None
+PHASE_toinsert:    PHASEdata     = None
 ECPs_toinsert:     list[ECPdata] = []
 PAs_toinsert:      list[PAdata]  = []
 fusion360_imports: list[str]     = []
