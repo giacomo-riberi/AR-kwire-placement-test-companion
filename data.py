@@ -236,7 +236,7 @@ class PHASEdata(data_elaboration):
     comfort_ar: int
 
     PHASE_D: float
-    PHASE_RPC: int; "TEST radiation picture count"
+    PHASE_RPC: int; "PHASE radiation picture count"
     PHASE_PAC: int
     PHASE_PACF: int
     PHASE_ECPC: int

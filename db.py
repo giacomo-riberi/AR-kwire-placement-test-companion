@@ -56,8 +56,8 @@ def db_save_all():
         conn = sqlite3.connect(db_name) # Create a connection to the SQLite database (or create it if it doesn't exist)
         cursor = conn.cursor() # Create a cursor object to interact with the database
 
-        # create TEST table
-        cursor.execute(data.PHASE_toinsert.db_create_table("TEST"))
+        # create PHASE table
+        cursor.execute(data.PHASE_toinsert.db_create_table("PHASE"))
 
         # create ECP table
         cursor.execute(data.ECPs_toinsert[0].db_create_table("ECP"))
@@ -70,7 +70,7 @@ def db_save_all():
         ### DON'T COMMIT UNTIL ALL INSERTIONS ARE DONE! ###
 
         # insert PHASE_data into database
-        cursor.execute(*data.PHASE_toinsert.db_insert_table("TEST"))
+        cursor.execute(*data.PHASE_toinsert.db_insert_table("PHASE"))
         
         # insert ECPs into database
         for ECP_data in data.ECPs_toinsert:

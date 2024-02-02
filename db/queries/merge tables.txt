@@ -1,6 +1,6 @@
 -- database: c:\Users\giaco\Desktop\giacomo\scuola\università\medicine and surgery\6YEAR\_tesi\software\AR kwire placement test companion\positioning_test_data-(v1.19).db
 
--- merge tables TEST and PA
-SELECT TEST.*, PA.*
-FROM TEST
-LEFT JOIN PA ON TEST.id = PA.PHASE_id;
+-- merge tables PHASE and PA
+SELECT PHASE.*, PA.*
+FROM PHASE
+LEFT JOIN PA ON PHASE.id = PA.PHASE_id;

@@ -23,7 +23,7 @@ def main():
         exit(0)
     signal.signal(signal.SIGINT, handler)
 
-    logger.info(f"# POSITIONING TEST COMPANION ({version})")
+    logger.info(f"# POSITIONING PHASE COMPANION ({version})")
     logger.info(f"# What a beautiful day to stick some anti-pigeon spikes into plastic!\n")
 
     data.PHASE_toinsert = phase()
@@ -65,14 +65,14 @@ def checkargv():
     quit()
 
 def phase():
-    "TEST performs 3 ECPs with multiple PA"
+    "PHASE performs 3 ECPs with multiple PA"
 
     id = db.db_newid(3)
 
-    logger.info(f"# BEGIN POSITIONING TEST FOR A CANDIDATE, ONE SINGLE PHASE ({id})")
+    logger.info(f"# BEGIN POSITIONING PHASE FOR A CANDIDATE, ONE SINGLE PHASE ({id})")
     logger.info(f"# {datetime.now().strftime('%Y/%m/%d - %H:%M:%S')}")
 
-    logger.info(f"DATA COLLECTION - TEST - ({id})")
+    logger.info(f"DATA COLLECTION - PHASE - ({id})")
     while True:
         PHASE_data = data.PHASEdata(
             id=id,
@@ -137,7 +137,7 @@ def phase():
         PHASE_data.ECP_ids.append(ECP_data.id)
         PHASE_data.PA_ids.extend(ECP_data.PA_ids)
     
-    logger.info(f"DATA COLLECTION - TEST - ({id})")
+    logger.info(f"DATA COLLECTION - PHASE - ({id})")
     PHASE_data.realism_xray=       ci.int(" |-- realism xray    [-1 : 5]:            ", -1, 5)
     PHASE_data.sim_quality_xray=   ci.int(" |-- simulation quality xray    [-1 : 5]: ", -1, 5)
     PHASE_data.comfort_xray=       ci.int(" |-- comfort xray [-1 : 5]:               ", -1, 5)
@@ -149,7 +149,7 @@ def phase():
     PHASE_data.realism_phantom=    ci.int(" |-- realism phantom [-1 : 5]:            ", -1, 5)
     PHASE_data.sim_quality_phantom=ci.int(" |-- simulation quality phantom [-1 : 5]: ", -1, 5)
     
-    PHASE_data.comment = ci.str(f"\tTECHNICAL:\t comment on TEST ({id}) [STRING]: ")
+    PHASE_data.comment = ci.str(f"\tTECHNICAL:\t comment on PHASE ({id}) [STRING]: ")
 
     # print input-ready stats for next phase round with same candidate
     print(textwrap.dedent(f"""
