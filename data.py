@@ -201,7 +201,7 @@ class PHASEdata(data_elaboration):
     PA_ids: list[str]
     comment: str; "used to mark data on database for later technical analysis"
     time_init: float
-    phase: str
+    phase: int
     phantom_id: str
     country: str
     city: str
@@ -254,7 +254,7 @@ class ECPdata(data_elaboration):
     PA_ids: list[str]
     time_init: float
     ease_of_placement: int
-    phase: str
+    phase: int
     ECP_number: int
     ECP_D: float; "ECP duration"
     ECP_RPC: int; "ECP radiation picture count"
