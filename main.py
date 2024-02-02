@@ -369,12 +369,18 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             continue
 
         # P1 and P2 measurement errors are below max allowed
-        data.fusion360_imports.append(PA_data_str)
         break
     
     # k-wire extraction of PA is not counted in PA_D
     PA_data.PA_D = chrono.reset()
 
+    PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
+    ci.str(f"\tTECHNICAL:\t remove kwire from phanotm [ENTER when done]: ")
+
+    logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
+
+    # log to file
+    data.fusion360_imports.append(PA_data_str)
     data.companion_imports.append(textwrap.dedent(f"""
         ###### PA{ECP_number}.{PA_number} - ({id}) ######
         {PA_data.P1A}
@@ -395,11 +401,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         {PA_data.P2eC_U}
         {PA_data.P2eD_U}
         """))
-
-    PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
-    ci.str(f"\tTECHNICAL:\t remove kwire from phanotm [ENTER when done]: ")
-
-    logger.info(f"PA{ECP_number}.{PA_number} FINISHED!")
+    
     return PA_data
     
 if __name__ == "__main__":
