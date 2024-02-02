@@ -269,17 +269,17 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             confidence_position= ci.flo(" |-- CANDIDATE: entrance point distance from entrance point target? [FLOAT]: ", min=0),
             confidence_angle=    ci.flo(" |-- CANDIDATE: confidence on angle in deg? [FLOAT]:                         ", min=0),
             estimate_hit=        ci.boo(" |-- CANDIDATE: estimate structures hit [Y/N]?:                              "),
-            PA_RPC =ci.int(" |-- RADIATION picture count       [INT]  : ", min=0),
-
-            P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ") - 0.8, # -0.8 as it's removing half a diameter of kwire 
-            P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ") - 0.8,
-            P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ") - 0.8,
-            P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ") - 0.8,
-            P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ") - 0.8,
-            P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ") - 0.8,
-            P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ") - 0.8,
-            P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ") - 0.8,
-            values_from_unity= ci.acc(f" |-- P from unity", ["", "1", "2"]),
+            PA_RPC =ci.int(" |-- RADIATION picture count [INT] : ", min=0),
+            
+            values_from_unity= ci.acc(f" |-- P from unity", ["", "1", "2", "12"]),
+            P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: "),
+            P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: "),
+            P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: "),
+            P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: "),
+            P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: "),
+            P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: "),
+            P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: "),
+            P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: "),
             
             # computed by fusion
             P1A_F=-1.0,
@@ -346,24 +346,8 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
         # receive from fusion 360
         PA_data = ci.PAdata_computed(f"PERFORM:\t enter data from fusion 360: ", PA_data.id)
 
-        if PA_data.P1_mean > PA_data.P1_mean_max or PA_data.P2_mean > PA_data.P2_mean_max:
-            if PA_data.P1_mean > PA_data.P1_mean_max:
-                logger.info("\tTECHNICAL:\t ATTENTION: P1 measurement error is above max allowed! Please remeasure or import from unity")
-                PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
-                PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
-                PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
-                PA_data.P1D=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
-                PA_data.values_from_unity= ci.acc(f" |-- P from unity", ["", "1"])
-            if PA_data.P2_mean > PA_data.P2_mean_max:
-                logger.info("\tTECHNICAL:\t ATTENTION: P2 measurement error is above max allowed! Please remeasure or import from unity")
-                PA_data.P2A=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['A']} [FLOAT]: ")
-                PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT]: ")
-                PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT]: ")
-                PA_data.P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT]: ")
-                PA_data.values_from_unity= ci.acc(f" |-- P from unity", ["", "2"])
-            continue
-        
-        if ci.boo("\tTECHNICAL:\t want to remeasure P1 and/or P2? [Y/N]: "):
+        def measurePmarkers():
+            PA_data.values_from_unity= ci.acc(f" |-- P from unity", ["", "1", "2", "12"])
             PA_data.P1A=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['A']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1A)
             PA_data.P1B=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['B']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1B)
             PA_data.P1C=ci.flo(f" |-- P1{data.TEST_design[ECP_number-1].markers['C']} [FLOAT, EMPTY for old value]: ", default=PA_data.P1C)
@@ -372,7 +356,16 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             PA_data.P2B=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['B']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2B)
             PA_data.P2C=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['C']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2C)
             PA_data.P2D=ci.flo(f" |-- P2{data.TEST_design[ECP_number-1].markers['D']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2D)
-            PA_data.values_from_unity= ci.acc(f" |-- P from unity", ["", "1", "2"])
+
+        if PA_data.P1_mean > PA_data.P1_mean_max or PA_data.P2_mean > PA_data.P2_mean_max:
+            if PA_data.P1_mean > PA_data.P1_mean_max:
+                logger.info("\tTECHNICAL:\t ATTENTION: P1 measurement error is above max allowed! Please remeasure or import from unity")
+            if PA_data.P2_mean > PA_data.P2_mean_max:
+                logger.info("\tTECHNICAL:\t ATTENTION: P2 measurement error is above max allowed! Please remeasure or import from unity")
+            measurePmarkers()
+            continue
+        elif ci.boo("\tTECHNICAL:\t want to remeasure P1 and/or P2? [Y/N]: "):
+            measurePmarkers()
             continue
 
         # P1 and P2 measurement errors are below max allowed
@@ -384,15 +377,14 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
 
     data.companion_imports.append(textwrap.dedent(f"""
         ###### PA{ECP_number}.{PA_number} - ({id}) ######
-        // following 8 values have already +0.8 inside (ready to paste in companion)
-        {PA_data.P1A+0.8}
-        {PA_data.P1B+0.8}
-        {PA_data.P1C+0.8}
-        {PA_data.P1D+0.8}
-        {PA_data.P2A+0.8}
-        {PA_data.P2B+0.8}
-        {PA_data.P2C+0.8}
-        {PA_data.P2D+0.8}
+        {PA_data.P1A}
+        {PA_data.P1B}
+        {PA_data.P1C}
+        {PA_data.P1D}
+        {PA_data.P2A}
+        {PA_data.P2B}
+        {PA_data.P2C}
+        {PA_data.P2D}
         ------
         {PA_data.P1A_U}
         {PA_data.P1B_U}

@@ -248,6 +248,7 @@ class PAdata(data_elaboration):
     PA_D: float
     PA_RPC: int;    "PA radiation picture count"
 
+    values_from_unity: str
     P1A: float;     "P1 - marker: measured with caliper"
     P1B: float
     P1C: float
@@ -279,7 +280,6 @@ class PAdata(data_elaboration):
     P2eC_U: float
     P2eD_U: float
 
-    values_from_unity: str
     P1_mean_max: float
     P1_mean:  float
     P2_mean_max: float
