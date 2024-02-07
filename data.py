@@ -279,7 +279,7 @@ class PAdata(data_elaboration):
     PA_number: int
     success: bool
 
-    entered_articulation: int; "kwire entered articulation cavity, manually added after 3d model analysis (-1 means not analyzed)"
+    entered_articulation: int; "kwire entered articulation cavity (-1 means not analyzed)"
 
     PA_D: float
     PA_RPC: int;    "PA radiation picture count"

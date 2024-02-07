@@ -266,7 +266,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             PA_number=PA_number,
             success=success,
 
-            entered_articulation=-1, # manually added after 3d model analysis
+            entered_articulation=-1, # set after PA fusion analysis
 
             PA_D=-1.0, # set after PA conclusion
 
@@ -378,6 +378,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     
     # k-wire extraction of PA is not counted in PA_D
     PA_data.PA_D = chrono.reset()
+    PA_data.entered_articulation = ci.int(f" |-- ENTERED ARTICULATION [-1 / 0 / 1] : ", min=-1, max=1)
 
     PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
     ci.str(f"\tTECHNICAL:\t remove kwire from phanotm [ENTER when done]: ")
