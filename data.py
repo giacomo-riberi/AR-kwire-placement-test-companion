@@ -9,57 +9,6 @@ from __init__ import *
 
 fake = faker.Faker()
 
-@dataclass
-class ECP_design:
-    ktarget: str
-    markers: dict[str, str]
-    anatomy: dict[str, float]
-
-# relative to phantom v2.3.5
-anatomy_eval: dict[str, str] = {
-    "basilic vein": -1.0,
-    "brachial artery": -1.0,
-    "brachial vein": -1.0,
-    "cephalic vein": -1.0,
-    "inferior ulnar collateral artery": -1.0,
-    "median antebrachial vein": -1.0,
-    "median cubital vein": -1.0,
-    "median cubital vein 1": -1.0,
-    "middle collateral artery": -1.0,
-    "radial artery": -1.0,
-    "radial collateral artery": -1.0,
-    "radial veins": -1.0,
-    "random artery 1": -1.0,
-    "random artery 2": -1.0,
-    "ulnar artery": -1.0,
-    "ulnar veins": -1.0,
-
-    "anterior branch of medial antebrachial cutaneous nerve": -1.0,
-    "anterior interosseous nerve of forearm": -1.0,
-    "deep branch of radial nerve": -1.0,
-    "lateral antebrachial cutaneous nerve": -1.0,
-    "median nerve": -1.0,
-    "muscular branches of radial nerve": -1.0,
-    "musculocutaneous nerve": -1.0,
-    "posterior antebrachial cutaneous nerve": -1.0,
-    "posterior branch of medial antebrachial cutaneous nerve": -1.0,
-    "radial nerve": -1.0,
-    "superficial branch of radial nerve": -1.0,
-    "ulnar nerve": -1.0,
-}
-
-PHASE_design: list[ECP_design] = [
-    ECP_design("ECP:1",
-               {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
-               anatomy_eval),
-    ECP_design("ECP:2",
-               {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"},
-               anatomy_eval),
-    ECP_design("ECP:3",
-               {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
-               anatomy_eval)
-]
-
 class data_elaboration:
     def __init__(self, **kwargs):
         if len(kwargs) != 1 and len(kwargs) != len(fields(self)):
@@ -187,6 +136,57 @@ class data_elaboration:
                 logger.critical(f"db_create_table: unsupported value type: {type(v)} {k} {v}")
 
         return f"UPDATE {table} SET {', '.join([f"{key} = '{value}'" for key, value in zip(dbkeys, dbvals)])} WHERE id = '{id}';"
+
+@dataclass
+class ECP_design:
+    ktarget: str
+    markers: dict[str, str]
+    anatomy: dict[str, float]
+
+# relative to phantom v2.3.5
+anatomy_eval: dict[str, str] = {
+    "basilic vein": -1.0,
+    "brachial artery": -1.0,
+    "brachial vein": -1.0,
+    "cephalic vein": -1.0,
+    "inferior ulnar collateral artery": -1.0,
+    "median antebrachial vein": -1.0,
+    "median cubital vein": -1.0,
+    "median cubital vein 1": -1.0,
+    "middle collateral artery": -1.0,
+    "radial artery": -1.0,
+    "radial collateral artery": -1.0,
+    "radial veins": -1.0,
+    "random artery 1": -1.0,
+    "random artery 2": -1.0,
+    "ulnar artery": -1.0,
+    "ulnar veins": -1.0,
+
+    "anterior branch of medial antebrachial cutaneous nerve": -1.0,
+    "anterior interosseous nerve of forearm": -1.0,
+    "deep branch of radial nerve": -1.0,
+    "lateral antebrachial cutaneous nerve": -1.0,
+    "median nerve": -1.0,
+    "muscular branches of radial nerve": -1.0,
+    "musculocutaneous nerve": -1.0,
+    "posterior antebrachial cutaneous nerve": -1.0,
+    "posterior branch of medial antebrachial cutaneous nerve": -1.0,
+    "radial nerve": -1.0,
+    "superficial branch of radial nerve": -1.0,
+    "ulnar nerve": -1.0,
+}
+
+PHASE_design: list[ECP_design] = [
+    ECP_design("ECP:1",
+               {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
+               anatomy_eval),
+    ECP_design("ECP:2",
+               {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"},
+               anatomy_eval),
+    ECP_design("ECP:3",
+               {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"},
+               anatomy_eval)
+]
 
 @dataclass
 class PHASEdata(data_elaboration):
