@@ -203,6 +203,7 @@ class PHASEdata(data_elaboration):
     time_init: float
     phase: int
     phantom_id: str
+    country_orig: str
     country: str
     city: str
     institute: str

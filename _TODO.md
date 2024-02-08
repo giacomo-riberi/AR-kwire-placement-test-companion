@@ -1,2 +1,2 @@
 # cali
-- segna anche il paese di origine.
+OK segna anche il paese di origine.
