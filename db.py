@@ -30,8 +30,8 @@ def db_newid(id_bytes):
     while db_idexist(new_id):
         new_id = db_newid(id_bytes)
     
-    # check new_id against TEXT, ECP and PA runtime variables
-    if data.PHASE_toinsert.id == new_id:
+    # check new_id against PHASE, ECP and PA runtime variables
+    if data.PHASE_toinsert != None and data.PHASE_toinsert.id == new_id:
         new_id = db_newid(id_bytes)
 
     for ECP in data.ECPs_toinsert:
