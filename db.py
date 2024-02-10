@@ -98,12 +98,16 @@ def db_update():
         conn = sqlite3.connect(db_name) 
         cursor = conn.cursor()
         
-        PA_data = data.PAdata(**json.loads(input(f"ATTENTION! TECHNICAL - enter data from fusion 360 to update PA db entry: ")))
+        prompt = f"ATTENTION! TECHNICAL - enter data from fusion 360 to update PA db entry: "
+        user_input = input(prompt)
+        PA_data = data.PAdata(**json.loads(user_input))
         if not PA_data.fusion_computed:
             raise Exception("data not computed by fusion")
         
         if not db_idexist(PA_data.id):
             raise Exception("id does NOT exist on database")
+        
+        logger.debug_input(prompt + "\t|" + user_input + "|")
         
         cursor.execute(PA_data.db_update_table("PA", PA_data.id))
     
