@@ -15,6 +15,11 @@ import data
 
 ci = custom_input()
 
+# args
+# python main.py --testdb
+# python main.py --upddb
+
+
 def main():
     checkargv()
 
