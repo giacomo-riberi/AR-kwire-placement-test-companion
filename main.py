@@ -92,6 +92,8 @@ def phase():
             gender=              ci.acc(" |-- gender                          ", ["m", "f"]),
             right_handed=        ci.boo(" |-- right-handed [Y/N]:             "),
             age=                 ci.int(" |-- age [INTEGER]:                  ", 0, 99),
+
+            career=              ci.acc(" |-- career:   ", ["st", "sp", "su"]),
             medicine_surge_year= ci.int(" |-- medsurg year        [-1 : 6]:   ", -1, 6),
             specialization_year= ci.int(" |-- specialization year [-1 : 5]:   ", -1, 5),
             surgeon_year=        ci.int(" |-- surgeon year        [-1 : 100]: ", -1, 100),

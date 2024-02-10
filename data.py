@@ -212,6 +212,8 @@ class PHASEdata(data_elaboration):
     gender: str
     right_handed: bool
     age: int
+    
+    career: str
     medicine_surge_year: int
     specialization_year: int
     surgeon_year: int
