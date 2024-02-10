@@ -5,7 +5,7 @@ import json
 
 from logger import logger # local
 
-version = "v1.25"
+version = "v1.26"
 db_name = f"./db/positioning_test_data-({version}).db"
 
 class custom_input:

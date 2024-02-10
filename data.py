@@ -60,7 +60,7 @@ class data_elaboration:
                 if k == "anatomy":
                     for ECP_design in PHASE_design:
                         for kk, vv in ECP_design.anatomy.items():
-                            s.append(f"`{kk}` REAL")
+                            s.append(f"`{kk.replace(" ", "_")}` REAL")
                 elif k == "markers":
                     for kk, vv in v.items():
                         s.append(f"`{kk}` TEXT")
@@ -98,7 +98,7 @@ class data_elaboration:
                 dbkeys.append(f"`{k}`")
                 dbvals.append(";".join(v))
             elif type(v) == dict:
-                dbkeys.extend([f"`{kk}`" for kk in v.keys()])
+                dbkeys.extend([f"`{kk.replace(" ", "_")}`" for kk in v.keys()])
                 dbvals.extend(v.values())
             else:
                 logger.critical(f"db_create_table: unsupported value type: {type(v)} {k} {v}")
@@ -130,7 +130,7 @@ class data_elaboration:
                 dbkeys.append(f"`{k}`")
                 dbvals.append(";".join(v))
             elif type(v) == dict:
-                dbkeys.extend([f"`{kk}`" for kk in v.keys()])
+                dbkeys.extend([f"`{kk.replace(" ", "_")}`" for kk in v.keys()])
                 dbvals.extend(v.values())
             else:
                 logger.critical(f"db_create_table: unsupported value type: {type(v)} {k} {v}")
@@ -212,7 +212,7 @@ class PHASEdata(data_elaboration):
     gender: str
     right_handed: bool
     age: int
-    
+
     career: str
     medicine_surge_year: int
     specialization_year: int
