@@ -99,7 +99,7 @@ def phase():
             age=                 ci.int(" |-- age [INTEGER]:                  ", 0, 99),
 
             career=              ci.acc(" |-- career:   ", ["st", "sp", "su"]),
-            medicine_surge_year= ci.int(" |-- medsurg year        [-1 : 6]:   ", -1, 6),
+            medicine_surge_year= ci.int(" |-- medsurg year        [-1 : 7]:   ", -1, 7),
             specialization_year= ci.int(" |-- specialization year [-1 : 5]:   ", -1, 5),
             surgeon_year=        ci.int(" |-- surgeon year        [-1 : 100]: ", -1, 100),
             exp_operation_count= ci.int(" |-- exp operation count [INTEGER]:  ", 0, 1000),
