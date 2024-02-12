@@ -146,15 +146,15 @@ def phase():
         PHASE_data.PA_ids.extend(ECP_data.PA_ids)
     
     logger.info(f"DATA COLLECTION - PHASE - ({id})")
-    PHASE_data.realism_xray=       ci.int(" |-- realism xray    [-1 : 5]:            ", -1, 5)
+    PHASE_data.realism_xray=       ci.int(" |-- realism xray               [-1 : 5]: ", -1, 5)
     PHASE_data.sim_quality_xray=   ci.int(" |-- simulation quality xray    [-1 : 5]: ", -1, 5)
-    PHASE_data.comfort_xray=       ci.int(" |-- comfort xray [-1 : 5]:               ", -1, 5)
+    PHASE_data.comfort_xray=       ci.int(" |-- comfort xray               [-1 : 5]: ", -1, 5)
 
-    PHASE_data.realism_ar=         ci.int(" |-- realism AR      [-1 : 5]:            ", -1, 5)
+    PHASE_data.realism_ar=         ci.int(" |-- realism AR                 [-1 : 5]: ", -1, 5)
     PHASE_data.sim_quality_ar=     ci.int(" |-- simulation quality AR      [-1 : 5]: ", -1, 5)
-    PHASE_data.comfort_ar=         ci.int(" |-- comfort ar   [-1 : 5]:               ", -1, 5)
+    PHASE_data.comfort_ar=         ci.int(" |-- comfort AR                 [-1 : 5]: ", -1, 5)
     
-    PHASE_data.realism_phantom=    ci.int(" |-- realism phantom [-1 : 5]:            ", -1, 5)
+    PHASE_data.realism_phantom=    ci.int(" |-- realism phantom            [-1 : 5]: ", -1, 5)
     PHASE_data.sim_quality_phantom=ci.int(" |-- simulation quality phantom [-1 : 5]: ", -1, 5)
     
     PHASE_data.comment = ci.str(f"\tTECHNICAL:\t comment on PHASE ({id}) [STRING]: ")
