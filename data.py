@@ -244,6 +244,8 @@ class PHASEdata(data_elaboration):
     PHASE_PACF: int
     PHASE_ECPC: int
 
+    hit_count: int
+
 @dataclass
 class ECPdata(data_elaboration):
     "estimated correct position data"
@@ -263,6 +265,8 @@ class ECPdata(data_elaboration):
     ECP_RPC: int; "ECP radiation picture count"
     ECP_PAC: float
     ECP_PACF: float
+
+    hit_count: int
 
 @dataclass
 class PAdata(data_elaboration):
@@ -296,6 +300,7 @@ class PAdata(data_elaboration):
     P2B: float
     P2C: float
     P2D: float
+
     P1A_F: float;   "P1 - marker: measured in fusion"
     P1B_F: float
     P1C_F: float
@@ -304,11 +309,10 @@ class PAdata(data_elaboration):
     P2B_F: float
     P2C_F: float
     P2D_F: float
-
-    P2eA: float;   "P2e - marker: measured in fusion"
-    P2eB: float
-    P2eC: float
-    P2eD: float
+    P2eA_F: float;   "P2e - marker: measured in fusion"
+    P2eB_F: float
+    P2eC_F: float
+    P2eD_F: float
     
     P1A_U: float;   "P1A - marker: measured in unity"
     P1B_U: float
@@ -331,6 +335,9 @@ class PAdata(data_elaboration):
     markers: dict[str, str]
     fusion_computed: bool; "analyzed by fusion 360"
     anatomy: dict[str, float]
+
+    hit_count: int; "how many anatomy structure hits the PA did"
+
     angle_PA_target: float
 
     distance_P1_PA_target: float; "distance P1"

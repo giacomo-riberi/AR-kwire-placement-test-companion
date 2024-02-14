@@ -126,6 +126,8 @@ def phase():
             PHASE_PAC=           0,     # update after each ECP
             PHASE_PACF=          0,     # update after each ECP
             PHASE_ECPC=          0,     # update after each ECP
+
+            hit_count=           0      # update after each ECP
         )
         if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
             break
@@ -144,6 +146,8 @@ def phase():
         PHASE_data.PHASE_ECPC  = ECP_number
         PHASE_data.ECP_ids.append(ECP_data.id)
         PHASE_data.PA_ids.extend(ECP_data.PA_ids)
+        
+        PHASE_data.hit_count  += ECP_data.hit_count
     
     logger.info(f"DATA COLLECTION - PHASE - ({id})")
     PHASE_data.realism_xray=       ci.int(" |-- realism xray               [-1 : 5]: ", -1, 5)
@@ -200,7 +204,8 @@ def ECP(phase, PHASE_id, ECP_number) -> data.ECPdata:
         ECP_D=0.0,       # update for each PA
         ECP_RPC=0,       
         ECP_PAC=0,       # update for each PA
-        ECP_PACF=0       # update for each PA
+        ECP_PACF=0,      # update for each PA
+        hit_count=0      # update for each PA
     )
 
     PA_number = 0
@@ -217,6 +222,8 @@ def ECP(phase, PHASE_id, ECP_number) -> data.ECPdata:
         ECP_data.ECP_PAC = PA_number
         ECP_data.ECP_PACF += 0 if PA_data.success else 1
         ECP_data.PA_ids.append(PA_data.id)
+
+        ECP_data.hit_count += PA_data.hit_count
         
         if PA_data.success:
             break
@@ -303,20 +310,20 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             P2B_F=-1.0,
             P2C_F=-1.0,
             P2D_F=-1.0,
-            P2eA=-1.0,
-            P2eB=-1.0,
-            P2eC=-1.0,
-            P2eD=-1.0,
+            P2eA_F=-1.0,
+            P2eB_F=-1.0,
+            P2eC_F=-1.0,
+            P2eD_F=-1.0,
 
             # computed by unity
-            P1A_U=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
-            P1B_U=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
-            P1C_U=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
-            P1D_U=ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
-            P2eA_U=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['A']} virtual [FLOAT]: "),
-            P2eB_U=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['B']} virtual [FLOAT]: "),
-            P2eC_U=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['C']} virtual [FLOAT]: "),
-            P2eD_U=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['D']} virtual [FLOAT]: "),
+            P1A_U= ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['A']} unity [FLOAT]:  "),
+            P1B_U= ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['B']} unity [FLOAT]:  "),
+            P1C_U= ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['C']} unity [FLOAT]:  "),
+            P1D_U= ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['D']} unity [FLOAT]:  "),
+            P2eA_U=ci.flo(f" |-- P2e{data.PHASE_design[ECP_number-1].markers['A']} unity [FLOAT]: "),
+            P2eB_U=ci.flo(f" |-- P2e{data.PHASE_design[ECP_number-1].markers['B']} unity [FLOAT]: "),
+            P2eC_U=ci.flo(f" |-- P2e{data.PHASE_design[ECP_number-1].markers['C']} unity [FLOAT]: "),
+            P2eD_U=ci.flo(f" |-- P2e{data.PHASE_design[ECP_number-1].markers['D']} unity [FLOAT]: "),
             
             # computed by fusion
             P1_mean_max=1.0,
@@ -387,6 +394,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     # k-wire extraction of PA is not counted in PA_D
     PA_data.PA_D = chrono.reset()
     PA_data.entered_articulation = ci.int(f" |-- ENTERED ARTICULATION [-1 / 0 (not entered) / 1 (entered)] : ", min=-1, max=1)
+    PA_data.hit_count = sum(1 for value in PA_data.anatomy.values() if value == 0.0)
 
     PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
     ci.str(f"\tTECHNICAL:\t remove kwire from phanotm [ENTER when done]: ")
