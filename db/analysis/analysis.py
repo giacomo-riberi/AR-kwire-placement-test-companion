@@ -16,10 +16,28 @@ class analysis:
 aaa: list[analysis] = [
     analysis(
         "PA",
+        "ECP_number = 1",
+        "phase",
+        "ulnar_nerve",
+    ),
+    analysis(
+        "PA",
         "ECP_number = 2",
         "phase",
         "ulnar_nerve",
-    )
+    ),
+    analysis(
+        "PA",
+        "ECP_number = 3",
+        "phase",
+        "ulnar_nerve",
+    ),
+    analysis(
+        "PA",
+        "ECP_number = 3",
+        "phase",
+        "PA_D",
+    ),
 ]
 
 for a in aaa:
@@ -28,10 +46,10 @@ for a in aaa:
     conn = sqlite3.connect(os.path.join(script_dir, f"..\positioning_test_data-(v1.26).db"))
 
     # Query data from the database
+    query = f"SELECT {a.outcome}, {a.predictor} FROM {a.table}"
     if a.filter != "":
-        query = f"SELECT {a.outcome}, {a.predictor} FROM {a.table} WHERE {a.filter}"
-    else:
-        query = f"SELECT {a.outcome}, {a.predictor} FROM {a.table}"
+        query += f"WHERE {a.filter}"
+        
     print(query)
     data = pd.read_sql_query(query, conn)
 
