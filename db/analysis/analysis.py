@@ -193,24 +193,23 @@ def plotter(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool =
     
     boxplot_data = data.groupby(a.predictor)[a.outcome].apply(list)
     bp  = plt.boxplot(boxplot_data, positions=summary[a.predictor], widths=width,
-                # labels=['Label 1', 'Label 1','Label 1'], #label=f'{a.outcome} Median and Quartiles',
                 boxprops=dict(color='darkblue'), whiskerprops=dict(color='darkblue'), capprops=dict(color='darkblue'), medianprops=dict(color='aquamarine'),
                 showfliers=False, notch=False,)
 
-    _, max_y = plt.ylim()
+    min_y, max_y = plt.ylim()
     for i, (mean, std, count, q1, median, q3) in enumerate(zip(summary['mean'], summary['std'], summary['count'], boxplot_data.apply(np.percentile, args=(25,)), boxplot_data.apply(np.median), boxplot_data.apply(np.percentile, args=(75,)))):
-        plt.text(summary[a.predictor][i]-(width/2), max_y-(8*font_size_text),
-                    f'Mean:\nStddev:\nCount:',
+        plt.text(summary[a.predictor][i], 0.85*(max_y-min_y)+min_y,
+                    f'Mean:  \nStddev:  \nCount:  ',
                     ha='right', va='center', color='darkred', fontsize=font_size_text)
-        plt.text(summary[a.predictor][i]-(width/2), max_y-(8*font_size_text),
-                    f'{mean:8.2f}\n{std:8.2f}\n{count:5.0f}   ',
+        plt.text(summary[a.predictor][i], 0.85*(max_y-min_y)+min_y,
+                    f'{mean:9.2f}\n{std:9.2f}\n{count:6.0f}   ',
                     ha='left', va='center', color='darkred', fontsize=font_size_text)
         
-        plt.text(summary[a.predictor][i]-(width/2), max_y-(11*font_size_text),
-                    f'Q3:\nMedian:\nQ1:',
+        plt.text(summary[a.predictor][i], 0.75*(max_y-min_y)+min_y,
+                    f'Q3:  \nMedian:  \nQ1:  ',
                     ha='right', va='center', color='darkblue', fontsize=font_size_text)
-        plt.text(summary[a.predictor][i]-(width/2), max_y-(11*font_size_text),
-                    f'{q3:8.2f}\n{median:8.2f}\n{q1:8.2f}',
+        plt.text(summary[a.predictor][i], 0.75*(max_y-min_y)+min_y,
+                    f'{q3:9.2f}\n{median:9.2f}\n{q1:9.2f}',
                     ha='left', va='center', color='darkblue', fontsize=font_size_text)
 
     # Adding labels and title
@@ -219,8 +218,10 @@ def plotter(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool =
     plt.title (a.title,     fontsize=font_size_title)
     plt.legend(             fontsize=font_size_legend)
 
-    # Set x-axis ticks to integers
-    plt.xticks(summary[a.predictor])
+    # Set axis ticks
+    if all(isinstance(x, int) for x in data):
+        plt.yticks(np.arange(min(data), max(data)+1, 1))    # Set y-axis ticks to integers if all data is integer
+    plt.xticks(summary[a.predictor])                        # Set x-axis ticks to follow a.predictor
 
     plt.grid(True)
 
