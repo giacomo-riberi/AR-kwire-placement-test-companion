@@ -225,12 +225,15 @@ def plotter(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool =
 
     plt.grid(True)
 
-    # save graph and show it    
+    # save graph to file
     if save:
         plt.savefig(os.path.join(script_dir, sanitize_filename(f"{a.title}.png")))
     img_data = io.BytesIO()
+
+    # save graph to variable
     plt.savefig(img_data, format='png')
 
+    # show graph
     if show:
         plt.show()
 
