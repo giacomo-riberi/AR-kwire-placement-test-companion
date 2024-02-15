@@ -102,7 +102,7 @@ def main():
         # Adding labels and title
         plt.xlabel(a.predictor[0],  fontsize=font_size_title)
         plt.ylabel(a.outcome,       fontsize=font_size_title)
-        plt.title(f"{a.title}",     fontsize=font_size_title)
+        plt.title(a.title,          fontsize=font_size_title)
         plt.legend(                 fontsize=font_size_legend)
 
         # Set x-axis ticks to integers
