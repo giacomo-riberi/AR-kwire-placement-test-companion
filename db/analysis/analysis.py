@@ -74,7 +74,7 @@ def main():
         predictor_counts = data[a.predictor].value_counts().reset_index()
         predictor_counts.columns = [a.predictor, 'count']
         summary_stats = data.groupby(a.predictor)[a.outcome].agg(['mean', 'std']).reset_index()
-        summary_stats = pd.merge(summary_stats, predictor_counts, on='phase')
+        summary_stats = pd.merge(summary_stats, predictor_counts, on=a.predictor)
 
 
         # PLOT        
