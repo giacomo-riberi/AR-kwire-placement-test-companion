@@ -11,7 +11,6 @@ import re
 class analysis:
     title: str
     query: str
-    table: str
     predictor: list[str]
     outcome: str
 
@@ -37,7 +36,6 @@ aaa: list[analysis] = [
     analysis(
         "title example",
         "SELECT PHASE.phase, PHASE.career, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1; ",
-        "PA",
         ["phase"],
         "PA_D",
     ),
@@ -80,37 +78,40 @@ def main():
         # PLOT        
         plt.figure(figsize=(15, 9))
         plt.rcParams['font.family'] = 'Courier New'
-        width = 0.1# * (summary_stats[a.predictor].max() - summary_stats[a.predictor].min())
+        
+        width = 0.1 * (summary_stats[a.predictor[0]].max() - summary_stats[a.predictor[0]].min())
 
         # Get the current figure manager and extract the window size
-        font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.06  # Adjust the multiplier as needed
-        plt.rcParams.update({'font.size': font_size_title})
+        font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08  # Adjust the multiplier as needed
+        # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
+        font_size_legend    = 0.8 * font_size_title
+        font_size_text      = 0.6 * font_size_title
 
-        plt.scatter(data[a.predictor[0]] + np.random.normal(scale=0.04, size=len(data)), data[a.outcome], color='black', label=f'{a.outcome} data points', alpha=0.5, s=10)
+        plt.scatter(data[a.predictor[0]] + np.random.normal(scale=width/6, size=len(data)), data[a.outcome], color='black', label=f'{a.outcome} data points', alpha=0.5, s=10)
 
         plt.errorbar(summary_stats[a.predictor[0]], summary_stats['mean'], yerr=summary_stats['std'], fmt='o', color='darkred', label=f'{a.outcome} mean and std', markersize=6, capsize=6, linewidth=3)
-        for i, mean, std, count in zip(range(len(summary_stats)), summary_stats['mean'], summary_stats['std'], summary_stats['count']):
-            plt.text(summary_stats[a.predictor[0]][i]-(width/2+0.02), mean, f'Mean:   {mean:6.2f}\nStddev: {std:6.2f}\nCount: {count:4.0f}   ', ha='right', va='center', color='darkred', fontsize=font_size_title*0.8)
         
-
-        boxplot_data = data.groupby(a.predictor)[a.outcome].apply(list)
+        boxplot_data = data.groupby(a.predictor[0])[a.outcome].apply(list)
         plt.boxplot(boxplot_data, positions=summary_stats[a.predictor[0]], widths=width, showfliers=False, boxprops=dict(color='darkblue'), whiskerprops=dict(color='darkblue'), capprops=dict(color='darkblue'), medianprops=dict(color='aquamarine'))
-        for i, (q0, q1, median, q3, q4) in enumerate(zip(boxplot_data.apply(np.percentile, args=(0,)), boxplot_data.apply(np.percentile, args=(25,)), boxplot_data.apply(np.median), boxplot_data.apply(np.percentile, args=(75,)), boxplot_data.apply(np.percentile, args=(100,)))):
-            plt.text(summary_stats[a.predictor[0]][i]+(width/2+0.02), median, f'Q3:     {q3:6.2f}\nMedian: {median:6.2f}\nQ1:     {q1:6.2f}', ha='left', va='center', color='darkblue', fontsize=font_size_title*0.8)
+
+        for i, (mean, std, count, q1, median, q3) in enumerate(zip(summary_stats['mean'], summary_stats['std'], summary_stats['count'], boxplot_data.apply(np.percentile, args=(25,)), boxplot_data.apply(np.median), boxplot_data.apply(np.percentile, args=(75,)))):
+            plt.text(summary_stats[a.predictor[0]][i]-(width/2+0.02), mean, f'Mean:   {mean:6.2f}\nStddev: {std:6.2f}\nCount: {count:4.0f}   ', ha='right', va='center', color='darkred', fontsize=font_size_text)
+            plt.text(summary_stats[a.predictor[0]][i]-(width/2+0.02), mean-(3*font_size_text), f'Q3:     {q3:6.2f}\nMedian: {median:6.2f}\nQ1:     {q1:6.2f}', ha='right', va='center', color='darkblue', fontsize=font_size_text)
+
 
         # Adding labels and title
-        plt.xlabel(a.predictor)
-        plt.ylabel(a.outcome)
-
-        plt.title(f"{a.title}")
-        plt.legend()
-        plt.grid(True)
+        plt.xlabel(a.predictor[0],  fontsize=font_size_title)
+        plt.ylabel(a.outcome,       fontsize=font_size_title)
+        plt.title(f"{a.title}",     fontsize=font_size_title)
+        plt.legend(                 fontsize=font_size_legend)
 
         # Set x-axis ticks to integers
         plt.xticks(summary_stats[a.predictor[0]])
 
+        plt.grid(True)
+
         # save graph and show it    
-        plt.savefig(os.path.join(script_dir, sanitize_filename(f"{a.table} {a.filter} - {a.outcome} ({a.predictor}).png")))
+        plt.savefig(os.path.join(script_dir, sanitize_filename(f"{a.title}.png")))
         plt.show()
     
 def sanitize_filename(filename):
