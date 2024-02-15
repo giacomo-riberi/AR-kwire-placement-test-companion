@@ -25,24 +25,27 @@ class multianalysis:
     aaa: list[analysis]
 
 aaa: list[analysis] = [
-    # analysis(
-    #     "PA",
-    #     "ECP_number = 1",
-    #     "phase",
-    #     "ulnar_nerve",
-    # ),
-    # analysis(
-    #     "PA",
-    #     "ECP_number = 2",
-    #     "phase",
-    #     "ulnar_nerve",
-    # ),
-    # analysis(
-    #     "PA",
-    #     "ECP_number = 3",
-    #     "phase",
-    #     "ulnar_nerve",
-    # ),
+    analysis(
+        "PA target 1 distance from ulnar nerve by phase",
+        (8, 8),
+        "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
+        "phase",
+        "ulnar_nerve",
+    ),
+    analysis(
+        "PA target 2 distance from ulnar nerve by phase",
+        (8, 8),
+        "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 2",
+        "phase",
+        "ulnar_nerve",
+    ),
+    analysis(
+        "PA target 3 distance from ulnar nerve by phase",
+        (8, 8),
+        "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 3",
+        "phase",
+        "ulnar_nerve",
+    ),
     analysis(
         "PA duration by phase",
         (6, 8),
@@ -172,16 +175,16 @@ def get_data_summary(a: analysis) -> tuple[pd.DataFrame, pd.DataFrame]:
 def plotter(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True) -> io.BytesIO:
     plt.figure(figsize=a.size)
     plt.rcParams['font.family'] = 'Courier New'
-    
-    width = 0.1 * (summary[a.predictor].max() - summary[a.predictor].min())
+    min_x, max_x = data[a.predictor].min(), data[a.predictor].max()
+    min_y, max_y = data[a.outcome].min(), data[a.outcome].max()
+    width = 0.06 * (max_x-min_x)
 
-    # Get the current figure manager and extract the window size
-    font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08  # Adjust the multiplier as needed
+    font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
     # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
     font_size_legend    = 0.6 * font_size_title
     font_size_text      = 0.6 * font_size_title
 
-    plt.scatter(data[a.predictor] + np.random.normal(scale=width/6, size=len(data)), data[a.outcome],
+    sc = plt.scatter(data[a.predictor] + np.random.normal(scale=width/6, size=len(data)), data[a.outcome],
                 label=f'{a.outcome} Data Points', 
                 color='black', alpha=0.5,
                 s=10)
@@ -196,20 +199,19 @@ def plotter(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool =
                 boxprops=dict(color='darkblue'), whiskerprops=dict(color='darkblue'), capprops=dict(color='darkblue'), medianprops=dict(color='aquamarine'),
                 showfliers=False, notch=False,)
 
-    min_y, max_y = plt.ylim()
     for i, (mean, std, count, q1, median, q3) in enumerate(zip(summary['mean'], summary['std'], summary['count'], boxplot_data.apply(np.percentile, args=(25,)), boxplot_data.apply(np.median), boxplot_data.apply(np.percentile, args=(75,)))):
-        plt.text(summary[a.predictor][i], 0.85*(max_y-min_y)+min_y,
-                    f'Mean:  \nStddev:  \nCount:  ',
+        plt.text(summary[a.predictor][i]-width/1.9, min_y+0.85*(max_y-min_y),
+                    f'Mean:\nStddev:\nCount:',
                     ha='right', va='center', color='darkred', fontsize=font_size_text)
-        plt.text(summary[a.predictor][i], 0.85*(max_y-min_y)+min_y,
-                    f'{mean:9.2f}\n{std:9.2f}\n{count:6.0f}   ',
+        plt.text(summary[a.predictor][i]+width/1.9, 0.85*(max_y-min_y)+min_y,
+                    f'{mean:6.2f}\n{std:6.2f}\n{count:6.0f}   ',
                     ha='left', va='center', color='darkred', fontsize=font_size_text)
         
-        plt.text(summary[a.predictor][i], 0.75*(max_y-min_y)+min_y,
-                    f'Q3:  \nMedian:  \nQ1:  ',
+        plt.text(summary[a.predictor][i]-width/1.9, 0.75*(max_y-min_y)+min_y,
+                    f'Q3:\nMedian:\nQ1:',
                     ha='right', va='center', color='darkblue', fontsize=font_size_text)
-        plt.text(summary[a.predictor][i], 0.75*(max_y-min_y)+min_y,
-                    f'{q3:9.2f}\n{median:9.2f}\n{q1:9.2f}',
+        plt.text(summary[a.predictor][i]+width/1.9, 0.75*(max_y-min_y)+min_y,
+                    f'{q3:6.2f}\n{median:6.2f}\n{q1:6.2f}',
                     ha='left', va='center', color='darkblue', fontsize=font_size_text)
 
     # Adding labels and title
