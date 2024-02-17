@@ -1,12 +1,12 @@
+import os, io, re
+
 import sqlite3
+from dataclasses import dataclass
+
 import pandas as pd
 import numpy as np
-import seaborn as sns
 import matplotlib.pyplot as plt
-import os
-from dataclasses import dataclass, fields
-import re
-import io
+
 from PIL import Image
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
