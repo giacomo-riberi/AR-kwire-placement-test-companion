@@ -165,13 +165,18 @@ def phase():
 
     # print input-ready stats for next phase round with same candidate
     print(textwrap.dedent(f"""
-    {PHASE_data.phase}
+    {PHASE_data.phase+1}
     {PHASE_data.phantom_id}
+    {PHASE_data.country_orig}
+    {PHASE_data.country}
+    {PHASE_data.city}
+    {PHASE_data.institute}
     {PHASE_data.name}
     {PHASE_data.surname}
     {PHASE_data.gender}
     {PHASE_data.right_handed}
     {PHASE_data.age}
+    {PHASE_data.career}
     {PHASE_data.medicine_surge_year}
     {PHASE_data.specialization_year}
     {PHASE_data.surgeon_year}
