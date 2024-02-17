@@ -44,7 +44,7 @@ def main():
     
     # save on companion to import data
     with open("logs/companion_imports.log", "a") as f:
-        f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {version}\n")
+        f.write(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} {version} phase id: {data.PHASE_toinsert.id}\n")
         for s in data.companion_imports:
             f.write(s+"\n")
 
@@ -193,19 +193,19 @@ def ECP(phase, PHASE_id, ECP_number) -> data.ECPdata:
     logger.info(f"ECP{ECP_number} START! ({id})")
 
     ECP_data = data.ECPdata(
-        PHASE_id=PHASE_id,
-        PA_ids=[],       # update for each PA
-        id=id,
-        datatype="ECP",
-        time_init=time.time(),
-        ease_of_placement=-1, # input at the end
-        phase=phase,
-        ECP_number=ECP_number,
-        ECP_D=0.0,       # update for each PA
-        ECP_RPC=0,       
-        ECP_PAC=0,       # update for each PA
-        ECP_PACF=0,      # update for each PA
-        hit_count=0      # update for each PA
+        PHASE_id=           PHASE_id,
+        PA_ids=             [],         # update for each PA
+        id=                 id,
+        datatype=           "ECP",
+        time_init=          time.time(),
+        ease_of_placement=  -1,         # input at the end
+        phase=              phase,
+        ECP_number=         ECP_number,
+        ECP_D=              0.0,        # update for each PA
+        ECP_RPC=            0,       
+        ECP_PAC=            0,          # update for each PA
+        ECP_PACF=           0,          # update for each PA
+        hit_count=          0           # update for each PA
     )
 
     PA_number = 0
@@ -217,13 +217,13 @@ def ECP(phase, PHASE_id, ECP_number) -> data.ECPdata:
         data.PAs_toinsert.append(PA_data)
 
         # update ECP_data
-        ECP_data.ECP_D += PA_data.PA_D
-        ECP_data.ECP_RPC += PA_data.PA_RPC
-        ECP_data.ECP_PAC = PA_number
-        ECP_data.ECP_PACF += 0 if PA_data.success else 1
+        ECP_data.ECP_D      += PA_data.PA_D
+        ECP_data.ECP_RPC    += PA_data.PA_RPC
+        ECP_data.ECP_PAC     = PA_number
+        ECP_data.ECP_PACF   += 0 if PA_data.success else 1
         ECP_data.PA_ids.append(PA_data.id)
 
-        ECP_data.hit_count += PA_data.hit_count
+        ECP_data.hit_count  += PA_data.hit_count
         
         if PA_data.success:
             break
@@ -338,19 +338,26 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
 
             # computed by fusion
             fusion_computed=False,
-            angle_PA_target=-1.0,
-            distance_P1_PA_target=-1.0,
-            distance_P1_PA_target_X=-1.0,
-            distance_P1_PA_target_Y=-1.0,
-            distance_P1_PA_target_Z=-1.0,
-            distance_P2_PA_target=-1.0,
-            distance_P2_PA_target_X=-1.0,
-            distance_P2_PA_target_Y=-1.0,
-            distance_P2_PA_target_Z=-1.0,
-            distance_P2e_PA_target=-1.0,
+
+            hit_count               =-1.0,  # update after fusion computation
+
+            angle_PA_target         =-1.0,
+            
+            distance_P1_PA_target   =-1.0,
+            distance_P1_PA_target_X =-1.0,
+            distance_P1_PA_target_Y =-1.0,
+            distance_P1_PA_target_Z =-1.0,
+
+            distance_P2_PA_target   =-1.0,
+            distance_P2_PA_target_X =-1.0,
+            distance_P2_PA_target_Y =-1.0,
+            distance_P2_PA_target_Z =-1.0,
+
+            distance_P2e_PA_target  =-1.0,
             distance_P2e_PA_target_X=-1.0,
             distance_P2e_PA_target_Y=-1.0,
             distance_P2e_PA_target_Z=-1.0,
+
             delta_id_PA_target=-1.0
         )
         if ci.boo("\tTECHNICAL:\t is data entered correct? [Y/N]: "):
