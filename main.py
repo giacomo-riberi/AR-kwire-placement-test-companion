@@ -163,8 +163,10 @@ def phase():
     
     PHASE_data.comment = ci.str(f"\tTECHNICAL:\t comment on PHASE ({id}) [STRING]: ")
 
-    # print input-ready stats for next phase round with same candidate
+    # print next phase input-ready stats for same candidate
     print(textwrap.dedent(f"""
+    copy-paste next phase ({PHASE_data.phase+1}) input-ready stats for SAME candidate:
+    -----
     {PHASE_data.phase+1}
     {PHASE_data.phantom_id}
     {PHASE_data.country_orig}
@@ -186,7 +188,9 @@ def phase():
     {PHASE_data.glasses_power}
     {PHASE_data.exp_vr}
     {PHASE_data.exp_ar}
-    {PHASE_data.exp_3D_editor}"""))
+    {PHASE_data.exp_3D_editor}
+    -----
+    """))
 
     return PHASE_data
 
