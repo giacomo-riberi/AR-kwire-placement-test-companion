@@ -134,7 +134,7 @@ def main():
         for a in aaa:
             data, summary = get_data_summary(conn, a)
 
-            _ = plotter(data, summary, a, save=True)
+            _ = plotter(data, summary, a, save=True, show=True)
 
         for m in mmm:
             imgsBytes = []
