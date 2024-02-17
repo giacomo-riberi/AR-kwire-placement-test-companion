@@ -130,39 +130,38 @@ mmm: list[multianalysis] = [
 ]
 
 def main():
-    for a in aaa:
-        data, summary = get_data_summary(a)
+    with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
+        for a in aaa:
+            data, summary = get_data_summary(conn, a)
 
-        _ = plotter(data, summary, a, save=True)
+            _ = plotter(data, summary, a, save=True)
 
-    for m in mmm:
-        imgsBytes = []
-        for a in m.aaa:
-            data, summary = get_data_summary(a)
+        for m in mmm:
+            imgsBytes = []
+            for a in m.aaa:
+                data, summary = get_data_summary(conn, a)
 
-            imgsBytes.append(plotter(data, summary, a, save=False, show=False)) # saving at the end
-        
-        imgs: list[Image.Image] = []
-        for imgBytes in imgsBytes:
-            imgs.append(Image.open(imgBytes))
+                imgsBytes.append(plotter(data, summary, a, save=False, show=False)) # saving at the end
+            
+            imgs: list[Image.Image] = []
+            for imgBytes in imgsBytes:
+                imgs.append(Image.open(imgBytes))
 
-        # Create the new image with calculated dimensions
-        img_out = Image.new("RGB", (sum(img.width for img in imgs), max(img.height for img in imgs)))
-        
-        x, y = 0, 0
-        for img in imgs:
-            img_out.paste(img, (x, y))
-            x += img.width
+            # Create the new image with calculated dimensions
+            img_out = Image.new("RGB", (sum(img.width for img in imgs), max(img.height for img in imgs)))
+            
+            x, y = 0, 0
+            for img in imgs:
+                img_out.paste(img, (x, y))
+                x += img.width
 
-        # Save the result image
-        img_out.save(os.path.join(script_dir, sanitize_filename(f"{m.title}.png")))
-        img_out.show()
+            # Save the result image
+            img_out.save(os.path.join(script_dir, sanitize_filename(f"{m.title}.png")))
+            img_out.show()
 
-def get_data_summary(a: analysis) -> tuple[pd.DataFrame, pd.DataFrame]:
-    conn = sqlite3.connect(os.path.join(script_dir, f"..\positioning_test_data-(v1.27).db")) 
+def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFrame, pd.DataFrame]:
     data = pd.read_sql_query(a.query, conn)
     # print(data)
-    conn.close()
 
     predictor_counts = data[a.predictor].value_counts().reset_index()
     # predictor_counts.columns = [a.predictor, 'count']
