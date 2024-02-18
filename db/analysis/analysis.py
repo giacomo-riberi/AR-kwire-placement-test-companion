@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
@@ -155,7 +155,15 @@ def main():
                 img_out.paste(img, (x, y))
                 x += img.width
 
-            # Save the result image
+            # add title
+            font_size = 32
+            ImageDraw.Draw(img_out).text(
+                xy      = (img_out.width/2, font_size),
+                text    = m.title,
+                font    = ImageFont.truetype("courbd.ttf", font_size), # others: cour.ttf, courbd.ttf, courbi.ttf (check https://www.wfonts.com/font/courier-new)
+                anchor  = "mm",
+                fill    = (0,0,0,255))
+
             img_out.save(os.path.join(script_dir, sanitize_filename(f"{m.title}.png")))
             img_out.show()
 
