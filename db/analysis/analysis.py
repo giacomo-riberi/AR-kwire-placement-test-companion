@@ -24,7 +24,121 @@ class multianalysis:
     title: str
     aaa: list[analysis]
 
+#!!! make a function to automatically generate analysis structs and multianalysis (automatic generation of db queries)
+
 aaa: list[analysis] = [
+    # PA    distance_P2e_PA_target          by phase
+    analysis(
+        "PA distance_P2e_PA_target by phase",
+        (6, 8),
+        "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+
+    # PA    delta_id_PA_target              by phase
+    analysis(
+        "PA delta_id_PA_target by phase",
+        (6, 8),
+        "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "delta_id_PA_target",
+    ),
+
+    
+    # PA                angle_PA_target     by phase
+    analysis(
+        "PA angle_PA_target by phase",
+        (6, 8),
+        "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "angle_PA_target",
+    ),
+
+
+    # PA, ECP, PHASE    duration            by phase
+    analysis(
+        "PA duration by phase",
+        (6, 8),
+        "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "PA_D",
+    ),
+    analysis(
+        "ECP duration by phase",
+        (6, 8),
+        "SELECT PHASE.phase, ECP.ECP_D FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "ECP_D",
+    ),
+    analysis(
+        "PHASE duration by phase",
+        (6, 8),
+        "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1;",
+        "phase",
+        "PHASE_D",
+    ),
+
+
+    # PA, ECP, PHASE    RPC                 by phase
+    analysis(
+        "PA RPC by phase",
+        (6, 8),
+        "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "PA_RPC",
+    ),
+    analysis(
+        "ECP RPC by phase",
+        (6, 8),
+        "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "ECP_RPC",
+    ),
+    analysis(
+        "PHASE RPC by phase",
+        (6, 8),
+        "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1;",
+        "phase",
+        "PHASE_RPC",
+    ),
+
+
+    # PA, ECP, PHASE    hit_count           by phase
+    analysis(
+        "PA hit count by phase",
+        (6, 8),
+        "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
+        "phase",
+        "hit_count",
+    ),
+    analysis(
+        "ECP hit count by phase",
+        (6, 8),
+        "SELECT phase, hit_count FROM ECP WHERE phase <> -1;",
+        "phase",
+        "hit_count",
+    ),
+    analysis(
+        "Phase hit count by phase",
+        (6, 8),
+        "SELECT phase, hit_count FROM PHASE WHERE phase <> -1;",
+        "phase",
+        "hit_count",
+    ),
+    
+
+    # ECP               ease_of_placement   by phase
+    analysis(
+        "ECP ease of placement by phase",
+        (6, 8),
+        "SELECT PHASE.phase, ECP.ease_of_placement FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "ease_of_placement",
+    ),
+
+
+    # PA, ECP, PHASE    ulnar_nerve         by phase
     analysis(
         "PA target 1 distance from ulnar nerve by phase",
         (8, 8),
@@ -46,37 +160,192 @@ aaa: list[analysis] = [
         "phase",
         "ulnar_nerve",
     ),
-    analysis(
-        "PA duration by phase",
-        (6, 8),
-        "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
-        "phase",
-        "PA_D",
-    ),
-    analysis(
-        "Phase hit count by phase",
-        (6, 8),
-        "SELECT phase, hit_count FROM PHASE WHERE phase <> -1;",
-        "phase",
-        "hit_count",
-    ),
-    analysis(
-        "ECP hit count by phase",
-        (6, 8),
-        "SELECT phase, hit_count FROM ECP WHERE phase <> -1;",
-        "phase",
-        "hit_count",
-    ),
-    analysis(
-        "PA hit count by phase",
-        (6, 8),
-        "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
-        "phase",
-        "hit_count",
-    ),
+    
 ]
 
 mmm: list[multianalysis] = [
+    multianalysis(
+        "PA distance_P2e_PA_target by phase and career",
+        [analysis(
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+            "phase",
+            "distance_P2e_PA_target",
+        ),
+        analysis(
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+            "phase",
+            "distance_P2e_PA_target",
+        ),
+        analysis(
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+            "phase",
+            "distance_P2e_PA_target",
+        ),
+        ]
+    ),
+
+    multianalysis(
+        "PA delta_id_PA_target by phase and career",
+        [analysis(
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+            "phase",
+            "delta_id_PA_target",
+        ),
+        analysis(
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+            "phase",
+            "delta_id_PA_target",
+        ),
+        analysis(
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+            "phase",
+            "delta_id_PA_target",
+        ),
+        ]
+    ),
+
+    multianalysis(
+        "PA angle_PA_target by phase and career",
+        [analysis(
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+            "phase",
+            "angle_PA_target",
+        ),
+        analysis(
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+            "phase",
+            "angle_PA_target",
+        ),
+        analysis(
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+            "phase",
+            "angle_PA_target",
+        ),
+        ]
+    ),
+
+    multianalysis(
+        "Phase duration by phase and career",
+        [analysis(
+            "Student",
+            (6, 8),
+            "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'st';",
+            "phase",
+            "PHASE_D",
+        ),
+        analysis(
+            "Resident",
+            (6, 8),
+            "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'sp';",
+            "phase",
+            "PHASE_D",
+        ),
+        analysis(
+            "Surgeon",
+            (6, 8),
+            "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'su';",
+            "phase",
+            "PHASE_D",
+        ),
+        ]
+    ),
+
+    multianalysis(
+        "Phase RPC by phase and career",
+        [analysis(
+            "Student",
+            (6, 8),
+            "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1 AND career == 'st';",
+            "phase",
+            "PHASE_RPC",
+        ),
+        analysis(
+            "Resident",
+            (6, 8),
+            "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1 AND career == 'sp';",
+            "phase",
+            "PHASE_RPC",
+        ),
+        analysis(
+            "Surgeon",
+            (6, 8),
+            "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1 AND career == 'su';",
+            "phase",
+            "PHASE_RPC",
+        ),
+        ]
+    ),
+
+    multianalysis(
+        "Phase PAC by phase and career",
+        [analysis(
+            "Student",
+            (6, 8),
+            "SELECT phase, PHASE_PAC FROM PHASE WHERE phase <> -1 AND career == 'st';",
+            "phase",
+            "PHASE_PAC",
+        ),
+        analysis(
+            "Resident",
+            (6, 8),
+            "SELECT phase, PHASE_PAC FROM PHASE WHERE phase <> -1 AND career == 'sp';",
+            "phase",
+            "PHASE_PAC",
+        ),
+        analysis(
+            "Surgeon",
+            (6, 8),
+            "SELECT phase, PHASE_PAC FROM PHASE WHERE phase <> -1 AND career == 'su';",
+            "phase",
+            "PHASE_PAC",
+        ),
+        ]
+    ),
+
+    multianalysis(
+        "Phase PACF by phase and career",
+        [analysis(
+            "Student",
+            (6, 8),
+            "SELECT phase, PHASE_PACF FROM PHASE WHERE phase <> -1 AND career == 'st';",
+            "phase",
+            "PHASE_PACF",
+        ),
+        analysis(
+            "Resident",
+            (6, 8),
+            "SELECT phase, PHASE_PACF FROM PHASE WHERE phase <> -1 AND career == 'sp';",
+            "phase",
+            "PHASE_PACF",
+        ),
+        analysis(
+            "Surgeon",
+            (6, 8),
+            "SELECT phase, PHASE_PACF FROM PHASE WHERE phase <> -1 AND career == 'su';",
+            "phase",
+            "PHASE_PACF",
+        ),
+        ]
+    ),
+
     multianalysis(
         "Phase hit count by phase and career",
         [analysis(
@@ -102,31 +371,6 @@ mmm: list[multianalysis] = [
         ),
         ]
     ),
-    multianalysis(
-        "Phase duration by phase and career",
-        [analysis(
-            "Student",
-            (6, 8),
-            "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'st';",
-            "phase",
-            "PHASE_D",
-        ),
-        analysis(
-            "Resident",
-            (6, 8),
-            "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'sp';",
-            "phase",
-            "PHASE_D",
-        ),
-        analysis(
-            "Surgeon",
-            (6, 8),
-            "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'su';",
-            "phase",
-            "PHASE_D",
-        ),
-        ]
-    )
 ]
 
 def main():
@@ -169,7 +413,7 @@ def main():
 
 def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFrame, pd.DataFrame]:
     data = pd.read_sql_query(a.query, conn)
-    # print(data)
+    # print(data) #debug
 
     predictor_counts = data[a.predictor].value_counts().reset_index()
     # predictor_counts.columns = [a.predictor, 'count']
