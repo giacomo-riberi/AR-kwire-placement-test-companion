@@ -13,6 +13,7 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 
 @dataclass
 class analysis:
+    type: str
     title: str
     size: tuple
     query: str
@@ -27,8 +28,31 @@ class multianalysis:
 #!!! make a function to automatically generate analysis structs and multianalysis (automatic generation of db queries)
 
 aaa: list[analysis] = [
+    # PA    entered_articulation            by phase !!! add multianalysis by career?
+    analysis(
+        "errorbox",
+        "PA entered_articulation by phase",
+        (6, 8),
+        "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
+        "phase",
+        "entered_articulation",
+    ),
+
+
+    # PA    success                         by phase !!! add multianalysis by career?
+    analysis(
+        "errorbox",
+        "PA success by phase",
+        (6, 8),
+        "SELECT phase, success FROM PA WHERE phase <> -1;",
+        "phase",
+        "success",
+    ),
+
+
     # PA    distance_P2e_PA_target          by phase
     analysis(
+        "errorbox",
         "PA distance_P2e_PA_target by phase",
         (6, 8),
         "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
@@ -36,8 +60,10 @@ aaa: list[analysis] = [
         "distance_P2e_PA_target",
     ),
 
+
     # PA    delta_id_PA_target              by phase
     analysis(
+        "errorbox",
         "PA delta_id_PA_target by phase",
         (6, 8),
         "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
@@ -48,6 +74,7 @@ aaa: list[analysis] = [
     
     # PA                angle_PA_target     by phase
     analysis(
+        "errorbox",
         "PA angle_PA_target by phase",
         (6, 8),
         "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
@@ -58,6 +85,7 @@ aaa: list[analysis] = [
 
     # PA, ECP, PHASE    duration            by phase
     analysis(
+        "errorbox",
         "PA duration by phase",
         (6, 8),
         "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
@@ -65,6 +93,7 @@ aaa: list[analysis] = [
         "PA_D",
     ),
     analysis(
+        "errorbox",
         "ECP duration by phase",
         (6, 8),
         "SELECT PHASE.phase, ECP.ECP_D FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
@@ -72,6 +101,7 @@ aaa: list[analysis] = [
         "ECP_D",
     ),
     analysis(
+        "errorbox",
         "PHASE duration by phase",
         (6, 8),
         "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1;",
@@ -82,6 +112,7 @@ aaa: list[analysis] = [
 
     # PA, ECP, PHASE    RPC                 by phase
     analysis(
+        "errorbox",
         "PA RPC by phase",
         (6, 8),
         "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
@@ -89,6 +120,7 @@ aaa: list[analysis] = [
         "PA_RPC",
     ),
     analysis(
+        "errorbox",
         "ECP RPC by phase",
         (6, 8),
         "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
@@ -96,6 +128,7 @@ aaa: list[analysis] = [
         "ECP_RPC",
     ),
     analysis(
+        "errorbox",
         "PHASE RPC by phase",
         (6, 8),
         "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1;",
@@ -106,6 +139,7 @@ aaa: list[analysis] = [
 
     # PA, ECP, PHASE    hit_count           by phase
     analysis(
+        "errorbox",
         "PA hit count by phase",
         (6, 8),
         "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
@@ -113,6 +147,7 @@ aaa: list[analysis] = [
         "hit_count",
     ),
     analysis(
+        "errorbox",
         "ECP hit count by phase",
         (6, 8),
         "SELECT phase, hit_count FROM ECP WHERE phase <> -1;",
@@ -120,6 +155,7 @@ aaa: list[analysis] = [
         "hit_count",
     ),
     analysis(
+        "errorbox",
         "Phase hit count by phase",
         (6, 8),
         "SELECT phase, hit_count FROM PHASE WHERE phase <> -1;",
@@ -130,6 +166,7 @@ aaa: list[analysis] = [
 
     # ECP               ease_of_placement   by phase
     analysis(
+        "errorbox",
         "ECP ease of placement by phase",
         (6, 8),
         "SELECT PHASE.phase, ECP.ease_of_placement FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
@@ -140,6 +177,7 @@ aaa: list[analysis] = [
 
     # PA, ECP, PHASE    ulnar_nerve         by phase
     analysis(
+        "errorbox",
         "PA target 1 distance from ulnar nerve by phase",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
@@ -147,6 +185,7 @@ aaa: list[analysis] = [
         "ulnar_nerve",
     ),
     analysis(
+        "errorbox",
         "PA target 2 distance from ulnar nerve by phase",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 2",
@@ -154,6 +193,7 @@ aaa: list[analysis] = [
         "ulnar_nerve",
     ),
     analysis(
+        "errorbox",
         "PA target 3 distance from ulnar nerve by phase",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 3",
@@ -164,9 +204,39 @@ aaa: list[analysis] = [
 ]
 
 mmm: list[multianalysis] = [
+     multianalysis(
+        "PA angle by phase and career",
+        [analysis(
+            "errorbox",
+            "confidence PA angle from target by phase",
+            (6, 8),
+            "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+            "phase",
+            "confidence_angle",
+        ),
+        analysis(
+            "errorbox",
+            "real PA angle from target by phase",
+            (6, 8),
+            "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+            "phase",
+            "angle_PA_target",
+        ),
+        analysis(
+            "correlation",
+            "confidence vs real PA angle",
+            (6, 8),
+            "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+            "confidence_angle",
+            "angle_PA_target",
+        ),
+        ]
+    ),
+
     multianalysis(
         "PA distance_P2e_PA_target by phase and career",
         [analysis(
+            "errorbox",
             "Student",
             (6, 8),
             "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
@@ -174,14 +244,16 @@ mmm: list[multianalysis] = [
             "distance_P2e_PA_target",
         ),
         analysis(
-            "Student",
+            "errorbox",
+            "Resident",
             (6, 8),
             "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
             "phase",
             "distance_P2e_PA_target",
         ),
         analysis(
-            "Student",
+            "errorbox",
+            "Surgeon",
             (6, 8),
             "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
             "phase",
@@ -193,6 +265,7 @@ mmm: list[multianalysis] = [
     multianalysis(
         "PA delta_id_PA_target by phase and career",
         [analysis(
+            "errorbox",
             "Student",
             (6, 8),
             "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
@@ -200,14 +273,16 @@ mmm: list[multianalysis] = [
             "delta_id_PA_target",
         ),
         analysis(
-            "Student",
+            "errorbox",
+            "Resident",
             (6, 8),
             "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
             "phase",
             "delta_id_PA_target",
         ),
         analysis(
-            "Student",
+            "errorbox",
+            "Surgeon",
             (6, 8),
             "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
             "phase",
@@ -219,6 +294,7 @@ mmm: list[multianalysis] = [
     multianalysis(
         "PA angle_PA_target by phase and career",
         [analysis(
+            "errorbox",
             "Student",
             (6, 8),
             "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
@@ -226,14 +302,16 @@ mmm: list[multianalysis] = [
             "angle_PA_target",
         ),
         analysis(
-            "Student",
+            "errorbox",
+            "Resident",
             (6, 8),
             "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
             "phase",
             "angle_PA_target",
         ),
         analysis(
-            "Student",
+            "errorbox",
+            "Surgeon",
             (6, 8),
             "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
             "phase",
@@ -245,6 +323,7 @@ mmm: list[multianalysis] = [
     multianalysis(
         "Phase duration by phase and career",
         [analysis(
+            "errorbox",
             "Student",
             (6, 8),
             "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'st';",
@@ -252,6 +331,7 @@ mmm: list[multianalysis] = [
             "PHASE_D",
         ),
         analysis(
+            "errorbox",
             "Resident",
             (6, 8),
             "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'sp';",
@@ -259,6 +339,7 @@ mmm: list[multianalysis] = [
             "PHASE_D",
         ),
         analysis(
+            "errorbox",
             "Surgeon",
             (6, 8),
             "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'su';",
@@ -271,6 +352,7 @@ mmm: list[multianalysis] = [
     multianalysis(
         "Phase RPC by phase and career",
         [analysis(
+            "errorbox",
             "Student",
             (6, 8),
             "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1 AND career == 'st';",
@@ -278,6 +360,7 @@ mmm: list[multianalysis] = [
             "PHASE_RPC",
         ),
         analysis(
+            "errorbox",
             "Resident",
             (6, 8),
             "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1 AND career == 'sp';",
@@ -285,6 +368,7 @@ mmm: list[multianalysis] = [
             "PHASE_RPC",
         ),
         analysis(
+            "errorbox",
             "Surgeon",
             (6, 8),
             "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1 AND career == 'su';",
@@ -297,6 +381,7 @@ mmm: list[multianalysis] = [
     multianalysis(
         "Phase PAC by phase and career",
         [analysis(
+            "errorbox",
             "Student",
             (6, 8),
             "SELECT phase, PHASE_PAC FROM PHASE WHERE phase <> -1 AND career == 'st';",
@@ -304,6 +389,7 @@ mmm: list[multianalysis] = [
             "PHASE_PAC",
         ),
         analysis(
+            "errorbox",
             "Resident",
             (6, 8),
             "SELECT phase, PHASE_PAC FROM PHASE WHERE phase <> -1 AND career == 'sp';",
@@ -311,6 +397,7 @@ mmm: list[multianalysis] = [
             "PHASE_PAC",
         ),
         analysis(
+            "errorbox",
             "Surgeon",
             (6, 8),
             "SELECT phase, PHASE_PAC FROM PHASE WHERE phase <> -1 AND career == 'su';",
@@ -323,6 +410,7 @@ mmm: list[multianalysis] = [
     multianalysis(
         "Phase PACF by phase and career",
         [analysis(
+            "errorbox",
             "Student",
             (6, 8),
             "SELECT phase, PHASE_PACF FROM PHASE WHERE phase <> -1 AND career == 'st';",
@@ -330,6 +418,7 @@ mmm: list[multianalysis] = [
             "PHASE_PACF",
         ),
         analysis(
+            "errorbox",
             "Resident",
             (6, 8),
             "SELECT phase, PHASE_PACF FROM PHASE WHERE phase <> -1 AND career == 'sp';",
@@ -337,6 +426,7 @@ mmm: list[multianalysis] = [
             "PHASE_PACF",
         ),
         analysis(
+            "errorbox",
             "Surgeon",
             (6, 8),
             "SELECT phase, PHASE_PACF FROM PHASE WHERE phase <> -1 AND career == 'su';",
@@ -349,6 +439,7 @@ mmm: list[multianalysis] = [
     multianalysis(
         "Phase hit count by phase and career",
         [analysis(
+            "errorbox",
             "Student",
             (6, 8),
             "SELECT phase, hit_count FROM PHASE WHERE phase <> -1 AND career == 'st';",
@@ -356,6 +447,7 @@ mmm: list[multianalysis] = [
             "hit_count",
         ),
         analysis(
+            "errorbox",
             "Resident",
             (6, 8),
             "SELECT phase, hit_count FROM PHASE WHERE phase <> -1 AND career == 'sp';",
@@ -363,6 +455,7 @@ mmm: list[multianalysis] = [
             "hit_count",
         ),
         analysis(
+            "errorbox",
             "Surgeon",
             (6, 8),
             "SELECT phase, hit_count FROM PHASE WHERE phase <> -1 AND career == 'su';",
@@ -378,20 +471,28 @@ def main():
         for a in aaa:
             data, summary = get_data_summary(conn, a)
 
-            _ = plotter(data, summary, a, save=True, show=True)
+            _ = errorbox(data, summary, a, save=True, show=True)
 
         for m in mmm:
             imgsBytes = []
             for a in m.aaa:
-                data, summary = get_data_summary(conn, a)
+                if a.type == "errorbox":
+                    data, summary = get_data_summary(conn, a)
+                    imgsBytes.append(errorbox(data, summary, a, save=False, show=False)) # saving at the end
+                
+                elif a.type == "correlation":
+                    data, summary = get_data_summary(conn, a)
+                    imgsBytes.append(correlation(data, summary, a, save=False, show=False)) # saving at the end
+                
+                else:
+                    print("unknown analysis type")
+                    quit()
 
-                imgsBytes.append(plotter(data, summary, a, save=False, show=False)) # saving at the end
-            
+            # merge multianalysis image
             imgs: list[Image.Image] = []
             for imgBytes in imgsBytes:
                 imgs.append(Image.open(imgBytes))
-
-            # Create the new image with calculated dimensions
+            
             img_out = Image.new("RGB", (sum(img.width for img in imgs), max(img.height for img in imgs)))
             
             x, y = 0, 0
@@ -416,14 +517,14 @@ def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFram
     # print(data) #debug
 
     predictor_counts = data[a.predictor].value_counts().reset_index()
-    # predictor_counts.columns = [a.predictor, 'count']
     summary = data.groupby(a.predictor)[a.outcome].agg(['mean', 'std']).reset_index()
-    # print(summary_stats)
     summary = pd.merge(summary, predictor_counts, on=a.predictor)
+
+    # print(f"DATA:\n{data} \nSUMMARY:\n{summary}") #debug
 
     return data, summary
 
-def plotter(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True) -> io.BytesIO:
+def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
     plt.rcParams['font.family'] = 'Courier New'
     min_x, max_x = data[a.predictor].min(), data[a.predictor].max()
@@ -435,6 +536,71 @@ def plotter(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool =
     font_size_legend    = 0.6 * font_size_title
     font_size_text      = 0.6 * font_size_title
 
+    # Calculate line of best fit
+    coefficients = np.polyfit(data[a.predictor], data[a.outcome], 1)
+    poly_function = np.poly1d(coefficients)
+    line_x = np.linspace(min(data[a.predictor]), max(data[a.predictor]), 100)
+    line_y = poly_function(line_x)
+
+    # PLOT
+    sc = plt.scatter(data[a.predictor], data[a.outcome],
+                label=f'{a.outcome} Data Points', 
+                color='black', alpha=0.5,
+                s=10)
+    
+    plt.plot(line_x, line_y, color='darkred', label='Correlation')
+    
+    correlation_coefficient = np.corrcoef(data[a.predictor], data[a.outcome])[0, 1]
+
+    plt.text(max_x, min_y+0.90*(max_y-min_y),
+                    f'Pearson corr. coeff.: {correlation_coefficient:.2f}',
+                    ha='right', va='center', color='darkred', fontsize=font_size_text)
+
+    # Adding labels and title
+    plt.xlabel(a.predictor, fontsize=font_size_title)
+    plt.ylabel(a.outcome,   fontsize=font_size_title)
+    plt.title (a.title,     fontsize=font_size_title)
+    plt.legend(             fontsize=font_size_legend)
+
+    # Set axis ticks
+    if all(isinstance(x, int) for x in data):
+        plt.yticks(np.arange(min(data), max(data)+1, 1))    # Set y-axis ticks to integers if all data is integer
+    
+    if len(data[a.predictor]) > 8:
+        predictor_values = data[a.predictor]
+        num_ticks = 8
+        equidistant_ticks = np.linspace(min(predictor_values), max(predictor_values), num_ticks)
+        plt.xticks(equidistant_ticks)
+
+    plt.grid(True)
+
+    # save graph to file
+    if save:
+        plt.savefig(os.path.join(script_dir, sanitize_filename(f"{a.title}.png")))
+    img_data = io.BytesIO()
+
+    # save graph to variable
+    plt.savefig(img_data, format='png')
+
+    # show graph
+    if show:
+        plt.show()
+
+    return img_data
+
+def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True) -> io.BytesIO:
+    plt.figure(figsize=a.size)
+    plt.rcParams['font.family'] = 'Courier New'
+    min_x, max_x = data[a.predictor].min(), data[a.predictor].max()
+    min_y, max_y = data[a.outcome].min(), data[a.outcome].max()
+    width = 0.06 * (max_x-min_x)
+
+    font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
+    # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
+    font_size_legend    = 0.6 * font_size_title
+    font_size_text      = 0.6 * font_size_title
+
+    # PLOT
     sc = plt.scatter(data[a.predictor] + np.random.normal(scale=width/6, size=len(data)), data[a.outcome],
                 label=f'{a.outcome} Data Points', 
                 color='black', alpha=0.5,
