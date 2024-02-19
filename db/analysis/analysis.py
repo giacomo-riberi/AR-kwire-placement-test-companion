@@ -647,7 +647,7 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
     # ANOVA test
     anova_f, anova_p = stats.f_oneway(*boxplot_data)
     plt.text(min_x+0.0*(max_x-min_x), min_y-0.1*(max_y-min_y),
-            f"ANOVA\nf = {anova_f:7.4f}\np = {anova_p:7.4f}",
+            f"ANOVA (Fisher's)\nf = {anova_f:7.4f}\np = {anova_p:7.4f}",
             ha='left', va='top', color='purple', fontsize=font_size_analysis)
 
     # DUNNETT test
