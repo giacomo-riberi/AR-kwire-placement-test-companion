@@ -2,14 +2,17 @@ import os, io, re
 
 import sqlite3
 from dataclasses import dataclass
+from tabulate import tabulate
 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import scipy.stats as stats
 
 from PIL import Image, ImageDraw, ImageFont
 
 script_dir = os.path.dirname(os.path.realpath(__file__))
+
 
 @dataclass
 class analysis:
@@ -527,9 +530,9 @@ def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFram
 def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
     plt.rcParams['font.family'] = 'Courier New'
-    min_x, max_x = data[a.predictor].min(), data[a.predictor].max()
-    min_y, max_y = data[a.outcome].min(), data[a.outcome].max()
-    width = 0.06 * (max_x-min_x)
+    min_x_preplot, max_x_preplot = data[a.predictor].min(), data[a.predictor].max()
+    min_y_preplot, max_y_preplot = data[a.outcome].min(), data[a.outcome].max()
+    width = 0.06 * (max_x_preplot-min_x_preplot)
 
     font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
     # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
@@ -549,9 +552,12 @@ def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bo
                 s=10)
     
     plt.plot(line_x, line_y, color='darkred', label='Correlation')
+
+    # get actual plot dimensions
+    min_x, max_x = plt.xlim()
+    min_y, max_y = plt.ylim()
     
     correlation_coefficient = np.corrcoef(data[a.predictor], data[a.outcome])[0, 1]
-
     plt.text(max_x, min_y+0.90*(max_y-min_y),
                     f'Pearson corr. coeff.: {correlation_coefficient:.2f}',
                     ha='right', va='center', color='darkred', fontsize=font_size_text)
@@ -590,15 +596,17 @@ def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bo
 
 def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True) -> io.BytesIO:
     plt.figure(figsize=a.size)
+    plt.subplots_adjust(bottom=0.2)
     plt.rcParams['font.family'] = 'Courier New'
-    min_x, max_x = data[a.predictor].min(), data[a.predictor].max()
-    min_y, max_y = data[a.outcome].min(), data[a.outcome].max()
-    width = 0.06 * (max_x-min_x)
+    min_x_preplot, max_x_preplot = data[a.predictor].min(), data[a.predictor].max()
+    min_y_preplot, max_y_preplot = data[a.outcome].min(), data[a.outcome].max()
+    width = 0.06 * (max_x_preplot-min_x_preplot)
 
     font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
     # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
     font_size_legend    = 0.6 * font_size_title
     font_size_text      = 0.6 * font_size_title
+    font_size_analysis  = 0.6 * font_size_title
 
     # PLOT
     sc = plt.scatter(data[a.predictor] + np.random.normal(scale=width/6, size=len(data)), data[a.outcome],
@@ -616,7 +624,12 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
                 boxprops=dict(color='darkblue'), whiskerprops=dict(color='darkblue'), capprops=dict(color='darkblue'), medianprops=dict(color='aquamarine'),
                 showfliers=False, notch=False,)
 
-    for i, (mean, std, count, q1, median, q3) in enumerate(zip(summary['mean'], summary['std'], summary['count'], boxplot_data.apply(np.percentile, args=(25,)), boxplot_data.apply(np.median), boxplot_data.apply(np.percentile, args=(75,)))):
+    # get actual plot dimensions
+    min_x, max_x = plt.xlim()
+    min_y, max_y = plt.ylim()
+
+    # Mean and Median tests
+    for i, (index, mean, std, count, q1, median, q3) in enumerate(zip(boxplot_data.index, summary['mean'], summary['std'], summary['count'], boxplot_data.apply(np.percentile, args=(25,)), boxplot_data.apply(np.median), boxplot_data.apply(np.percentile, args=(75,)))):
         plt.text(summary[a.predictor][i]-width/1.9, min_y+0.85*(max_y-min_y),
                     f'Mean:\nStddev:\nCount:',
                     ha='right', va='center', color='darkred', fontsize=font_size_text)
@@ -631,6 +644,21 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
                     f'{q3:6.2f}\n{median:6.2f}\n{q1:6.2f}',
                     ha='left', va='center', color='darkblue', fontsize=font_size_text)
 
+    # ANOVA test
+    anova_f, anova_p = stats.f_oneway(*boxplot_data)
+    plt.text(min_x+0.0*(max_x-min_x), min_y-0.1*(max_y-min_y),
+            f"ANOVA\nf = {anova_f:7.4f}\np = {anova_p:7.4f}",
+            ha='left', va='top', color='purple', fontsize=font_size_analysis)
+
+    # DUNNETT test
+    dunnett_stat = stats.dunnett(*boxplot_data[1:], control=boxplot_data[0])
+    dunnett_f, dunnett_p, dunnett_ci = dunnett_stat.statistic, dunnett_stat.pvalue, dunnett_stat.confidence_interval()
+    data_rows = [[f"{i}", f"{stat:7.4f}", f"{p_val:7.4f}", f"{ci_low:9.4f}<>{ci_high:9.4f}"] for i, stat, p_val, ci_low, ci_high in zip(boxplot_data[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
+    plt.text(min_x+0.3*(max_x-min_x), min_y-0.1*(max_y-min_y),
+            f"DUNNETT (control: {0})\n{tabulate(data_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'), )}",
+            ha='left', va='top', color='purple', fontsize=font_size_analysis)
+    
+    
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
     plt.ylabel(a.outcome,   fontsize=font_size_title)
