@@ -554,7 +554,7 @@ def main():
         for a in aaa:
             data, summary = get_data_summary(conn, a)
 
-            _ = errorbox(data, summary, a, save=True, show=True)
+            _ = errorbox(data, summary, a, save=True, show=False)
 
         for m in mmm:
             imgsBytes = []
@@ -593,7 +593,8 @@ def main():
                 fill    = (0,0,0,255))
 
             img_out.save(os.path.join(script_dir, sanitize_filename(f"{m.title}.png")))
-            img_out.show()
+            # img_out.show()
+            img_out.close()
 
 def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFrame, pd.DataFrame]:
     data = pd.read_sql_query(a.query, conn)
