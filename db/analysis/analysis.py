@@ -31,10 +31,19 @@ class multianalysis:
 #!!! make a function to automatically generate analysis structs and multianalysis (automatic generation of db queries)
 
 aaa: list[analysis] = [
+    analysis(
+        "errorbox",
+        "ECP PACF by phase",
+        (6, 8),
+        "SELECT phase, ECP_PACF FROM ECP WHERE phase <> -1",
+        "phase",
+        "ECP_PACF",
+    ),
+
     # PA    entered_articulation            by phase !!! add multianalysis by career?
     analysis(
         "errorbox",
-        "PA entered_articulation by phase",
+        "PA entered articulation by phase",
         (6, 8),
         "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
         "phase",
@@ -56,7 +65,7 @@ aaa: list[analysis] = [
     # PA    distance_P2e_PA_target          by phase
     analysis(
         "errorbox",
-        "PA distance_P2e_PA_target by phase",
+        "PA distance of PA P2e from target P2e by phase",
         (6, 8),
         "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
         "phase",
@@ -67,7 +76,7 @@ aaa: list[analysis] = [
     # PA    delta_id_PA_target              by phase
     analysis(
         "errorbox",
-        "PA delta_id_PA_target by phase",
+        "PA delta insertion depth by phase",
         (6, 8),
         "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
         "phase",
@@ -78,7 +87,7 @@ aaa: list[analysis] = [
     # PA                angle_PA_target     by phase
     analysis(
         "errorbox",
-        "PA angle_PA_target by phase",
+        "PA angle to target by phase",
         (6, 8),
         "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
         "phase",
@@ -103,14 +112,6 @@ aaa: list[analysis] = [
         "phase",
         "ECP_D",
     ),
-    analysis(
-        "errorbox",
-        "PHASE duration by phase",
-        (6, 8),
-        "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1;",
-        "phase",
-        "PHASE_D",
-    ),
 
 
     # PA, ECP, PHASE    RPC                 by phase
@@ -130,14 +131,6 @@ aaa: list[analysis] = [
         "phase",
         "ECP_RPC",
     ),
-    analysis(
-        "errorbox",
-        "PHASE RPC by phase",
-        (6, 8),
-        "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1;",
-        "phase",
-        "PHASE_RPC",
-    ),
 
 
     # PA, ECP, PHASE    hit_count           by phase
@@ -154,14 +147,6 @@ aaa: list[analysis] = [
         "ECP hit count by phase",
         (6, 8),
         "SELECT phase, hit_count FROM ECP WHERE phase <> -1;",
-        "phase",
-        "hit_count",
-    ),
-    analysis(
-        "errorbox",
-        "Phase hit count by phase",
-        (6, 8),
-        "SELECT phase, hit_count FROM PHASE WHERE phase <> -1;",
         "phase",
         "hit_count",
     ),
@@ -284,11 +269,41 @@ aaa: list[analysis] = [
         "phase",
         "brachial_artery",
     ),
+
 ]
 
 mmm: list[multianalysis] = [
+        multianalysis(
+        "PA angle to target by phase and career",
+        [analysis(
+            "errorbox",
+            "Student",
+            (6, 8),
+            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+            "phase",
+            "angle_PA_target",
+        ),
+        analysis(
+            "errorbox",
+            "Resident",
+            (6, 8),
+            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+            "phase",
+            "angle_PA_target",
+        ),
+        analysis(
+            "errorbox",
+            "Surgeon",
+            (6, 8),
+            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+            "phase",
+            "angle_PA_target",
+        ),
+        ]
+    ),
+
     multianalysis(
-        "PA angle by phase and career",
+        "PA angle and confidence by phase and vs confidence",
         [analysis(
             "errorbox",
             "confidence PA angle from target by phase",
@@ -374,179 +389,7 @@ mmm: list[multianalysis] = [
         ]
     ),
 
-    multianalysis(
-        "PA angle_PA_target by phase and career",
-        [analysis(
-            "errorbox",
-            "Student",
-            (6, 8),
-            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-            "phase",
-            "angle_PA_target",
-        ),
-        analysis(
-            "errorbox",
-            "Resident",
-            (6, 8),
-            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-            "phase",
-            "angle_PA_target",
-        ),
-        analysis(
-            "errorbox",
-            "Surgeon",
-            (6, 8),
-            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-            "phase",
-            "angle_PA_target",
-        ),
-        ]
-    ),
 
-    multianalysis(
-        "PHASE duration by phase and career",
-        [analysis(
-            "errorbox",
-            "Student",
-            (6, 8),
-            "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'st';",
-            "phase",
-            "PHASE_D",
-        ),
-        analysis(
-            "errorbox",
-            "Resident",
-            (6, 8),
-            "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'sp';",
-            "phase",
-            "PHASE_D",
-        ),
-        analysis(
-            "errorbox",
-            "Surgeon",
-            (6, 8),
-            "SELECT phase, PHASE_D FROM PHASE WHERE phase <> -1 AND career == 'su';",
-            "phase",
-            "PHASE_D",
-        ),
-        ]
-    ),
-
-    multianalysis(
-        "PHASE RPC by phase and career",
-        [analysis(
-            "errorbox",
-            "Student",
-            (6, 8),
-            "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1 AND career == 'st';",
-            "phase",
-            "PHASE_RPC",
-        ),
-        analysis(
-            "errorbox",
-            "Resident",
-            (6, 8),
-            "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1 AND career == 'sp';",
-            "phase",
-            "PHASE_RPC",
-        ),
-        analysis(
-            "errorbox",
-            "Surgeon",
-            (6, 8),
-            "SELECT phase, PHASE_RPC FROM PHASE WHERE phase <> -1 AND career == 'su';",
-            "phase",
-            "PHASE_RPC",
-        ),
-        ]
-    ),
-
-    multianalysis(
-        "PHASE PAC by phase and career",
-        [analysis(
-            "errorbox",
-            "Student",
-            (6, 8),
-            "SELECT phase, PHASE_PAC FROM PHASE WHERE phase <> -1 AND career == 'st';",
-            "phase",
-            "PHASE_PAC",
-        ),
-        analysis(
-            "errorbox",
-            "Resident",
-            (6, 8),
-            "SELECT phase, PHASE_PAC FROM PHASE WHERE phase <> -1 AND career == 'sp';",
-            "phase",
-            "PHASE_PAC",
-        ),
-        analysis(
-            "errorbox",
-            "Surgeon",
-            (6, 8),
-            "SELECT phase, PHASE_PAC FROM PHASE WHERE phase <> -1 AND career == 'su';",
-            "phase",
-            "PHASE_PAC",
-        ),
-        ]
-    ),
-
-    multianalysis(
-        "PHASE PACF by phase and career",
-        [analysis(
-            "errorbox",
-            "Student",
-            (6, 8),
-            "SELECT phase, PHASE_PACF FROM PHASE WHERE phase <> -1 AND career == 'st';",
-            "phase",
-            "PHASE_PACF",
-        ),
-        analysis(
-            "errorbox",
-            "Resident",
-            (6, 8),
-            "SELECT phase, PHASE_PACF FROM PHASE WHERE phase <> -1 AND career == 'sp';",
-            "phase",
-            "PHASE_PACF",
-        ),
-        analysis(
-            "errorbox",
-            "Surgeon",
-            (6, 8),
-            "SELECT phase, PHASE_PACF FROM PHASE WHERE phase <> -1 AND career == 'su';",
-            "phase",
-            "PHASE_PACF",
-        ),
-        ]
-    ),
-
-    multianalysis(
-        "PHASE hit count by phase and career",
-        [analysis(
-            "errorbox",
-            "Student",
-            (6, 8),
-            "SELECT phase, hit_count FROM PHASE WHERE phase <> -1 AND career == 'st';",
-            "phase",
-            "hit_count",
-        ),
-        analysis(
-            "errorbox",
-            "Resident",
-            (6, 8),
-            "SELECT phase, hit_count FROM PHASE WHERE phase <> -1 AND career == 'sp';",
-            "phase",
-            "hit_count",
-        ),
-        analysis(
-            "errorbox",
-            "Surgeon",
-            (6, 8),
-            "SELECT phase, hit_count FROM PHASE WHERE phase <> -1 AND career == 'su';",
-            "phase",
-            "hit_count",
-        ),
-        ]
-    ),
 ]
 
 def main():
