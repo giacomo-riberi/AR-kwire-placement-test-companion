@@ -167,7 +167,7 @@ aaa: list[analysis] = [
     ),
     
 
-    # ECP               ease_of_placement   by phase
+    # # ECP               ease_of_placement   by phase
     analysis(
         "errorbox",
         "ECP ease of placement by phase",
@@ -203,7 +203,87 @@ aaa: list[analysis] = [
         "phase",
         "ulnar_nerve",
     ),
-    
+
+
+    # PA, ECP, PHASE    middle_collateral_artery         by phase
+    analysis(
+        "errorbox",
+        "PA target 1 distance from middle collateral artery by phase",
+        (8, 8),
+        "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 1",
+        "phase",
+        "middle_collateral_artery",
+    ),
+    analysis(
+        "errorbox",
+        "PA target 2 distance from middle collateral artery by phase",
+        (8, 8),
+        "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 2",
+        "phase",
+        "middle_collateral_artery",
+    ),
+    analysis(
+        "errorbox",
+        "PA target 3 distance from middle collateral artery by phase",
+        (8, 8),
+        "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 3",
+        "phase",
+        "middle_collateral_artery",
+    ),
+
+
+    # PA, ECP, PHASE    median_nerve         by phase
+    analysis(
+        "errorbox",
+        "PA target 1 distance from median by phase",
+        (8, 8),
+        "SELECT phase, median_nerve FROM PA WHERE ECP_number == 1",
+        "phase",
+        "median_nerve",
+    ),
+    analysis(
+        "errorbox",
+        "PA target 2 distance from median nerve by phase",
+        (8, 8),
+        "SELECT phase, median_nerve FROM PA WHERE ECP_number == 2",
+        "phase",
+        "median_nerve",
+    ),
+    analysis(
+        "errorbox",
+        "PA target 3 distance from median nerve by phase",
+        (8, 8),
+        "SELECT phase, median_nerve FROM PA WHERE ECP_number == 3",
+        "phase",
+        "median_nerve",
+    ),
+
+
+    # PA, ECP, PHASE    brachial_artery         by phase
+    analysis(
+        "errorbox",
+        "PA target 1 distance from brachial artery by phase",
+        (8, 8),
+        "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 1",
+        "phase",
+        "brachial_artery",
+    ),
+    analysis(
+        "errorbox",
+        "PA target 2 distance from brachial artery by phase",
+        (8, 8),
+        "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 2",
+        "phase",
+        "brachial_artery",
+    ),
+    analysis(
+        "errorbox",
+        "PA target 3 distance from brachial artery by phase",
+        (8, 8),
+        "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 3",
+        "phase",
+        "brachial_artery",
+    ),
 ]
 
 mmm: list[multianalysis] = [
@@ -324,7 +404,7 @@ mmm: list[multianalysis] = [
     ),
 
     multianalysis(
-        "Phase duration by phase and career",
+        "PHASE duration by phase and career",
         [analysis(
             "errorbox",
             "Student",
@@ -353,7 +433,7 @@ mmm: list[multianalysis] = [
     ),
 
     multianalysis(
-        "Phase RPC by phase and career",
+        "PHASE RPC by phase and career",
         [analysis(
             "errorbox",
             "Student",
@@ -382,7 +462,7 @@ mmm: list[multianalysis] = [
     ),
 
     multianalysis(
-        "Phase PAC by phase and career",
+        "PHASE PAC by phase and career",
         [analysis(
             "errorbox",
             "Student",
@@ -411,7 +491,7 @@ mmm: list[multianalysis] = [
     ),
 
     multianalysis(
-        "Phase PACF by phase and career",
+        "PHASE PACF by phase and career",
         [analysis(
             "errorbox",
             "Student",
@@ -440,7 +520,7 @@ mmm: list[multianalysis] = [
     ),
 
     multianalysis(
-        "Phase hit count by phase and career",
+        "PHASE hit count by phase and career",
         [analysis(
             "errorbox",
             "Student",
