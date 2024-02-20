@@ -663,14 +663,16 @@ def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bo
     # save graph to file
     if save:
         plt.savefig(os.path.join(script_dir, sanitize_filename(f"{a.title}.png")))
-    img_data = io.BytesIO()
-
+    
     # save graph to variable
+    img_data = io.BytesIO()
     plt.savefig(img_data, format='png')
 
     # show graph
     if show:
         plt.show()
+
+    plt.close()
 
     return img_data
 
@@ -765,14 +767,16 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
     # save graph to file
     if save:
         plt.savefig(os.path.join(script_dir, sanitize_filename(f"{a.title}.png")))
-    img_data = io.BytesIO()
 
     # save graph to variable
+    img_data = io.BytesIO()
     plt.savefig(img_data, format='png')
 
     # show graph
     if show:
         plt.show()
+    
+    plt.close()
 
     return img_data
     
