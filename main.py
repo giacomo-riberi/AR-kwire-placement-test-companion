@@ -348,7 +348,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             # computed by fusion
             fusion_computed=False,
 
-            hit_count               =-1.0,  # update after fusion computation
+            hit_count               =-1.0,
 
             angle_PA_target         =-1.0,
             
@@ -410,7 +410,6 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     # k-wire extraction of PA is not counted in PA_D
     PA_data.PA_D = chrono.reset()
     PA_data.entered_articulation = ci.int(f" |-- ENTERED ARTICULATION [-1 / 0 (not entered) / 1 (entered)] : ", min=-1, max=1)
-    PA_data.hit_count = sum(1 for value in PA_data.anatomy.values() if value == 0.0)
 
     PA_data.comment = ci.str(f"\tTECHNICAL:\t comment on PA ({id}) [STRING]: ")
     ci.str(f"\tTECHNICAL:\t remove kwire from phanotm [ENTER when done]: ")
