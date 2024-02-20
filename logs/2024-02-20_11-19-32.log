@@ -1,0 +1,30 @@
+2024-02-20 11:19:32,451 - [  INFO] - flags: []
+2024-02-20 11:19:32,452 - [  INFO] - # POSITIONING PHASE COMPANION (v1.27)
+2024-02-20 11:19:32,452 - [  INFO] - # What a beautiful day to stick some anti-pigeon spikes into plastic!
+2024-02-20 11:19:32,455 - [  INFO] - # BEGIN POSITIONING PHASE FOR A CANDIDATE, ONE SINGLE PHASE (89f925)
+2024-02-20 11:19:32,455 - [  INFO] - # 2024/02/20 - 11:19:32
+2024-02-20 11:19:32,456 - [  INFO] - DATA COLLECTION - PHASE - (89f925)
+2024-02-20 11:19:46,801 - [ DEBUG] - |-- phase      [INTEGER]:           	|1|
+2024-02-20 11:19:46,802 - [ DEBUG] - |-- phantom id [STRING]:            	|04|
+2024-02-20 11:19:46,805 - [ DEBUG] - |-- country origin [STRING]:        	|italy|
+2024-02-20 11:19:46,806 - [ DEBUG] - |-- country    [STRING]:            	|italy|
+2024-02-20 11:19:46,807 - [ DEBUG] - |-- city       [STRING]:            	|turin|
+2024-02-20 11:19:46,807 - [ DEBUG] - |-- institute  [STRING]:            	|unito|
+2024-02-20 11:19:46,808 - [ DEBUG] - |-- name [STRING]:                  	|fiamma|
+2024-02-20 11:19:46,808 - [ DEBUG] - |-- surname [STRING]:               	|cusumano|
+2024-02-20 11:19:46,809 - [ DEBUG] - |-- gender                          	|f|
+2024-02-20 11:19:46,810 - [ DEBUG] - |-- right-handed [Y/N]:             	|true|
+2024-02-20 11:19:46,811 - [ DEBUG] - |-- age [INTEGER]:                  	|22|
+2024-02-20 11:19:46,811 - [ DEBUG] - |-- career:   	|st|
+2024-02-20 11:19:48,244 - [ DEBUG] - |-- medsurg year        [-1 : 7]:   	|3|
+2024-02-20 11:19:49,648 - [ DEBUG] - |-- specialization year [-1 : 5]:   	|-1|
+2024-02-20 11:19:51,480 - [ DEBUG] - |-- surgeon year        [-1 : 100]: 	|-1|
+2024-02-20 11:19:53,606 - [ DEBUG] - |-- exp operation count [INTEGER]:  	|0|
+2024-02-20 11:20:00,304 - [ DEBUG] - |-- glasses [Y/N]:                  	|y|
+2024-02-20 11:20:03,529 - [ DEBUG] - |-- glasses type [None [] / Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: 	|m|
+2024-02-20 11:20:05,017 - [ DEBUG] - |-- glasses power [-1 : 100]         |-- glasses power [-1 : 100]        	|2|
+2024-02-20 11:20:11,544 - [ DEBUG] - |-- exp Virtual Reality   [0 : 5]:  	|0|
+2024-02-20 11:20:12,362 - [ DEBUG] - |-- exp Augmented Reality [0 : 5]:  	|0|
+2024-02-20 11:20:22,677 - [ DEBUG] - |-- exp 3D editors        [0 : 5]:  	|0|
+2024-02-20 11:20:24,432 - [ DEBUG] - TECHNICAL:	 is data entered correct? [Y/N]: 	|n|
+2024-02-20 11:20:25,530 - [  INFO] - exiting. DATA NOT SAVED!
