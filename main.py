@@ -393,6 +393,15 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
             PA_data.P2C=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['C']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2C)
             PA_data.P2D=ci.flo(f" |-- P2{data.PHASE_design[ECP_number-1].markers['D']} [FLOAT, EMPTY for old value]: ", default=PA_data.P2D)
 
+            PA_data.P1A_U= ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['A']} unity [FLOAT, EMPTY for old value]:  ", default=PA_data.P1A_U),
+            PA_data.P1B_U= ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['B']} unity [FLOAT, EMPTY for old value]:  ", default=PA_data.P1B_U),
+            PA_data.P1C_U= ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['C']} unity [FLOAT, EMPTY for old value]:  ", default=PA_data.P1C_U),
+            PA_data.P1D_U= ci.flo(f" |-- P1{data.PHASE_design[ECP_number-1].markers['D']} unity [FLOAT, EMPTY for old value]:  ", default=PA_data.P1D_U),
+            PA_data.P2eA_U=ci.flo(f" |-- P2e{data.PHASE_design[ECP_number-1].markers['A']} unity [FLOAT, EMPTY for old value]: ", default=PA_data.P2eA_U),
+            PA_data.P2eB_U=ci.flo(f" |-- P2e{data.PHASE_design[ECP_number-1].markers['B']} unity [FLOAT, EMPTY for old value]: ", default=PA_data.P2eB_U),
+            PA_data.P2eC_U=ci.flo(f" |-- P2e{data.PHASE_design[ECP_number-1].markers['C']} unity [FLOAT, EMPTY for old value]: ", default=PA_data.P2eC_U),
+            PA_data.P2eD_U=ci.flo(f" |-- P2e{data.PHASE_design[ECP_number-1].markers['D']} unity [FLOAT, EMPTY for old value]: ", default=PA_data.P2eD_U),
+
         if PA_data.P1_mean > PA_data.P1_mean_max or PA_data.P2_mean > PA_data.P2_mean_max:
             if PA_data.P1_mean > PA_data.P1_mean_max:
                 logger.info("\tTECHNICAL:\t ATTENTION: P1 measurement error is above max allowed! Please remeasure or import from unity")
