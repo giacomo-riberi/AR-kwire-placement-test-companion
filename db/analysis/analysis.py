@@ -207,7 +207,7 @@ aaa: list[analysis] = [
 ]
 
 mmm: list[multianalysis] = [
-     multianalysis(
+    multianalysis(
         "PA angle by phase and career",
         [analysis(
             "errorbox",
@@ -645,18 +645,28 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
                     ha='left', va='center', color='darkblue', fontsize=font_size_text)
 
     # ANOVA test
-    anova_f, anova_p = stats.f_oneway(*boxplot_data)
-    plt.text(min_x+0.0*(max_x-min_x), min_y-0.1*(max_y-min_y),
-            f"ANOVA (Fisher's)\nf = {anova_f:7.4f}\np = {anova_p:7.4f}",
-            ha='left', va='top', color='purple', fontsize=font_size_analysis)
+    if all(len(lst) <= 1 for lst in boxplot_data):
+        plt.text(min_x+0.0*(max_x-min_x), min_y-0.1*(max_y-min_y),
+                f"ANOVA (Fisher's)\nwarning:\nnot enough data!",
+                ha='left', va='top', color='purple', fontsize=font_size_analysis)
+    else:
+        anova_f, anova_p = stats.f_oneway(*boxplot_data)
+        plt.text(min_x+0.0*(max_x-min_x), min_y-0.1*(max_y-min_y),
+                f"ANOVA (Fisher's)\nf = {anova_f:7.4f}\np = {anova_p:7.4f}",
+                ha='left', va='top', color='purple', fontsize=font_size_analysis)
 
     # DUNNETT test
-    dunnett_stat = stats.dunnett(*boxplot_data[1:], control=boxplot_data[0])
-    dunnett_f, dunnett_p, dunnett_ci = dunnett_stat.statistic, dunnett_stat.pvalue, dunnett_stat.confidence_interval()
-    data_rows = [[f"{i}", f"{stat:7.4f}", f"{p_val:7.4f}", f"{ci_low:9.4f}<>{ci_high:9.4f}"] for i, stat, p_val, ci_low, ci_high in zip(boxplot_data[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
-    plt.text(min_x+0.3*(max_x-min_x), min_y-0.1*(max_y-min_y),
-            f"DUNNETT (control: {0})\n{tabulate(data_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'), )}",
-            ha='left', va='top', color='purple', fontsize=font_size_analysis)
+    if len(boxplot_data[0]) <= 1:
+        plt.text(min_x+0.3*(max_x-min_x), min_y-0.1*(max_y-min_y),
+                f"DUNNETT (control: {0})\nwarning:\nnot enough data in control!",
+                ha='left', va='top', color='purple', fontsize=font_size_analysis)
+    else:
+        dunnett_stat = stats.dunnett(*boxplot_data[1:], control=boxplot_data[0])
+        dunnett_f, dunnett_p, dunnett_ci = dunnett_stat.statistic, dunnett_stat.pvalue, dunnett_stat.confidence_interval()
+        data_rows = [[f"{i}", f"{stat:7.4f}", f"{p_val:7.4f}", f"{ci_low:9.4f}<>{ci_high:9.4f}"] for i, stat, p_val, ci_low, ci_high in zip(boxplot_data[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
+        plt.text(min_x+0.3*(max_x-min_x), min_y-0.1*(max_y-min_y),
+                f"DUNNETT (control: {0})\n{tabulate(data_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'),)}",
+                ha='left', va='top', color='purple', fontsize=font_size_analysis)
     
     
     # Adding labels and title
