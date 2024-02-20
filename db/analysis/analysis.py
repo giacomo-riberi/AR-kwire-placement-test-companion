@@ -16,8 +16,9 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 
 @dataclass
 class analysis:
-    type: str
     title: str
+    category: str
+    type: str
     size: tuple
     query: str
     predictor: str
@@ -26,14 +27,16 @@ class analysis:
 @dataclass
 class multianalysis:
     title: str
+    category: str
     aaa: list[analysis]
 
 #!!! make a function to automatically generate analysis structs and multianalysis (automatic generation of db queries)
 
 aaa: list[analysis] = [
     analysis(
-        "errorbox",
         "ECP PACF by phase",
+        "statistical",
+        "errorbox",
         (6, 8),
         "SELECT phase, ECP_PACF FROM ECP WHERE phase <> -1",
         "phase",
@@ -42,8 +45,9 @@ aaa: list[analysis] = [
 
     # PA    entered_articulation            by phase !!! add multianalysis by career?
     analysis(
-        "errorbox",
         "PA entered articulation by phase",
+        "anatomical",
+        "errorbox",
         (6, 8),
         "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
         "phase",
@@ -53,8 +57,9 @@ aaa: list[analysis] = [
 
     # PA    success                         by phase !!! add multianalysis by career?
     analysis(
-        "errorbox",
         "PA success by phase",
+        "statistical",
+        "errorbox",
         (6, 8),
         "SELECT phase, success FROM PA WHERE phase <> -1;",
         "phase",
@@ -64,8 +69,9 @@ aaa: list[analysis] = [
 
     # PA    distance_P2e_PA_target          by phase
     analysis(
-        "errorbox",
         "PA distance of PA P2e from target P2e by phase",
+        "positional",
+        "errorbox",
         (6, 8),
         "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
         "phase",
@@ -75,8 +81,9 @@ aaa: list[analysis] = [
 
     # PA    delta_id_PA_target              by phase
     analysis(
-        "errorbox",
         "PA delta insertion depth by phase",
+        "positional",
+        "errorbox",
         (6, 8),
         "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
         "phase",
@@ -86,8 +93,9 @@ aaa: list[analysis] = [
     
     # PA                angle_PA_target     by phase
     analysis(
-        "errorbox",
         "PA angle to target by phase",
+        "positional",
+        "errorbox",
         (6, 8),
         "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
         "phase",
@@ -95,18 +103,20 @@ aaa: list[analysis] = [
     ),
 
 
-    # PA, ECP, PHASE    duration            by phase
+    # PA, ECP    duration            by phase
     analysis(
-        "errorbox",
         "PA duration by phase",
+        "duration",
+        "errorbox",
         (6, 8),
         "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
         "PA_D",
     ),
     analysis(
-        "errorbox",
         "ECP duration by phase",
+        "duration",
+        "errorbox",
         (6, 8),
         "SELECT PHASE.phase, ECP.ECP_D FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
@@ -114,18 +124,20 @@ aaa: list[analysis] = [
     ),
 
 
-    # PA, ECP, PHASE    RPC                 by phase
+    # PA, ECP    RPC                 by phase
     analysis(
-        "errorbox",
         "PA RPC by phase",
+        "RPC",
+        "errorbox",
         (6, 8),
         "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
         "PA_RPC",
     ),
     analysis(
-        "errorbox",
         "ECP RPC by phase",
+        "RPC",
+        "errorbox",
         (6, 8),
         "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
@@ -133,18 +145,20 @@ aaa: list[analysis] = [
     ),
 
 
-    # PA, ECP, PHASE    hit_count           by phase
+    # PA, ECP    hit_count           by phase
     analysis(
-        "errorbox",
         "PA hit count by phase",
+        "anatomical",
+        "errorbox",
         (6, 8),
         "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
         "phase",
         "hit_count",
     ),
     analysis(
-        "errorbox",
         "ECP hit count by phase",
+        "anatomical",
+        "errorbox",
         (6, 8),
         "SELECT phase, hit_count FROM ECP WHERE phase <> -1;",
         "phase",
@@ -154,8 +168,9 @@ aaa: list[analysis] = [
 
     # # ECP               ease_of_placement   by phase
     analysis(
-        "errorbox",
         "ECP ease of placement by phase",
+        "statistical",
+        "errorbox",
         (6, 8),
         "SELECT PHASE.phase, ECP.ease_of_placement FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
@@ -165,24 +180,30 @@ aaa: list[analysis] = [
 
     # PA, ECP, PHASE    ulnar_nerve         by phase
     analysis(
-        "errorbox",
         "PA target 1 distance from ulnar nerve by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
         "phase",
         "ulnar_nerve",
     ),
     analysis(
-        "errorbox",
         "PA target 2 distance from ulnar nerve by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 2",
         "phase",
         "ulnar_nerve",
     ),
     analysis(
-        "errorbox",
         "PA target 3 distance from ulnar nerve by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 3",
         "phase",
@@ -192,24 +213,30 @@ aaa: list[analysis] = [
 
     # PA, ECP, PHASE    middle_collateral_artery         by phase
     analysis(
-        "errorbox",
         "PA target 1 distance from middle collateral artery by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 1",
         "phase",
         "middle_collateral_artery",
     ),
     analysis(
-        "errorbox",
         "PA target 2 distance from middle collateral artery by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 2",
         "phase",
         "middle_collateral_artery",
     ),
     analysis(
-        "errorbox",
         "PA target 3 distance from middle collateral artery by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 3",
         "phase",
@@ -219,24 +246,30 @@ aaa: list[analysis] = [
 
     # PA, ECP, PHASE    median_nerve         by phase
     analysis(
-        "errorbox",
         "PA target 1 distance from median by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 1",
         "phase",
         "median_nerve",
     ),
     analysis(
-        "errorbox",
         "PA target 2 distance from median nerve by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 2",
         "phase",
         "median_nerve",
     ),
     analysis(
-        "errorbox",
         "PA target 3 distance from median nerve by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 3",
         "phase",
@@ -246,24 +279,30 @@ aaa: list[analysis] = [
 
     # PA, ECP, PHASE    brachial_artery         by phase
     analysis(
-        "errorbox",
         "PA target 1 distance from brachial artery by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 1",
         "phase",
         "brachial_artery",
     ),
     analysis(
-        "errorbox",
         "PA target 2 distance from brachial artery by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 2",
         "phase",
         "brachial_artery",
     ),
     analysis(
-        "errorbox",
         "PA target 3 distance from brachial artery by phase",
+        "anatomical",
+        "errorbox",
+        
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 3",
         "phase",
@@ -274,26 +313,30 @@ aaa: list[analysis] = [
 
 mmm: list[multianalysis] = [
         multianalysis(
+        "positional",
         "PA angle to target by phase and career",
         [analysis(
-            "errorbox",
             "Student",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
             "phase",
             "angle_PA_target",
         ),
         analysis(
-            "errorbox",
             "Resident",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
             "phase",
             "angle_PA_target",
         ),
         analysis(
-            "errorbox",
             "Surgeon",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
             "phase",
@@ -304,25 +347,29 @@ mmm: list[multianalysis] = [
 
     multianalysis(
         "PA angle and confidence by phase and vs confidence",
+        "positional",
         [analysis(
-            "errorbox",
             "confidence PA angle from target by phase",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
             "phase",
             "confidence_angle",
         ),
         analysis(
-            "errorbox",
             "real PA angle from target by phase",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
             "phase",
             "angle_PA_target",
         ),
         analysis(
-            "correlation",
             "confidence vs real PA angle",
+            "positional",
+            "correlation",
             (6, 8),
             "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
             "confidence_angle",
@@ -333,25 +380,29 @@ mmm: list[multianalysis] = [
 
     multianalysis(
         "PA distance_P2e_PA_target by phase and career",
+        "positional",
         [analysis(
-            "errorbox",
             "Student",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
             "phase",
             "distance_P2e_PA_target",
         ),
         analysis(
-            "errorbox",
             "Resident",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
             "phase",
             "distance_P2e_PA_target",
         ),
         analysis(
-            "errorbox",
             "Surgeon",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
             "phase",
@@ -362,25 +413,29 @@ mmm: list[multianalysis] = [
 
     multianalysis(
         "PA delta_id_PA_target by phase and career",
+        "positional",
         [analysis(
-            "errorbox",
             "Student",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
             "phase",
             "delta_id_PA_target",
         ),
         analysis(
-            "errorbox",
             "Resident",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
             "phase",
             "delta_id_PA_target",
         ),
         analysis(
-            "errorbox",
             "Surgeon",
+            "positional",
+            "errorbox",
             (6, 8),
             "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
             "phase",
@@ -506,7 +561,10 @@ def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bo
 
     # save graph to file
     if save:
-        plt.savefig(os.path.join(script_dir, sanitize_filename(f"{a.title}.png")))
+        save_path = os.path.join(script_dir, a.category, sanitize_filename(f"{a.title}.png"))
+        if not os.path.exists(save_path):
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.savefig(save_path)
     
     # save graph to variable
     img_data = io.BytesIO()
@@ -610,7 +668,10 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
 
     # save graph to file
     if save:
-        plt.savefig(os.path.join(script_dir, sanitize_filename(f"{a.title}.png")))
+        save_path = os.path.join(script_dir, a.category, sanitize_filename(f"{a.title}.png"))
+        if not os.path.exists(save_path):
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.savefig(save_path)
 
     # save graph to variable
     img_data = io.BytesIO()
