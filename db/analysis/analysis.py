@@ -450,20 +450,20 @@ mmm: list[multianalysis] = [
 def main():
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
-            data, summary = get_data_summary(conn, a)
+            dataframe, dataserie, summary = get_data_summary(conn, a)
 
-            _ = errorbox(data, summary, a, save=True, show=False)
+            _ = errorbox(dataframe, dataserie, summary, a, save=True, show=True)
 
         for m in mmm:
             imgsBytes = []
             for a in m.aaa:
                 if a.type == "errorbox":
-                    data, summary = get_data_summary(conn, a)
-                    imgsBytes.append(errorbox(data, summary, a, save=False, show=False)) # saving at the end
+                    dataframe, dataserie, summary = get_data_summary(conn, a)
+                    imgsBytes.append(errorbox(dataframe, dataserie, summary, a, save=False, show=False)) # saving at the end
                 
                 elif a.type == "correlation":
-                    data, summary = get_data_summary(conn, a)
-                    imgsBytes.append(correlation(data, summary, a, save=False, show=False)) # saving at the end
+                    dataframe, dataserie, summary = get_data_summary(conn, a)
+                    imgsBytes.append(correlation(dataframe, dataserie, summary, a, save=False, show=False)) # saving at the end
                 
                 else:
                     print("unknown analysis type")
@@ -494,23 +494,30 @@ def main():
             # img_out.show()
             img_out.close()
 
-def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFrame, pd.DataFrame]:
-    data = pd.read_sql_query(a.query, conn)
+def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame]:
+    dataframe = pd.read_sql_query(a.query, conn)
     # print(data) #debug
 
-    predictor_counts = data[a.predictor].value_counts().reset_index()
-    summary = data.groupby(a.predictor)[a.outcome].agg(['mean', 'std']).reset_index()
+    # mean, std
+    summary = dataframe.groupby(a.predictor)[a.outcome].agg(['mean', 'std']).reset_index()
+
+    # count
+    predictor_counts = dataframe[a.predictor].value_counts().reset_index()
     summary = pd.merge(summary, predictor_counts, on=a.predictor)
+    
+    # stderr
+    summary['stderr'] = summary['std'] / np.sqrt(summary['count'])
 
-    # print(f"DATA:\n{data} \nSUMMARY:\n{summary}") #debug
+    # outcome values as lists for each predictor level
+    dataserie = dataframe.groupby(a.predictor)[a.outcome].apply(list)
 
-    return data, summary
+    return dataframe, dataserie, summary
 
-def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
+def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
     plt.rcParams['font.family'] = 'Courier New'
-    min_x_preplot, max_x_preplot = data[a.predictor].min(), data[a.predictor].max()
-    min_y_preplot, max_y_preplot = data[a.outcome].min(), data[a.outcome].max()
+    min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
+    min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
     width = 0.06 * (max_x_preplot-min_x_preplot)
 
     font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
@@ -519,13 +526,13 @@ def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bo
     font_size_text      = 0.6 * font_size_title
 
     # Calculate line of best fit
-    coefficients = np.polyfit(data[a.predictor], data[a.outcome], 1)
+    coefficients = np.polyfit(dataframe[a.predictor], dataframe[a.outcome], 1)
     poly_function = np.poly1d(coefficients)
-    line_x = np.linspace(min(data[a.predictor]), max(data[a.predictor]), 100)
+    line_x = np.linspace(min(dataframe[a.predictor]), max(dataframe[a.predictor]), 100)
     line_y = poly_function(line_x)
 
     # PLOT
-    sc = plt.scatter(data[a.predictor], data[a.outcome],
+    sc = plt.scatter(dataframe[a.predictor], dataframe[a.outcome],
                 label=f'{a.outcome} Data Points', 
                 color='black', alpha=0.5,
                 s=10)
@@ -536,7 +543,7 @@ def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bo
     min_x, max_x = plt.xlim()
     min_y, max_y = plt.ylim()
     
-    correlation_coefficient = np.corrcoef(data[a.predictor], data[a.outcome])[0, 1]
+    correlation_coefficient = np.corrcoef(dataframe[a.predictor], dataframe[a.outcome])[0, 1]
     plt.text(max_x, min_y+0.90*(max_y-min_y),
                     f'Pearson corr. coeff.: {correlation_coefficient:.2f}',
                     ha='right', va='center', color='darkred', fontsize=font_size_text)
@@ -548,11 +555,11 @@ def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bo
     plt.legend(             fontsize=font_size_legend)
 
     # Set axis ticks
-    if all(isinstance(x, int) for x in data):
-        plt.yticks(np.arange(min(data), max(data)+1, 1))    # Set y-axis ticks to integers if all data is integer
+    if all(isinstance(x, int) for x in dataframe):
+        plt.yticks(np.arange(min(dataframe), max(dataframe)+1, 1))    # Set y-axis ticks to integers if all data is integer
     
-    if len(data[a.predictor]) > 8:
-        predictor_values = data[a.predictor]
+    if len(dataframe[a.predictor]) > 8:
+        predictor_values = dataframe[a.predictor]
         num_ticks = 8
         equidistant_ticks = np.linspace(min(predictor_values), max(predictor_values), num_ticks)
         plt.xticks(equidistant_ticks)
@@ -578,12 +585,12 @@ def correlation(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bo
 
     return img_data
 
-def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True) -> io.BytesIO:
+def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True) -> io.BytesIO:
     plt.figure(figsize=a.size)
     plt.subplots_adjust(bottom=0.2)
     plt.rcParams['font.family'] = 'Courier New'
-    min_x_preplot, max_x_preplot = data[a.predictor].min(), data[a.predictor].max()
-    min_y_preplot, max_y_preplot = data[a.outcome].min(), data[a.outcome].max()
+    min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
+    min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
     width = 0.06 * (max_x_preplot-min_x_preplot)
 
     font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
@@ -593,7 +600,7 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
     font_size_analysis  = 0.6 * font_size_title
 
     # PLOT
-    sc = plt.scatter(data[a.predictor] + np.random.normal(scale=width/6, size=len(data)), data[a.outcome],
+    sc = plt.scatter(dataframe[a.predictor] + np.random.normal(scale=width/6, size=len(dataframe)), dataframe[a.outcome],
                 label=f'{a.outcome} Data Points', 
                 color='black', alpha=0.5,
                 s=10)
@@ -603,8 +610,7 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
                     color='darkred',
                     fmt='o', markersize=6, capsize=6, linewidth=3)
     
-    boxplot_data = data.groupby(a.predictor)[a.outcome].apply(list)
-    bp  = plt.boxplot(boxplot_data, positions=summary[a.predictor], widths=width,
+    bp  = plt.boxplot(dataserie, positions=summary[a.predictor], widths=width,
                 boxprops=dict(color='darkblue'), whiskerprops=dict(color='darkblue'), capprops=dict(color='darkblue'), medianprops=dict(color='aquamarine'),
                 showfliers=False, notch=False,)
 
@@ -613,12 +619,12 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
     min_y, max_y = plt.ylim()
 
     # Mean and Median tests
-    for i, (index, mean, std, count, q1, median, q3) in enumerate(zip(boxplot_data.index, summary['mean'], summary['std'], summary['count'], boxplot_data.apply(np.percentile, args=(25,)), boxplot_data.apply(np.median), boxplot_data.apply(np.percentile, args=(75,)))):
+    for i, (index, mean, std, stderr, count, q1, median, q3) in enumerate(zip(dataserie.index, summary['mean'], summary['std'], summary['stderr'], summary['count'], dataserie.apply(np.percentile, args=(25,)), dataserie.apply(np.median), dataserie.apply(np.percentile, args=(75,)))):
         plt.text(summary[a.predictor][i]-width/1.9, min_y+0.85*(max_y-min_y),
-                    f'Mean:\nStddev:\nCount:',
+                    f'Mean:\nStddev:\nStderr:\nCount:',
                     ha='right', va='center', color='darkred', fontsize=font_size_text)
         plt.text(summary[a.predictor][i]+width/1.9, 0.85*(max_y-min_y)+min_y,
-                    f'{mean:6.2f}\n{std:6.2f}\n{count:6.0f}   ',
+                    f'{mean:6.2f}\n{std:6.2f}\n{stderr:6.2f}\n{count:6.0f}   ',
                     ha='left', va='center', color='darkred', fontsize=font_size_text)
         
         plt.text(summary[a.predictor][i]-width/1.9, 0.75*(max_y-min_y)+min_y,
@@ -629,25 +635,25 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
                     ha='left', va='center', color='darkblue', fontsize=font_size_text)
 
     # ANOVA test
-    if all(len(lst) <= 1 for lst in boxplot_data):
+    if all(len(lst) <= 1 for lst in dataserie):
         plt.text(min_x+0.0*(max_x-min_x), min_y-0.1*(max_y-min_y),
                 f"ANOVA (Fisher's)\nwarning:\nnot enough data!",
                 ha='left', va='top', color='purple', fontsize=font_size_analysis)
     else:
-        anova_f, anova_p = stats.f_oneway(*boxplot_data)
+        anova_f, anova_p = stats.f_oneway(*dataserie)
         plt.text(min_x+0.0*(max_x-min_x), min_y-0.1*(max_y-min_y),
                 f"ANOVA (Fisher's)\nf = {anova_f:7.4f}\np = {anova_p:7.4f}",
                 ha='left', va='top', color='purple', fontsize=font_size_analysis)
 
     # DUNNETT test
-    if len(boxplot_data[0]) <= 1:
+    if len(dataserie[0]) <= 1:
         plt.text(min_x+0.3*(max_x-min_x), min_y-0.1*(max_y-min_y),
                 f"DUNNETT (control: {0})\nwarning:\nnot enough data in control!",
                 ha='left', va='top', color='purple', fontsize=font_size_analysis)
     else:
-        dunnett_stat = stats.dunnett(*boxplot_data[1:], control=boxplot_data[0])
+        dunnett_stat = stats.dunnett(*dataserie[1:], control=dataserie[0])
         dunnett_f, dunnett_p, dunnett_ci = dunnett_stat.statistic, dunnett_stat.pvalue, dunnett_stat.confidence_interval()
-        data_rows = [[f"{i}", f"{stat:7.4f}", f"{p_val:7.4f}", f"{ci_low:9.4f}<>{ci_high:9.4f}"] for i, stat, p_val, ci_low, ci_high in zip(boxplot_data[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
+        data_rows = [[f"{i}", f"{stat:7.4f}", f"{p_val:7.4f}", f"{ci_low:9.4f}<>{ci_high:9.4f}"] for i, stat, p_val, ci_low, ci_high in zip(dataserie[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
         plt.text(min_x+0.3*(max_x-min_x), min_y-0.1*(max_y-min_y),
                 f"DUNNETT (control: {0})\n{tabulate(data_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'),)}",
                 ha='left', va='top', color='purple', fontsize=font_size_analysis)
@@ -660,8 +666,8 @@ def errorbox(data: pd.DataFrame, summary: pd.DataFrame, a: analysis, save: bool 
     plt.legend(             fontsize=font_size_legend)
 
     # Set axis ticks
-    if all(isinstance(x, int) for x in data):
-        plt.yticks(np.arange(min(data), max(data)+1, 1))    # Set y-axis ticks to integers if all data is integer
+    if all(isinstance(x, int) for x in dataframe):
+        plt.yticks(np.arange(min(dataframe), max(dataframe)+1, 1))    # Set y-axis ticks to integers if all data is integer
     plt.xticks(summary[a.predictor])                        # Set x-axis ticks to follow a.predictor
 
     plt.grid(True)
