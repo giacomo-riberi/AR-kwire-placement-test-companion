@@ -30,9 +30,17 @@ class multianalysis:
     category: str
     aaa: list[analysis]
 
-#!!! make a function to automatically generate analysis structs and multianalysis (automatic generation of db queries)
-
 aaa: list[analysis] = [
+    analysis(
+        "ECP duration by ease of placement",
+        "statistical",
+        "correlation",
+        (6, 8),
+        "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
+        "ease_of_placement",
+        "ECP_D",
+    ),
+
     analysis(
         "ECP PACF by phase",
         "statistical",
@@ -313,8 +321,8 @@ aaa: list[analysis] = [
 
 mmm: list[multianalysis] = [
         multianalysis(
-        "positional",
         "PA angle to target by phase and career",
+        "positional",
         [analysis(
             "Student",
             "positional",
@@ -452,17 +460,24 @@ def main():
         for a in aaa:
             dataframe, dataserie, summary = get_data_summary(conn, a)
 
-            _ = errorbox(dataframe, dataserie, summary, a, save=True, show=True)
+            if a.type == "errorbox":
+                _ = errorbox(dataframe, dataserie, summary, a, save=True, show=False)
+            
+            elif a.type == "correlation":
+                _ = correlation(dataframe, dataserie, summary, a, save=True, show=False)
+            
+            else:
+                print("unknown analysis type")
+                quit()
 
         for m in mmm:
             imgsBytes = []
             for a in m.aaa:
+                dataframe, dataserie, summary = get_data_summary(conn, a)
                 if a.type == "errorbox":
-                    dataframe, dataserie, summary = get_data_summary(conn, a)
-                    imgsBytes.append(errorbox(dataframe, dataserie, summary, a, save=False, show=False)) # saving at the end
+                    imgsBytes.append(errorbox(dataframe, dataserie, summary, a, save=False, show=False))    # saving at the end
                 
                 elif a.type == "correlation":
-                    dataframe, dataserie, summary = get_data_summary(conn, a)
                     imgsBytes.append(correlation(dataframe, dataserie, summary, a, save=False, show=False)) # saving at the end
                 
                 else:
@@ -490,7 +505,11 @@ def main():
                 anchor  = "mm",
                 fill    = (0,0,0,255))
 
-            img_out.save(os.path.join(script_dir, sanitize_filename(f"{m.title}.png")))
+            save_path = os.path.join(script_dir, a.category, sanitize_filename(f"{a.title}.png"))
+            if not os.path.exists(save_path):
+                os.makedirs(os.path.dirname(save_path), exist_ok=True)
+            plt.savefig(save_path)
+
             # img_out.show()
             img_out.close()
 
@@ -558,11 +577,13 @@ def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataF
     if all(isinstance(x, int) for x in dataframe):
         plt.yticks(np.arange(min(dataframe), max(dataframe)+1, 1))    # Set y-axis ticks to integers if all data is integer
     
-    if len(dataframe[a.predictor]) > 8:
+    if len(dataframe[a.predictor].value_counts()) > 8:
         predictor_values = dataframe[a.predictor]
         num_ticks = 8
         equidistant_ticks = np.linspace(min(predictor_values), max(predictor_values), num_ticks)
         plt.xticks(equidistant_ticks)
+    else:
+        plt.xticks(dataframe[a.predictor])
 
     plt.grid(True)
 
@@ -658,25 +679,25 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
                 f"DUNNETT (control: {0})\n{tabulate(data_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'),)}",
                 ha='left', va='top', color='purple', fontsize=font_size_analysis)
     
-    # independent samples t-test
-    t_statistic, p_value = stats.ttest_ind(dataserie[0], dataserie[2])
-    print("T-statistic:", t_statistic)
-    print(" - P-value:", p_value)
+    # # independent samples t-test
+    # t_statistic, p_value = stats.ttest_ind(dataserie[0], dataserie[2])
+    # print("T-statistic:", t_statistic)
+    # print(" - P-value:", p_value)
 
-    # levene test
-    statistic, p_value = stats.levene(dataserie[0], dataserie[2])
-    print("levene-statistic:", statistic)
-    print(" - P-value:", p_value)
+    # # levene test
+    # statistic, p_value = stats.levene(dataserie[0], dataserie[2])
+    # print("levene-statistic:", statistic)
+    # print(" - P-value:", p_value)
 
-    # F test
-    F = np.var(dataserie[0]) / np.var(dataserie[2])
-    df1 = len(dataserie[0])
-    df2 = len(dataserie[2])
-    critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
-    if F > critical_value or F < 1 / critical_value:
-        print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
-    else:
-        print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
+    # # F test
+    # F = np.var(dataserie[0]) / np.var(dataserie[2])
+    # df1 = len(dataserie[0])
+    # df2 = len(dataserie[2])
+    # critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
+    # if F > critical_value or F < 1 / critical_value:
+    #     print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
+    # else:
+    #     print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
 
     
     # Adding labels and title
