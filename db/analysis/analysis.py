@@ -77,7 +77,7 @@ aaa: list[analysis] = [
 
     # PA    distance_P2e_PA_target          by phase
     analysis(
-        "PA distance of PA P2e from target P2e by phase",
+        "PA P2e distance of PA from target by phase",
         "positional",
         "errorbox",
         (6, 8),
@@ -191,7 +191,6 @@ aaa: list[analysis] = [
         "PA target 1 distance from ulnar nerve by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
         "phase",
@@ -201,7 +200,6 @@ aaa: list[analysis] = [
         "PA target 2 distance from ulnar nerve by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 2",
         "phase",
@@ -211,7 +209,6 @@ aaa: list[analysis] = [
         "PA target 3 distance from ulnar nerve by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 3",
         "phase",
@@ -224,7 +221,6 @@ aaa: list[analysis] = [
         "PA target 1 distance from middle collateral artery by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 1",
         "phase",
@@ -244,7 +240,6 @@ aaa: list[analysis] = [
         "PA target 3 distance from middle collateral artery by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 3",
         "phase",
@@ -257,7 +252,6 @@ aaa: list[analysis] = [
         "PA target 1 distance from median by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 1",
         "phase",
@@ -277,7 +271,6 @@ aaa: list[analysis] = [
         "PA target 3 distance from median nerve by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 3",
         "phase",
@@ -290,7 +283,6 @@ aaa: list[analysis] = [
         "PA target 1 distance from brachial artery by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 1",
         "phase",
@@ -300,7 +292,6 @@ aaa: list[analysis] = [
         "PA target 2 distance from brachial artery by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 2",
         "phase",
@@ -310,7 +301,6 @@ aaa: list[analysis] = [
         "PA target 3 distance from brachial artery by phase",
         "anatomical",
         "errorbox",
-        
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 3",
         "phase",
@@ -387,7 +377,7 @@ mmm: list[multianalysis] = [
     ),
 
     multianalysis(
-        "PA distance_P2e_PA_target by phase and career",
+        "PA P2e distance of PA from target by phase",
         "positional",
         [analysis(
             "Student",
@@ -420,7 +410,7 @@ mmm: list[multianalysis] = [
     ),
 
     multianalysis(
-        "PA delta_id_PA_target by phase and career",
+        "PA insertion depth by phase and career",
         "positional",
         [analysis(
             "Student",
@@ -451,20 +441,20 @@ mmm: list[multianalysis] = [
         ),
         ]
     ),
-
-
 ]
 
 def main():
+    liveshow = False
+
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
             dataframe, dataserie, summary = get_data_summary(conn, a)
 
             if a.type == "errorbox":
-                _ = errorbox(dataframe, dataserie, summary, a, save=True, show=False)
+                _ = errorbox(dataframe, dataserie, summary, a, save=True, show=liveshow)
             
             elif a.type == "correlation":
-                _ = correlation(dataframe, dataserie, summary, a, save=True, show=False)
+                _ = correlation(dataframe, dataserie, summary, a, save=True, show=liveshow)
             
             else:
                 print("unknown analysis type")
@@ -505,12 +495,13 @@ def main():
                 anchor  = "mm",
                 fill    = (0,0,0,255))
 
-            save_path = os.path.join(script_dir, a.category, sanitize_filename(f"{a.title}.png"))
+            save_path = os.path.join(script_dir, a.category, sanitize_filename(f"{m.title}.png"))
             if not os.path.exists(save_path):
                 os.makedirs(os.path.dirname(save_path), exist_ok=True)
-            plt.savefig(save_path)
+            img_out.save(save_path)
 
-            # img_out.show()
+            if liveshow:
+                img_out.show()
             img_out.close()
 
 def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame]:
