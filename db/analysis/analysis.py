@@ -172,6 +172,24 @@ aaa: list[analysis] = [
         "phase",
         "hit_count",
     ),
+    analysis(
+        "PA has hit by phase",
+        "anatomical",
+        "errorbox",
+        (6, 8),
+        "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS PA_has_hit FROM PA WHERE phase <> -1;",
+        "phase",
+        "PA_has_hit",
+    ),
+    analysis(
+        "ECP has hit by phase",
+        "anatomical",
+        "errorbox",
+        (6, 8),
+        "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS ECP_has_hit FROM ECP WHERE phase <> -1;",
+        "phase",
+        "ECP_has_hit",
+    ),
     
 
     # # ECP               ease_of_placement   by phase
@@ -377,7 +395,7 @@ mmm: list[multianalysis] = [
     ),
 
     multianalysis(
-        "PA P2e distance of PA from target by phase",
+        "PA P2e distance of PA from target by phase and career",
         "positional",
         [analysis(
             "Student",
