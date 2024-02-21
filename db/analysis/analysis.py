@@ -658,6 +658,26 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
                 f"DUNNETT (control: {0})\n{tabulate(data_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'),)}",
                 ha='left', va='top', color='purple', fontsize=font_size_analysis)
     
+    # independent samples t-test
+    t_statistic, p_value = stats.ttest_ind(dataserie[0], dataserie[2])
+    print("T-statistic:", t_statistic)
+    print(" - P-value:", p_value)
+
+    # levene test
+    statistic, p_value = stats.levene(dataserie[0], dataserie[2])
+    print("levene-statistic:", statistic)
+    print(" - P-value:", p_value)
+
+    # F test
+    F = np.var(dataserie[0]) / np.var(dataserie[2])
+    df1 = len(dataserie[0])
+    df2 = len(dataserie[2])
+    critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
+    if F > critical_value or F < 1 / critical_value:
+        print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
+    else:
+        print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
+
     
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
