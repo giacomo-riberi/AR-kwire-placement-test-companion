@@ -247,67 +247,67 @@ aaa: list[analysis] = [
 
 
     # --------------------------- ANATOMICAL -------------------------- #
-    analysis(
-        "PA entered articulation by phase",
-        "anatomical",
-        "barplot",
-        (6, 8),
-        "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
-        "phase",
-        "entered_articulation",
-    ),
+    # analysis(
+    #     "PA entered articulation by phase",
+    #     "anatomical",
+    #     "barplot",
+    #     (6, 8),
+    #     "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
+    #     "phase",
+    #     "entered_articulation",
+    # ),
 
-    analysis(
-        "ECP hit count by phase",
-        "anatomical",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, hit_count FROM ECP WHERE phase <> -1;",
-        "phase",
-        "hit_count",
-    ),
-    analysis(
-        "PA hit count by phase",
-        "anatomical",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
-        "phase",
-        "hit_count",
-    ),
+    # analysis(
+    #     "ECP hit count by phase",
+    #     "anatomical",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, hit_count FROM ECP WHERE phase <> -1;",
+    #     "phase",
+    #     "hit_count",
+    # ),
+    # analysis(
+    #     "PA hit count by phase",
+    #     "anatomical",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
+    #     "phase",
+    #     "hit_count",
+    # ),
     
-    analysis(
-        "ECP has hit by phase",
-        "anatomical",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS ECP_has_hit FROM ECP WHERE phase <> -1;",
-        "phase",
-        "ECP_has_hit",
-    ),
-    analysis(
-        "PA has hit by phase",
-        "anatomical",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS PA_has_hit FROM PA WHERE phase <> -1;",
-        "phase",
-        "PA_has_hit",
-    ),
+    # analysis(
+    #     "ECP has hit by phase",
+    #     "anatomical",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS ECP_has_hit FROM ECP WHERE phase <> -1;",
+    #     "phase",
+    #     "ECP_has_hit",
+    # ),
+    # analysis(
+    #     "PA has hit by phase",
+    #     "anatomical",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS PA_has_hit FROM PA WHERE phase <> -1;",
+    #     "phase",
+    #     "PA_has_hit",
+    # ),
 
-    analysis(
-        "PA distance from ulnar nerve by phase - ECP 1",
-        "anatomical",
-        "errorbox",
-        (8, 8),
-        "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
-        "phase",
-        "ulnar_nerve",
-    ),
+    # analysis(
+    #     "PA distance from ulnar nerve by phase - ECP 1",
+    #     "anatomical",
+    #     "errorbox",
+    #     (8, 8),
+    #     "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
+    #     "phase",
+    #     "ulnar_nerve",
+    # ),
     analysis(
         "PA distance from ulnar nerve by phase - ECP 2",
         "anatomical",
-        "errorbox",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 2",
         "phase",
@@ -497,7 +497,7 @@ def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFram
     # outcome values as lists for each predictor level
     dataserie = dataframe.groupby(a.predictor)[a.outcome].apply(list)
 
-    return dataframe, dataserie, summary
+    return dataframe.sort_index(), dataserie.sort_index(), summary.sort_index()
 
 def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
@@ -742,33 +742,44 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
 
     # levene test su due code
+    if "levene" in a.type:
         # omnibus test (tra questi 3 gruppi ce differenza)
-        # post hoc test (tra questi 3 gruppi quale differenza) p x 2 (due test complessivi)
-    statistic, p_value = stats.levene(dataserie[0], dataserie[1])
-    print("levene-statistic:", statistic)
-    print("levene p:        ", p_value)
-    
+        statistic, p_value = stats.levene(*[x for x in dataserie[1:]])
+        plt.text(min_x+0.6*(max_x-min_x), min_y-0.08*(max_y-min_y),
+                f"levene-statistic ({'-'.join([str(i) for i in dataserie[1:].index])}): {statistic:7.4f}\n  └- p-value      : {p_value:7.4f}",
+                ha='left', va='top', color='purple', fontsize=font_size_analysis)
 
+        # post hoc test 
+        bonferroni_correction = 2 # p x 2 (due test complessivi)     
+        t = 1
+        for g1, g2 in list(combinations(dataserie[1:].index, 2)):
+            statistic, p_value = stats.levene(dataserie[g1], dataserie[g2])
+            plt.text(min_x+0.0*(max_x-min_x), min_y-0.08*(max_y-min_y)*t,
+                    f"levene-statistic ({g1}-{g2}):   {statistic:7.4f}\n └- p-value (Bonferroni): {p_value*bonferroni_correction:7.4f}",
+                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
+            t += 1
+        
     # F test
-    F = np.var(dataserie[0]) / np.var(dataserie[1])
-    df1 = len(dataserie[0])-1
-    df2 = len(dataserie[1])-1
-    # critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
-    # if F > critical_value or F < 1 / critical_value:
-    #     print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
-    # else:
-    #     print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
+    if "ftest" in a.type:
+        F = np.var(dataserie[0]) / np.var(dataserie[1])
+        df1 = len(dataserie[0])-1
+        df2 = len(dataserie[1])-1
+        # critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
+        # if F > critical_value or F < 1 / critical_value:
+        #     print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
+        # else:
+        #     print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
 
-    # F di snedeco = tabulare
+        # F di snedeco = tabulare
 
-    stats.f.cdf(F, df1, df2)
-    print("F p (coda destra):  ", 1-stats.f.cdf(F, df1, df2))
-    print("F p (coda sinistra):", 1/stats.f.cdf(F, df1, df2))
-    print("F-test P totale", 1-stats.f.cdf(F, df1, df2) + 1/stats.f.cdf(F, df1, df2))
-    # moltiplicato per 2 perche stiamo analizzando solo fase 0 e 1
+        stats.f.cdf(F, df1, df2)
+        print("F p (coda destra):  ", 1-stats.f.cdf(F, df1, df2))
+        print("F p (coda sinistra):", 1/stats.f.cdf(F, df1, df2))
+        print("F-test P totale", 1-stats.f.cdf(F, df1, df2) + 1/stats.f.cdf(F, df1, df2))
+        # moltiplicato per 2 perche stiamo analizzando solo fase 0 e 1
 
-    # rifare la stessa cosa tra fase 1 e 2
-    # moltiplicato per 2 perche stiamo analizzando solo fase 1 e 2
+        # rifare la stessa cosa tra fase 1 e 2
+        # moltiplicato per 2 perche stiamo analizzando solo fase 1 e 2
     
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
