@@ -641,39 +641,30 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         plt.text(min_x+0.3*(max_x-min_x), min_y-0.1*(max_y-min_y),
                 f"DUNNETT (control: {0})\n{tabulate(data_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'),)}",
                 ha='left', va='top', color='purple', fontsize=font_size_analysis)
-    
-    # # independent samples t-test
-    # t_statistic, p_value = stats.ttest_ind(dataserie[0], dataserie[2])
-    # print("T-statistic:", t_statistic)
-    # print(" - P-value:", p_value)
 
-    # levene test
+    # levene test su due code
+        # omnibus test (tra questi 3 gruppi ce differenza)
+        # post hoc test (tra questi 3 gruppi quale differenza) p x 2 (due test complessivi)
     statistic, p_value = stats.levene(dataserie[0], dataserie[1])
     print("levene-statistic:", statistic)
-    print(" - P-value:", p_value)
-    # levene su due code
-    # omnibus test (tra questi 3 gruppi ce differenza)
-    # post hoc test (tra questi 3 gruppi quale differenza) p x 2 (due test complessivi)
+    print("levene p:        ", p_value)
+    
 
     # F test
     F = np.var(dataserie[0]) / np.var(dataserie[1])
-    print("F-statistic:", F)
     df1 = len(dataserie[0])-1
     df2 = len(dataserie[1])-1
-    critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
-    if F > critical_value or F < 1 / critical_value:
-        print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
-    else:
-        print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
-    # moltiplicare per 2 il p 
-    # F di snedeco = tabulare   
+    # critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
+    # if F > critical_value or F < 1 / critical_value:
+    #     print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
+    # else:
+    #     print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
+
+    # F di snedeco = tabulare
+
     stats.f.cdf(F, df1, df2)
-    print("F-cdf:", stats.f.cdf(F, df1, df2))
-    print("F p:", 1-stats.f.cdf(F, df1, df2)) # coda destar
-    print("F coda sinistra", 1/stats.f.cdf(F, df1, df2)) #coda sinistra
-
-    # Ftest a una coda
-
+    print("F p (coda destra):  ", 1-stats.f.cdf(F, df1, df2))
+    print("F p (coda sinistra):", 1/stats.f.cdf(F, df1, df2))
     print("F-test P totale", 1-stats.f.cdf(F, df1, df2) + 1/stats.f.cdf(F, df1, df2))
     # moltiplicato per 2 perche stiamo analizzando solo fase 0 e 1
 
