@@ -307,7 +307,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from ulnar nerve by phase - ECP 2",
         "anatomical",
-        "errorbox levene",
+        "errorbox f-test",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 2",
         "phase",
@@ -501,7 +501,6 @@ def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFram
 
 def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
-    plt.subplots_adjust(bottom=0.2)
     plt.rcParams['font.family'] = 'Courier New'
     min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
     min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
@@ -543,6 +542,8 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
 
     # Chi-square test
     if "chi-square" in a.type:
+        plt.subplots_adjust(bottom=0.2)
+
         # omnibus test
         chi2, p, dof, expected = stats.chi2_contingency(cross_tab)
         plt.text(max_x, min_y-0.08*(max_y-min_y),
@@ -592,7 +593,6 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
 
 def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
-    plt.subplots_adjust(bottom=0.2)
     plt.rcParams['font.family'] = 'Courier New'
     min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
     min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
@@ -621,6 +621,7 @@ def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataF
     min_x, max_x = plt.xlim()
     min_y, max_y = plt.ylim()
     
+    plt.subplots_adjust(bottom=0.2)
     correlation_coefficient = np.corrcoef(dataframe[a.predictor], dataframe[a.outcome])[0, 1]
     plt.text(max_x, -0.08*(max_y-min_y),
                     f'Pearson corr. coeff.: {correlation_coefficient:.2f}',
@@ -667,7 +668,6 @@ def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataF
 
 def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True) -> io.BytesIO:
     plt.figure(figsize=a.size)
-    plt.subplots_adjust(bottom=0.2)
     plt.rcParams['font.family'] = 'Courier New'
     min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
     min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
@@ -716,6 +716,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
 
     # ANOVA test
     if "anova" in a.type:
+        plt.subplots_adjust(bottom=0.2)
         if all(len(lst) <= 1 for lst in dataserie):
             plt.text(min_x, min_y-0.1*(max_y-min_y),
                     f"ANOVA (Fisher's)\nwarning:\nnot enough data!",
@@ -728,6 +729,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
 
     # DUNNETT test
     if "dunnett" in a.type:
+        plt.subplots_adjust(bottom=0.2)
         if len(dataserie[0]) <= 1:
             plt.text(max_x, min_y-0.1*(max_y-min_y),
                     f"DUNNETT (control: {0})\nwarning:\nnot enough data in control!",
@@ -742,6 +744,8 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
 
     # levene test su due code
     if "levene" in a.type:
+        plt.subplots_adjust(bottom=0.2)
+
         # omnibus test (tra questi 3 gruppi ce differenza)
         statistic, p_value = stats.levene(*[x for x in dataserie[1:]])
         plt.text(max_x, min_y-0.1*(max_y-min_y),
@@ -757,26 +761,37 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
         
     # F test
-    if "ftest" in a.type:
-        F = np.var(dataserie[0]) / np.var(dataserie[1])
-        df1 = len(dataserie[0])-1
-        df2 = len(dataserie[1])-1
+    if "f-test" in a.type:
+        plt.subplots_adjust(bottom=0.2)
+
+        # F di snedeco = tabulare
         # critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
         # if F > critical_value or F < 1 / critical_value:
         #     print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
-        # else:
-        #     print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
-
-        # F di snedeco = tabulare
-
-        stats.f.cdf(F, df1, df2)
-        print("F p (coda destra):  ", 1-stats.f.cdf(F, df1, df2))
-        print("F p (coda sinistra):", 1/stats.f.cdf(F, df1, df2))
-        print("F-test P totale", 1-stats.f.cdf(F, df1, df2) + 1/stats.f.cdf(F, df1, df2))
-        # moltiplicato per 2 perche stiamo analizzando solo fase 0 e 1
-
-        # rifare la stessa cosa tra fase 1 e 2
-        # moltiplicato per 2 perche stiamo analizzando solo fase 1 e 2
+        
+        bonferroni_correction = 2 # moltiplicato per 2 perche stiamo analizzando solo 2 fasi su tre alla volta
+        for i, (g1, g2) in enumerate(combinations(dataserie[1:].index, 2)):
+            F = np.var(dataserie[g1]) / np.var(dataserie[g2])
+            df1 = len(dataserie[g1])-1
+            df2 = len(dataserie[g2])-1
+            coda_destra = 1-stats.f.cdf(F, df1, df2)
+            coda_sinistra = 1/stats.f.cdf(F, df1, df2)
+            p_value = coda_destra + coda_sinistra
+            print(f"F p (coda destra):     {coda_destra:7.10f}")
+            print(f"F p (coda sinistra):   {coda_sinistra:7.10f}")
+            print(f"F-test P totale ({g1}-{g2}): {p_value:7.10f}")
+            # F p (coda destra):     0.0065897445
+            # F p (coda sinistra):   1.0066334573
+            # F-test P totale (0-1): 1.0132232018
+            # F p (coda destra):     0.0000003322
+            # F p (coda sinistra):   1.0000003322
+            # F-test P totale (0-2): 1.0000006643
+            # F p (coda destra):     0.0001874040
+            # F p (coda sinistra):   1.0001874392
+            # F-test P totale (1-2): 1.0003748432
+            plt.text(min_x, min_y-0.1*(max_y-min_y)-0.06*(max_y-min_y)*i,
+                    f"f-test ({g1}-{g2}):             {F:7.4f}\n └- p-value (Bonferroni): {p_value*bonferroni_correction:7.4f}",
+                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
     
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
