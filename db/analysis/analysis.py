@@ -545,20 +545,18 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
     if "chi-square" in a.type:
         # omnibus test
         chi2, p, dof, expected = stats.chi2_contingency(cross_tab)
-        plt.text(min_x+0.6*(max_x-min_x), min_y-0.08*(max_y-min_y),
+        plt.text(max_x, min_y-0.08*(max_y-min_y),
                     f"Chi-square ({'-'.join([str(i) for i in cross_tab.index])}): {chi2:7.4f}\n  └- p-value      : {p:7.4f}",
-                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
+                    ha='right', va='top', color='purple', fontsize=font_size_analysis)
 
         # post hoc test
         # https://www.researchgate.net/post/How_Bonferroni_correction_be_applied_for_chi_square_test_on_comparison_of_three_groups
         bonferroni_correction = predictor_count*outcome_count
-        t = 1
-        for g1, g2 in list(combinations(cross_tab.index, 2)):
+        for i, (g1, g2) in enumerate(combinations(cross_tab.index, 2)):
             chi2, p, dof, expected = stats.chi2_contingency(cross_tab.iloc[[g1, g2]])
-            plt.text(min_x+0.0*(max_x-min_x), min_y-0.08*(max_y-min_y)*t,
+            plt.text(min_x, min_y-0.08*(max_y-min_y)*i,
                     f"Chi-square ({g1}-{g2})\n └- p-value (Bonferroni): {p*bonferroni_correction:7.4f}",
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
-            t += 1
 
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
@@ -594,6 +592,7 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
 
 def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
+    plt.subplots_adjust(bottom=0.2)
     plt.rcParams['font.family'] = 'Courier New'
     min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
     min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
@@ -623,7 +622,7 @@ def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataF
     min_y, max_y = plt.ylim()
     
     correlation_coefficient = np.corrcoef(dataframe[a.predictor], dataframe[a.outcome])[0, 1]
-    plt.text(max_x, min_y+0.90*(max_y-min_y),
+    plt.text(max_x, -0.08*(max_y-min_y),
                     f'Pearson corr. coeff.: {correlation_coefficient:.2f}',
                     ha='right', va='center', color='darkred', fontsize=font_size_text)
 
@@ -718,46 +717,44 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
     # ANOVA test
     if "anova" in a.type:
         if all(len(lst) <= 1 for lst in dataserie):
-            plt.text(min_x+0.0*(max_x-min_x), min_y-0.1*(max_y-min_y),
+            plt.text(min_x, min_y-0.1*(max_y-min_y),
                     f"ANOVA (Fisher's)\nwarning:\nnot enough data!",
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
         else:
             anova_f, anova_p = stats.f_oneway(*dataserie)
-            plt.text(min_x+0.0*(max_x-min_x), min_y-0.1*(max_y-min_y),
+            plt.text(min_x, min_y-0.1*(max_y-min_y),
                     f"ANOVA (Fisher's)\nf = {anova_f:7.4f}\np = {anova_p:7.4f}",
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
 
     # DUNNETT test
     if "dunnett" in a.type:
         if len(dataserie[0]) <= 1:
-            plt.text(min_x+0.3*(max_x-min_x), min_y-0.1*(max_y-min_y),
+            plt.text(max_x, min_y-0.1*(max_y-min_y),
                     f"DUNNETT (control: {0})\nwarning:\nnot enough data in control!",
-                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
+                    ha='right', va='top', color='purple', fontsize=font_size_analysis)
         else:
             dunnett_stat = stats.dunnett(*dataserie[1:], control=dataserie[0])
             dunnett_f, dunnett_p, dunnett_ci = dunnett_stat.statistic, dunnett_stat.pvalue, dunnett_stat.confidence_interval()
             data_rows = [[f"{i}", f"{stat:7.4f}", f"{p_val:7.4f}", f"{ci_low:9.4f}<>{ci_high:9.4f}"] for i, stat, p_val, ci_low, ci_high in zip(dataserie[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
-            plt.text(min_x+0.3*(max_x-min_x), min_y-0.1*(max_y-min_y),
+            plt.text(max_x, min_y-0.1*(max_y-min_y),
                     f"DUNNETT (control: {0})\n{tabulate(data_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'),)}",
-                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
+                    ha='right', va='top', color='purple', fontsize=font_size_analysis)
 
     # levene test su due code
     if "levene" in a.type:
         # omnibus test (tra questi 3 gruppi ce differenza)
         statistic, p_value = stats.levene(*[x for x in dataserie[1:]])
-        plt.text(min_x+0.6*(max_x-min_x), min_y-0.08*(max_y-min_y),
+        plt.text(max_x, min_y-0.1*(max_y-min_y),
                 f"levene-statistic ({'-'.join([str(i) for i in dataserie[1:].index])}): {statistic:7.4f}\n  └- p-value      : {p_value:7.4f}",
-                ha='left', va='top', color='purple', fontsize=font_size_analysis)
+                ha='right', va='top', color='purple', fontsize=font_size_analysis)
 
         # post hoc test 
         bonferroni_correction = 2 # p x 2 (due test complessivi)     
-        t = 1
-        for g1, g2 in list(combinations(dataserie[1:].index, 2)):
+        for i, (g1, g2) in enumerate(combinations(dataserie[1:].index, 2)):
             statistic, p_value = stats.levene(dataserie[g1], dataserie[g2])
-            plt.text(min_x+0.0*(max_x-min_x), min_y-0.08*(max_y-min_y)*t,
+            plt.text(min_x, min_y-0.1*(max_y-min_y)-0.06*(max_y-min_y)*i,
                     f"levene-statistic ({g1}-{g2}):   {statistic:7.4f}\n └- p-value (Bonferroni): {p_value*bonferroni_correction:7.4f}",
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
-            t += 1
         
     # F test
     if "ftest" in a.type:
