@@ -33,281 +33,281 @@ class multianalysis:
 
 aaa: list[analysis] = [
 
-    # # --------------------------- POSITIONAL -------------------------- #
-    # analysis(
-    #     "PA delta insertion depth by phase",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
-    #     "phase",
-    #     "delta_id_PA_target",
-    # ),
-    # analysis(
-    #     "PA delta insertion depth by phase - student",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-    #     "phase",
-    #     "delta_id_PA_target",
-    # ),
-    # analysis(
-    #     "PA delta insertion depth by phase - resident",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-    #     "phase",
-    #     "delta_id_PA_target",
-    # ),
-    # analysis(
-    #     "PA delta insertion depth by phase - surgeon",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-    #     "phase",
-    #     "delta_id_PA_target",
-    # ),
+    # --------------------------- POSITIONAL -------------------------- #
+    analysis(
+        "PA delta insertion depth by phase",
+        "positional",
+        "errorbox levene dunnett",
+        (8, 8),
+        "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "delta_id_PA_target",
+    ),
+    analysis(
+        "PA delta insertion depth by phase - student",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+        "phase",
+        "delta_id_PA_target",
+    ),
+    analysis(
+        "PA delta insertion depth by phase - resident",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+        "phase",
+        "delta_id_PA_target",
+    ),
+    analysis(
+        "PA delta insertion depth by phase - surgeon",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+        "phase",
+        "delta_id_PA_target",
+    ),
 
-    # analysis(
-    #     "PA angle to target by phase",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
-    #     "phase",
-    #     "angle_PA_target",
-    # ),
-    # analysis(
-    #     "PA angle to target by phase - Student",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-    #     "phase",
-    #     "angle_PA_target",
-    # ),
-    # analysis(
-    #     "PA angle to target by phase - Resident",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-    #     "phase",
-    #     "angle_PA_target",
-    # ),
-    # analysis(
-    #     "PA angle to target by phase - Surgeon",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-    #     "phase",
-    #     "angle_PA_target",
-    # ),
+    analysis(
+        "PA angle to target by phase",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle to target by phase - Student",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+        "phase",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle to target by phase - Resident",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+        "phase",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle to target by phase - Surgeon",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+        "phase",
+        "angle_PA_target",
+    ),
 
 
-    # analysis(
-    #     "PA angle confidence from target by phase",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
-    #     "phase",
-    #     "confidence_angle",
-    # ),
-    # analysis(
-    #     "PA angle real from target by phase",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
-    #     "phase",
-    #     "angle_PA_target",
-    # ),
-    # analysis(
-    #     "PA angle by confidence",
-    #     "positional",
-    #     "correlation",
-    #     (6, 8),
-    #     "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
-    #     "confidence_angle",
-    #     "angle_PA_target",
-    # ),
+    analysis(
+        "PA angle confidence from target by phase",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "confidence_angle",
+    ),
+    analysis(
+        "PA angle real from target by phase",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle by confidence",
+        "positional",
+        "correlation",
+        (6, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+        "confidence_angle",
+        "angle_PA_target",
+    ),
 
-    # analysis(
-    #     "PA P2e distance of PA from target by phase",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
-    #     "phase",
-    #     "distance_P2e_PA_target",
-    # ),
-    # analysis(
-    #     "PA P2e from target by phase - Student",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-    #     "phase",
-    #     "distance_P2e_PA_target",
-    # ),
-    # analysis(
-    #     "PA P2e from target by phase - Resident",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-    #     "phase",
-    #     "distance_P2e_PA_target",
-    # ),
-    # analysis(
-    #     "PA P2e from target by phase - Surgeon",
-    #     "positional",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-    #     "phase",
-    #     "distance_P2e_PA_target",
-    # ),
+    analysis(
+        "PA P2e distance of PA from target by phase",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+    analysis(
+        "PA P2e from target by phase - Student",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+    analysis(
+        "PA P2e from target by phase - Resident",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+    analysis(
+        "PA P2e from target by phase - Surgeon",
+        "positional",
+        "errorbox anova dunnett",
+        (6, 8),
+        "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
     
 
-    # # -------------------------- STATISTICAL -------------------------- #
-    # analysis(
-    #     "ECP duration by ease of placement",
-    #     "statistical",
-    #     "correlation",
-    #     (6, 8),
-    #     "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
-    #     "ease_of_placement",
-    #     "ECP_D",
-    # ),
-    # analysis(
-    #     "ECP PACF by phase",
-    #     "statistical",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, ECP_PACF FROM ECP WHERE phase <> -1",
-    #     "phase",
-    #     "ECP_PACF",
-    # ),
-    # analysis(
-    #     "PA success by phase",
-    #     "statistical",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, success FROM PA WHERE phase <> -1;",
-    #     "phase",
-    #     "success",
-    # ),
+    # -------------------------- STATISTICAL -------------------------- #
+    analysis(
+        "ECP duration by ease of placement",
+        "statistical",
+        "correlation",
+        (6, 8),
+        "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
+        "ease_of_placement",
+        "ECP_D",
+    ),
+    analysis(
+        "ECP PACF by phase",
+        "statistical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT phase, ECP_PACF FROM ECP WHERE phase <> -1",
+        "phase",
+        "ECP_PACF",
+    ),
+    analysis(
+        "PA success by phase",
+        "statistical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT phase, success FROM PA WHERE phase <> -1;",
+        "phase",
+        "success",
+    ),
 
 
-    # # ---------------------------- DURATION --------------------------- #
-    # analysis(
-    #     "ECP duration by phase",
-    #     "duration",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, ECP.ECP_D FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
-    #     "phase",
-    #     "ECP_D",
-    # ),
-    # analysis(
-    #     "PA duration by phase",
-    #     "duration",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
-    #     "phase",
-    #     "PA_D",
-    # ),
+    # ---------------------------- DURATION --------------------------- #
+    analysis(
+        "ECP duration by phase",
+        "duration",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, ECP.ECP_D FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "ECP_D",
+    ),
+    analysis(
+        "PA duration by phase",
+        "duration",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "PA_D",
+    ),
 
-    # # ------------------------------ RPC ------------------------------ #
-    # analysis(
-    #     "ECP RPC by phase",
-    #     "RPC",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
-    #     "phase",
-    #     "ECP_RPC",
-    # ),
-    # analysis(
-    #     "PA RPC by phase",
-    #     "RPC",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
-    #     "phase",
-    #     "PA_RPC",
-    # ),
+    # ------------------------------ RPC ------------------------------ #
+    analysis(
+        "ECP RPC by phase",
+        "RPC",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "ECP_RPC",
+    ),
+    analysis(
+        "PA RPC by phase",
+        "RPC",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "PA_RPC",
+    ),
 
 
     # --------------------------- ANATOMICAL -------------------------- #
-    # analysis(
-    #     "PA entered articulation by phase",
-    #     "anatomical",
-    #     "barplot",
-    #     (6, 8),
-    #     "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
-    #     "phase",
-    #     "entered_articulation",
-    # ),
+    analysis(
+        "PA entered articulation by phase",
+        "anatomical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
+        "phase",
+        "entered_articulation",
+    ),
 
-    # analysis(
-    #     "ECP hit count by phase",
-    #     "anatomical",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, hit_count FROM ECP WHERE phase <> -1;",
-    #     "phase",
-    #     "hit_count",
-    # ),
-    # analysis(
-    #     "PA hit count by phase",
-    #     "anatomical",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
-    #     "phase",
-    #     "hit_count",
-    # ),
+    analysis(
+        "ECP hit count by phase",
+        "anatomical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT phase, hit_count FROM ECP WHERE phase <> -1;",
+        "phase",
+        "hit_count",
+    ),
+    analysis(
+        "PA hit count by phase",
+        "anatomical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
+        "phase",
+        "hit_count",
+    ),
     
-    # analysis(
-    #     "ECP has hit by phase",
-    #     "anatomical",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS ECP_has_hit FROM ECP WHERE phase <> -1;",
-    #     "phase",
-    #     "ECP_has_hit",
-    # ),
-    # analysis(
-    #     "PA has hit by phase",
-    #     "anatomical",
-    #     "errorbox",
-    #     (6, 8),
-    #     "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS PA_has_hit FROM PA WHERE phase <> -1;",
-    #     "phase",
-    #     "PA_has_hit",
-    # ),
+    analysis(
+        "ECP has hit by phase",
+        "anatomical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS ECP_has_hit FROM ECP WHERE phase <> -1;",
+        "phase",
+        "ECP_has_hit",
+    ),
+    analysis(
+        "PA has hit by phase",
+        "anatomical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS PA_has_hit FROM PA WHERE phase <> -1;",
+        "phase",
+        "PA_has_hit",
+    ),
 
-    # analysis(
-    #     "PA distance from ulnar nerve by phase - ECP 1",
-    #     "anatomical",
-    #     "errorbox",
-    #     (8, 8),
-    #     "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
-    #     "phase",
-    #     "ulnar_nerve",
-    # ),
+    analysis(
+        "PA distance from ulnar nerve by phase - ECP 1",
+        "anatomical",
+        "errorbox levene",
+        (8, 8),
+        "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
+        "phase",
+        "ulnar_nerve",
+    ),
     analysis(
         "PA distance from ulnar nerve by phase - ECP 2",
         "anatomical",
-        "errorbox f-test",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 2",
         "phase",
@@ -316,7 +316,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from ulnar nerve by phase - ECP 3",
         "anatomical",
-        "errorbox",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 3",
         "phase",
@@ -326,7 +326,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from middle collateral artery by phase - ECP 1",
         "anatomical",
-        "errorbox",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 1",
         "phase",
@@ -335,8 +335,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from middle collateral artery by phase - ECP 2",
         "anatomical",
-        "errorbox",
-        
+        "errorbox levene",
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 2",
         "phase",
@@ -345,7 +344,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from middle collateral artery by phase - ECP 3",
         "anatomical",
-        "errorbox",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 3",
         "phase",
@@ -356,7 +355,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from median nerve by phase - ECP 1",
         "anatomical",
-        "errorbox",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 1",
         "phase",
@@ -365,8 +364,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from median nerve by phase - ECP 2",
         "anatomical",
-        "errorbox",
-        
+        "errorbox levene",
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 2",
         "phase",
@@ -375,7 +373,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from median nerve by phase - ECP 3",
         "anatomical",
-        "errorbox",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 3",
         "phase",
@@ -385,7 +383,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from brachial artery by phase - ECP 1",
         "anatomical",
-        "errorbox",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 1",
         "phase",
@@ -394,7 +392,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from brachial artery by phase - ECP 2",
         "anatomical",
-        "errorbox",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 2",
         "phase",
@@ -403,7 +401,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from brachial artery by phase - ECP 3",
         "anatomical",
-        "errorbox",
+        "errorbox levene",
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 3",
         "phase",
@@ -547,7 +545,7 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
         # omnibus test
         chi2, p, dof, expected = stats.chi2_contingency(cross_tab)
         plt.text(max_x, min_y-0.08*(max_y-min_y),
-                    f"Chi-square ({'-'.join([str(i) for i in cross_tab.index])}): {chi2:7.4f}\n  └- p-value      : {p:7.4f}",
+                    f"Chi-square ({'-'.join([str(i) for i in cross_tab.index])}): {chi2:6.4f}\n  └ p             : {p:6.4f}",
                     ha='right', va='top', color='purple', fontsize=font_size_analysis)
 
         # post hoc test
@@ -556,7 +554,7 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
         for i, (g1, g2) in enumerate(combinations(cross_tab.index, 2)):
             chi2, p, dof, expected = stats.chi2_contingency(cross_tab.iloc[[g1, g2]])
             plt.text(min_x, min_y-0.08*(max_y-min_y)*i,
-                    f"Chi-square ({g1}-{g2})\n └- p-value (Bonferroni): {p*bonferroni_correction:7.4f}",
+                    f"Chi-square ({g1}-{g2})\n └ p        (Bonferroni): {p*bonferroni_correction:6.4f}",
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
 
     # Adding labels and title
@@ -724,7 +722,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         else:
             anova_f, anova_p = stats.f_oneway(*dataserie)
             plt.text(min_x, min_y-0.1*(max_y-min_y),
-                    f"ANOVA (Fisher's)\nf = {anova_f:7.4f}\np = {anova_p:7.4f}",
+                    f"ANOVA (Fisher's)\nf = {anova_f:6.4f}\np = {anova_p:6.4f}",
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
 
     # DUNNETT test
@@ -737,27 +735,31 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         else:
             dunnett_stat = stats.dunnett(*dataserie[1:], control=dataserie[0])
             dunnett_f, dunnett_p, dunnett_ci = dunnett_stat.statistic, dunnett_stat.pvalue, dunnett_stat.confidence_interval()
-            data_rows = [[f"{i}", f"{stat:7.4f}", f"{p_val:7.4f}", f"{ci_low:9.4f}<>{ci_high:9.4f}"] for i, stat, p_val, ci_low, ci_high in zip(dataserie[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
+            
+            dunnett_table_rows = [[f"{i}", f"{stat:6.4f}", f"{p_val:6.4f}", f"{ci_low:9.4f}<>{ci_high:9.4f}"] for i, stat, p_val, ci_low, ci_high in zip(dataserie[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
+            dunnett_table_str = tabulate(dunnett_table_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'),)
+            dunnett_table_pad = "\n".join([l.ljust(max(len(s) for s in dunnett_table_str.splitlines())) for l in dunnett_table_str.splitlines()])
             plt.text(max_x, min_y-0.1*(max_y-min_y),
-                    f"DUNNETT (control: {0})\n{tabulate(data_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'),)}",
+                    f"DUNNETT (control: {0})\n{dunnett_table_pad}",
                     ha='right', va='top', color='purple', fontsize=font_size_analysis)
 
     # levene test su due code
     if "levene" in a.type:
-        plt.subplots_adjust(bottom=0.2)
+        plt.subplots_adjust(bottom=0.25)
 
         # omnibus test (tra questi 3 gruppi ce differenza)
-        statistic, p_value = stats.levene(*[x for x in dataserie[1:]])
-        plt.text(max_x, min_y-0.1*(max_y-min_y),
-                f"levene-statistic ({'-'.join([str(i) for i in dataserie[1:].index])}): {statistic:7.4f}\n  └- p-value      : {p_value:7.4f}",
-                ha='right', va='top', color='purple', fontsize=font_size_analysis)
+        dataserie_analysis_index = [idx for idx in dataserie.index if idx != -1] # exclude phase -1
+        statistic, p_value = stats.levene(*dataserie.iloc[dataserie_analysis_index])
+        plt.text(min_x, min_y-0.1*(max_y-min_y),
+                f"levene ({'-'.join([str(i) for i in dataserie_analysis_index])}):    {statistic:6.4f}\n └ p:              {p_value:6.4f}",
+                ha='left', va='top', color='purple', fontsize=font_size_analysis)
 
         # post hoc test 
         bonferroni_correction = 2 # p x 2 (due test complessivi)     
-        for i, (g1, g2) in enumerate(combinations(dataserie[1:].index, 2)):
+        for i, (g1, g2) in enumerate(combinations(dataserie_analysis_index, 2)):
             statistic, p_value = stats.levene(dataserie[g1], dataserie[g2])
-            plt.text(min_x, min_y-0.1*(max_y-min_y)-0.06*(max_y-min_y)*i,
-                    f"levene-statistic ({g1}-{g2}):   {statistic:7.4f}\n └- p-value (Bonferroni): {p_value*bonferroni_correction:7.4f}",
+            plt.text(min_x, min_y-0.16*(max_y-min_y)-0.06*(max_y-min_y)*i,
+                    f"levene ({g1}-{g2}):      {statistic:6.4f}\n └ p (Bonferroni): {p_value*bonferroni_correction:6.4f}",
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
         
     # F test
@@ -769,17 +771,19 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         # if F > critical_value or F < 1 / critical_value:
         #     print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
         
+        dataserie_analysis_index = [idx for idx in dataserie.index if idx != -1] # exclude phase -1
         bonferroni_correction = 2 # moltiplicato per 2 perche stiamo analizzando solo 2 fasi su tre alla volta
-        for i, (g1, g2) in enumerate(combinations(dataserie[1:].index, 2)):
+        for i, (g1, g2) in enumerate(combinations(dataserie[dataserie_analysis_index].index, 2)):
             F = np.var(dataserie[g1]) / np.var(dataserie[g2])
             df1 = len(dataserie[g1])-1
             df2 = len(dataserie[g2])-1
             coda_destra = 1-stats.f.cdf(F, df1, df2)
-            coda_sinistra = 1/stats.f.cdf(F, df1, df2)
+            # coda_sinistra = 1/stats.f.cdf(F, df1, df2)    # da berchialla
+            coda_sinistra = 1-stats.f.cdf(F, df1, df2)      #!!! tmp
             p_value = coda_destra + coda_sinistra
-            print(f"F p (coda destra):     {coda_destra:7.10f}")
-            print(f"F p (coda sinistra):   {coda_sinistra:7.10f}")
-            print(f"F-test P totale ({g1}-{g2}): {p_value:7.10f}")
+            # print(f"F p (coda destra):     {coda_destra:7.10f}")
+            # print(f"F p (coda sinistra):   {coda_sinistra:7.10f}")
+            # print(f"F-test P totale ({g1}-{g2}): {p_value:7.10f}")
             # F p (coda destra):     0.0065897445
             # F p (coda sinistra):   1.0066334573
             # F-test P totale (0-1): 1.0132232018
@@ -790,7 +794,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             # F p (coda sinistra):   1.0001874392
             # F-test P totale (1-2): 1.0003748432
             plt.text(min_x, min_y-0.1*(max_y-min_y)-0.06*(max_y-min_y)*i,
-                    f"f-test ({g1}-{g2}):             {F:7.4f}\n └- p-value (Bonferroni): {p_value*bonferroni_correction:7.4f}",
+                    f"f-test ({g1}-{g2}):      {F:6.4f}\n └ p (Bonferroni): {p_value*bonferroni_correction:6.4f}",
                     ha='left', va='top', color='purple', fontsize=font_size_analysis)
     
     # Adding labels and title
