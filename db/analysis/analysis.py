@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.stats as stats
+from itertools import combinations
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -32,224 +33,224 @@ class multianalysis:
 
 aaa: list[analysis] = [
 
-    # --------------------------- POSITIONAL -------------------------- #
-    analysis(
-        "PA delta insertion depth by phase",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
-        "phase",
-        "delta_id_PA_target",
-    ),
-    analysis(
-        "PA delta insertion depth by phase - student",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-        "phase",
-        "delta_id_PA_target",
-    ),
-    analysis(
-        "PA delta insertion depth by phase - resident",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-        "phase",
-        "delta_id_PA_target",
-    ),
-    analysis(
-        "PA delta insertion depth by phase - surgeon",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-        "phase",
-        "delta_id_PA_target",
-    ),
+    # # --------------------------- POSITIONAL -------------------------- #
+    # analysis(
+    #     "PA delta insertion depth by phase",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
+    #     "phase",
+    #     "delta_id_PA_target",
+    # ),
+    # analysis(
+    #     "PA delta insertion depth by phase - student",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+    #     "phase",
+    #     "delta_id_PA_target",
+    # ),
+    # analysis(
+    #     "PA delta insertion depth by phase - resident",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+    #     "phase",
+    #     "delta_id_PA_target",
+    # ),
+    # analysis(
+    #     "PA delta insertion depth by phase - surgeon",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+    #     "phase",
+    #     "delta_id_PA_target",
+    # ),
 
-    analysis(
-        "PA angle to target by phase",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
-        "phase",
-        "angle_PA_target",
-    ),
-    analysis(
-        "PA angle to target by phase - Student",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-        "phase",
-        "angle_PA_target",
-    ),
-    analysis(
-        "PA angle to target by phase - Resident",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-        "phase",
-        "angle_PA_target",
-    ),
-    analysis(
-        "PA angle to target by phase - Surgeon",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-        "phase",
-        "angle_PA_target",
-    ),
+    # analysis(
+    #     "PA angle to target by phase",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
+    #     "phase",
+    #     "angle_PA_target",
+    # ),
+    # analysis(
+    #     "PA angle to target by phase - Student",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+    #     "phase",
+    #     "angle_PA_target",
+    # ),
+    # analysis(
+    #     "PA angle to target by phase - Resident",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+    #     "phase",
+    #     "angle_PA_target",
+    # ),
+    # analysis(
+    #     "PA angle to target by phase - Surgeon",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+    #     "phase",
+    #     "angle_PA_target",
+    # ),
 
 
-    analysis(
-        "PA angle confidence from target by phase",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
-        "phase",
-        "confidence_angle",
-    ),
-    analysis(
-        "PA angle real from target by phase",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
-        "phase",
-        "angle_PA_target",
-    ),
-    analysis(
-        "PA angle by confidence",
-        "positional",
-        "correlation",
-        (6, 8),
-        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
-        "confidence_angle",
-        "angle_PA_target",
-    ),
+    # analysis(
+    #     "PA angle confidence from target by phase",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+    #     "phase",
+    #     "confidence_angle",
+    # ),
+    # analysis(
+    #     "PA angle real from target by phase",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+    #     "phase",
+    #     "angle_PA_target",
+    # ),
+    # analysis(
+    #     "PA angle by confidence",
+    #     "positional",
+    #     "correlation",
+    #     (6, 8),
+    #     "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+    #     "confidence_angle",
+    #     "angle_PA_target",
+    # ),
 
-    analysis(
-        "PA P2e distance of PA from target by phase",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
-        "phase",
-        "distance_P2e_PA_target",
-    ),
-    analysis(
-        "PA P2e from target by phase - Student",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-        "phase",
-        "distance_P2e_PA_target",
-    ),
-    analysis(
-        "PA P2e from target by phase - Resident",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-        "phase",
-        "distance_P2e_PA_target",
-    ),
-    analysis(
-        "PA P2e from target by phase - Surgeon",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-        "phase",
-        "distance_P2e_PA_target",
-    ),
+    # analysis(
+    #     "PA P2e distance of PA from target by phase",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
+    #     "phase",
+    #     "distance_P2e_PA_target",
+    # ),
+    # analysis(
+    #     "PA P2e from target by phase - Student",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+    #     "phase",
+    #     "distance_P2e_PA_target",
+    # ),
+    # analysis(
+    #     "PA P2e from target by phase - Resident",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+    #     "phase",
+    #     "distance_P2e_PA_target",
+    # ),
+    # analysis(
+    #     "PA P2e from target by phase - Surgeon",
+    #     "positional",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+    #     "phase",
+    #     "distance_P2e_PA_target",
+    # ),
     
 
-    # -------------------------- STATISTICAL -------------------------- #
-    analysis(
-        "ECP duration by ease of placement",
-        "statistical",
-        "correlation",
-        (6, 8),
-        "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
-        "ease_of_placement",
-        "ECP_D",
-    ),
-    analysis(
-        "ECP PACF by phase",
-        "statistical",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, ECP_PACF FROM ECP WHERE phase <> -1",
-        "phase",
-        "ECP_PACF",
-    ),
-    analysis(
-        "PA success by phase",
-        "statistical",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, success FROM PA WHERE phase <> -1;",
-        "phase",
-        "success",
-    ),
+    # # -------------------------- STATISTICAL -------------------------- #
+    # analysis(
+    #     "ECP duration by ease of placement",
+    #     "statistical",
+    #     "correlation",
+    #     (6, 8),
+    #     "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
+    #     "ease_of_placement",
+    #     "ECP_D",
+    # ),
+    # analysis(
+    #     "ECP PACF by phase",
+    #     "statistical",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, ECP_PACF FROM ECP WHERE phase <> -1",
+    #     "phase",
+    #     "ECP_PACF",
+    # ),
+    # analysis(
+    #     "PA success by phase",
+    #     "statistical",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT phase, success FROM PA WHERE phase <> -1;",
+    #     "phase",
+    #     "success",
+    # ),
 
 
-    # ---------------------------- DURATION --------------------------- #
-    analysis(
-        "ECP duration by phase",
-        "duration",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, ECP.ECP_D FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
-        "phase",
-        "ECP_D",
-    ),
-    analysis(
-        "PA duration by phase",
-        "duration",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
-        "phase",
-        "PA_D",
-    ),
+    # # ---------------------------- DURATION --------------------------- #
+    # analysis(
+    #     "ECP duration by phase",
+    #     "duration",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, ECP.ECP_D FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
+    #     "phase",
+    #     "ECP_D",
+    # ),
+    # analysis(
+    #     "PA duration by phase",
+    #     "duration",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
+    #     "phase",
+    #     "PA_D",
+    # ),
 
-    # ------------------------------ RPC ------------------------------ #
-    analysis(
-        "ECP RPC by phase",
-        "RPC",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
-        "phase",
-        "ECP_RPC",
-    ),
-    analysis(
-        "PA RPC by phase",
-        "RPC",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
-        "phase",
-        "PA_RPC",
-    ),
+    # # ------------------------------ RPC ------------------------------ #
+    # analysis(
+    #     "ECP RPC by phase",
+    #     "RPC",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
+    #     "phase",
+    #     "ECP_RPC",
+    # ),
+    # analysis(
+    #     "PA RPC by phase",
+    #     "RPC",
+    #     "errorbox",
+    #     (6, 8),
+    #     "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
+    #     "phase",
+    #     "PA_RPC",
+    # ),
 
 
     # --------------------------- ANATOMICAL -------------------------- #
     analysis(
         "PA entered articulation by phase",
         "anatomical",
-        "errorbox",
+        "barplot",
         (6, 8),
         "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
         "phase",
@@ -428,6 +429,9 @@ def main():
             elif a.type == "correlation":
                 _ = correlation(dataframe, dataserie, summary, a, save=True, show=liveshow)
             
+            elif a.type == "barplot":
+                _ = barplot(dataframe, dataserie, summary, a, save=True, show=liveshow)
+            
             else:
                 print("unknown analysis type")
                 quit()
@@ -494,6 +498,87 @@ def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFram
     dataserie = dataframe.groupby(a.predictor)[a.outcome].apply(list)
 
     return dataframe, dataserie, summary
+
+def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
+    plt.figure(figsize=a.size)
+    plt.rcParams['font.family'] = 'Courier New'
+    min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
+    min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
+    width = 0.06 * (max_x_preplot-min_x_preplot)
+
+    font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
+    # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
+    font_size_legend    = 0.6 * font_size_title
+    font_size_text      = 0.6 * font_size_title
+
+    # Creating cross-tabulation of phases and items
+    cross_tab = pd.crosstab(dataframe[a.predictor], dataframe[a.outcome])
+    # cross_tab.plot.bar()
+
+    # Get the number of phases and items
+    predictor_count = cross_tab.shape[0]
+    outcome_count = cross_tab.shape[1]
+
+    # Set width of bar
+    bar_width = 0.6/outcome_count
+
+    colors = ['darkred', 'darkblue', 'purple', 'darkgreen']
+    for i, item in enumerate(cross_tab.columns):
+        bar_Xs = [p - (outcome_count * bar_width) / 2 + (bar_width / 2) + i * bar_width for p in range(predictor_count)]
+        bar_Ys = cross_tab[item]
+        plt.bar(bar_Xs, bar_Ys,
+                bar_width, label=item,
+                color=colors[i % len(colors)])
+        
+        for i, y in enumerate(bar_Ys):
+            plt.text(bar_Xs[i], y,
+                        f'n={y}\n',
+                        ha='center', va='center', color='black', fontsize=font_size_text)
+
+
+    # Chi-square test
+    # omnibus test
+    chi2, p, dof, expected = stats.chi2_contingency(cross_tab)
+    print(f"Chi-square ({'-'.join([str(i) for i in cross_tab.index])}):", chi2)
+    print(f" └- p-value         :", p)
+
+    # post hoc test
+    for g1, g2 in list(combinations(cross_tab.index, 2)):
+        chi2, p, dof, expected = stats.chi2_contingency(cross_tab.iloc[[g1, g2]])
+        print(f"Chi-square ({g1}-{g2}):", chi2)
+        print(f" └- p-value         :", p)
+
+    # Adding labels and title
+    plt.xlabel(a.predictor, fontsize=font_size_title)
+    plt.ylabel(a.outcome,   fontsize=font_size_title)
+    plt.title (a.title,     fontsize=font_size_title)
+    plt.legend(             fontsize=font_size_legend)
+
+    # Set axis ticks
+    if all(isinstance(x, int) for x in dataframe):
+        plt.yticks(np.arange(min(dataframe), max(dataframe)+1, 1))    # Set y-axis ticks to integers if all data is integer
+    plt.xticks(summary[a.predictor])                        # Set x-axis ticks to follow a.predictor
+
+    plt.grid(True, axis='y')
+
+    # save graph to file
+    if save:
+        save_path = os.path.join(script_dir, a.category, sanitize_filename(f"{a.title}.png"))
+        if not os.path.exists(save_path):
+            os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        plt.savefig(save_path)
+
+    # save graph to variable
+    img_data = io.BytesIO()
+    plt.savefig(img_data, format='png')
+
+    # show graph
+    if show:
+        plt.show()
+    
+    plt.close()
+
+    return img_data
 
 def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
