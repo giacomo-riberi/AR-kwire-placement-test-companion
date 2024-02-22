@@ -104,7 +104,7 @@ def phase():
             surgeon_year=        ci.int(" |-- surgeon year        [-1 : 100]: ", -1, 100),
             exp_operation_count= ci.int(" |-- exp operation count [INTEGER]:  ", 0, 1000),
             glasses=             ci.boo(" |-- glasses [Y/N]:                  "),
-            glasses_type=        ci.acc(" |-- glasses type [None [] / Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: ", ["", "m", "h", "as", "p", "s", "am", "c"]),
+            glasses_type=        ci.acc(" |-- glasses type [None [] / Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: ", ["", "m", "m+as", "h", "as", "p", "s", "am", "c"]),
             glasses_power=       ci.flo(" |-- glasses power [-1 : 100]        ", min=-1, max=100),
             exp_vr=              ci.int(" |-- exp Virtual Reality   [0 : 5]:  ", 0, 5),
             exp_ar=              ci.int(" |-- exp Augmented Reality [0 : 5]:  ", 0, 5),
