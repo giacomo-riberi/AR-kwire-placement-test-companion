@@ -31,6 +31,150 @@ class multianalysis:
     aaa: list[analysis]
 
 aaa: list[analysis] = [
+
+    # --------------------------- POSITIONAL -------------------------- #
+    analysis(
+        "PA delta insertion depth by phase",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "delta_id_PA_target",
+    ),
+    analysis(
+        "PA delta insertion depth by phase - student",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+        "phase",
+        "delta_id_PA_target",
+    ),
+    analysis(
+        "PA delta insertion depth by phase - resident",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+        "phase",
+        "delta_id_PA_target",
+    ),
+    analysis(
+        "PA delta insertion depth by phase - surgeon",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+        "phase",
+        "delta_id_PA_target",
+    ),
+
+    analysis(
+        "PA angle to target by phase",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle to target by phase - Student",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+        "phase",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle to target by phase - Resident",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+        "phase",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle to target by phase - Surgeon",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+        "phase",
+        "angle_PA_target",
+    ),
+
+
+    analysis(
+        "PA angle confidence from target by phase",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "confidence_angle",
+    ),
+    analysis(
+        "PA angle real from target by phase",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle by confidence",
+        "positional",
+        "correlation",
+        (6, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+        "confidence_angle",
+        "angle_PA_target",
+    ),
+
+    analysis(
+        "PA P2e distance of PA from target by phase",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+    analysis(
+        "PA P2e from target by phase - Student",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+    analysis(
+        "PA P2e from target by phase - Resident",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+    analysis(
+        "PA P2e from target by phase - Surgeon",
+        "positional",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+    
+
+    # -------------------------- STATISTICAL -------------------------- #
     analysis(
         "ECP duration by ease of placement",
         "statistical",
@@ -40,7 +184,6 @@ aaa: list[analysis] = [
         "ease_of_placement",
         "ECP_D",
     ),
-
     analysis(
         "ECP PACF by phase",
         "statistical",
@@ -50,20 +193,6 @@ aaa: list[analysis] = [
         "phase",
         "ECP_PACF",
     ),
-
-    # PA    entered_articulation            by phase !!! add multianalysis by career?
-    analysis(
-        "PA entered articulation by phase",
-        "anatomical",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
-        "phase",
-        "entered_articulation",
-    ),
-
-
-    # PA    success                         by phase !!! add multianalysis by career?
     analysis(
         "PA success by phase",
         "statistical",
@@ -75,52 +204,7 @@ aaa: list[analysis] = [
     ),
 
 
-    # PA    distance_P2e_PA_target          by phase
-    analysis(
-        "PA P2e distance of PA from target by phase",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
-        "phase",
-        "distance_P2e_PA_target",
-    ),
-
-
-    # PA    delta_id_PA_target              by phase
-    analysis(
-        "PA delta insertion depth by phase",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, delta_id_PA_target FROM PA WHERE phase <> -1;",
-        "phase",
-        "delta_id_PA_target",
-    ),
-
-    
-    # PA                angle_PA_target     by phase
-    analysis(
-        "PA angle to target by phase",
-        "positional",
-        "errorbox",
-        (6, 8),
-        "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
-        "phase",
-        "angle_PA_target",
-    ),
-
-
-    # PA, ECP    duration            by phase
-    analysis(
-        "PA duration by phase",
-        "duration",
-        "errorbox",
-        (6, 8),
-        "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
-        "phase",
-        "PA_D",
-    ),
+    # ---------------------------- DURATION --------------------------- #
     analysis(
         "ECP duration by phase",
         "duration",
@@ -130,18 +214,17 @@ aaa: list[analysis] = [
         "phase",
         "ECP_D",
     ),
-
-
-    # PA, ECP    RPC                 by phase
     analysis(
-        "PA RPC by phase",
-        "RPC",
+        "PA duration by phase",
+        "duration",
         "errorbox",
         (6, 8),
-        "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
+        "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
-        "PA_RPC",
+        "PA_D",
     ),
+
+    # ------------------------------ RPC ------------------------------ #
     analysis(
         "ECP RPC by phase",
         "RPC",
@@ -151,18 +234,28 @@ aaa: list[analysis] = [
         "phase",
         "ECP_RPC",
     ),
-
-
-    # PA, ECP    hit_count           by phase
     analysis(
-        "PA hit count by phase",
+        "PA RPC by phase",
+        "RPC",
+        "errorbox",
+        (6, 8),
+        "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "PA_RPC",
+    ),
+
+
+    # --------------------------- ANATOMICAL -------------------------- #
+    analysis(
+        "PA entered articulation by phase",
         "anatomical",
         "errorbox",
         (6, 8),
-        "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
+        "SELECT phase, entered_articulation FROM PA WHERE phase <> -1;",
         "phase",
-        "hit_count",
+        "entered_articulation",
     ),
+
     analysis(
         "ECP hit count by phase",
         "anatomical",
@@ -173,14 +266,15 @@ aaa: list[analysis] = [
         "hit_count",
     ),
     analysis(
-        "PA has hit by phase",
+        "PA hit count by phase",
         "anatomical",
         "errorbox",
         (6, 8),
-        "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS PA_has_hit FROM PA WHERE phase <> -1;",
+        "SELECT phase, hit_count FROM PA WHERE phase <> -1;",
         "phase",
-        "PA_has_hit",
+        "hit_count",
     ),
+    
     analysis(
         "ECP has hit by phase",
         "anatomical",
@@ -190,23 +284,18 @@ aaa: list[analysis] = [
         "phase",
         "ECP_has_hit",
     ),
-    
-
-    # # ECP               ease_of_placement   by phase
     analysis(
-        "ECP ease of placement by phase",
-        "statistical",
+        "PA has hit by phase",
+        "anatomical",
         "errorbox",
         (6, 8),
-        "SELECT PHASE.phase, ECP.ease_of_placement FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
+        "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS PA_has_hit FROM PA WHERE phase <> -1;",
         "phase",
-        "ease_of_placement",
+        "PA_has_hit",
     ),
 
-
-    # PA, ECP, PHASE    ulnar_nerve         by phase
     analysis(
-        "PA target 1 distance from ulnar nerve by phase",
+        "PA distance from ulnar nerve by phase - ECP 1",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -215,7 +304,7 @@ aaa: list[analysis] = [
         "ulnar_nerve",
     ),
     analysis(
-        "PA target 2 distance from ulnar nerve by phase",
+        "PA distance from ulnar nerve by phase - ECP 2",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -224,7 +313,7 @@ aaa: list[analysis] = [
         "ulnar_nerve",
     ),
     analysis(
-        "PA target 3 distance from ulnar nerve by phase",
+        "PA distance from ulnar nerve by phase - ECP 3",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -233,10 +322,8 @@ aaa: list[analysis] = [
         "ulnar_nerve",
     ),
 
-
-    # PA, ECP, PHASE    middle_collateral_artery         by phase
     analysis(
-        "PA target 1 distance from middle collateral artery by phase",
+        "PA distance from middle collateral artery by phase - ECP 1",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -245,7 +332,7 @@ aaa: list[analysis] = [
         "middle_collateral_artery",
     ),
     analysis(
-        "PA target 2 distance from middle collateral artery by phase",
+        "PA distance from middle collateral artery by phase - ECP 2",
         "anatomical",
         "errorbox",
         
@@ -255,7 +342,7 @@ aaa: list[analysis] = [
         "middle_collateral_artery",
     ),
     analysis(
-        "PA target 3 distance from middle collateral artery by phase",
+        "PA distance from middle collateral artery by phase - ECP 3",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -265,9 +352,8 @@ aaa: list[analysis] = [
     ),
 
 
-    # PA, ECP, PHASE    median_nerve         by phase
     analysis(
-        "PA target 1 distance from median by phase",
+        "PA distance from median nerve by phase - ECP 1",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -276,7 +362,7 @@ aaa: list[analysis] = [
         "median_nerve",
     ),
     analysis(
-        "PA target 2 distance from median nerve by phase",
+        "PA distance from median nerve by phase - ECP 2",
         "anatomical",
         "errorbox",
         
@@ -286,7 +372,7 @@ aaa: list[analysis] = [
         "median_nerve",
     ),
     analysis(
-        "PA target 3 distance from median nerve by phase",
+        "PA distance from median nerve by phase - ECP 3",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -295,10 +381,8 @@ aaa: list[analysis] = [
         "median_nerve",
     ),
 
-
-    # PA, ECP, PHASE    brachial_artery         by phase
     analysis(
-        "PA target 1 distance from brachial artery by phase",
+        "PA distance from brachial artery by phase - ECP 1",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -307,7 +391,7 @@ aaa: list[analysis] = [
         "brachial_artery",
     ),
     analysis(
-        "PA target 2 distance from brachial artery by phase",
+        "PA distance from brachial artery by phase - ECP 2",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -316,7 +400,7 @@ aaa: list[analysis] = [
         "brachial_artery",
     ),
     analysis(
-        "PA target 3 distance from brachial artery by phase",
+        "PA distance from brachial artery by phase - ECP 3",
         "anatomical",
         "errorbox",
         (8, 8),
@@ -328,141 +412,11 @@ aaa: list[analysis] = [
 ]
 
 mmm: list[multianalysis] = [
-        multianalysis(
-        "PA angle to target by phase and career",
-        "positional",
-        [analysis(
-            "Student",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-            "phase",
-            "angle_PA_target",
-        ),
-        analysis(
-            "Resident",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-            "phase",
-            "angle_PA_target",
-        ),
-        analysis(
-            "Surgeon",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-            "phase",
-            "angle_PA_target",
-        ),
-        ]
-    ),
 
-    multianalysis(
-        "PA angle and confidence by phase and vs confidence",
-        "positional",
-        [analysis(
-            "confidence PA angle from target by phase",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
-            "phase",
-            "confidence_angle",
-        ),
-        analysis(
-            "real PA angle from target by phase",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
-            "phase",
-            "angle_PA_target",
-        ),
-        analysis(
-            "confidence vs real PA angle",
-            "positional",
-            "correlation",
-            (6, 8),
-            "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
-            "confidence_angle",
-            "angle_PA_target",
-        ),
-        ]
-    ),
-
-    multianalysis(
-        "PA P2e distance of PA from target by phase and career",
-        "positional",
-        [analysis(
-            "Student",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-            "phase",
-            "distance_P2e_PA_target",
-        ),
-        analysis(
-            "Resident",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-            "phase",
-            "distance_P2e_PA_target",
-        ),
-        analysis(
-            "Surgeon",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-            "phase",
-            "distance_P2e_PA_target",
-        ),
-        ]
-    ),
-
-    multianalysis(
-        "PA delta insertion depth by phase and career",
-        "positional",
-        [analysis(
-            "Student",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
-            "phase",
-            "delta_id_PA_target",
-        ),
-        analysis(
-            "Resident",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
-            "phase",
-            "delta_id_PA_target",
-        ),
-        analysis(
-            "Surgeon",
-            "positional",
-            "errorbox",
-            (6, 8),
-            "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
-            "phase",
-            "delta_id_PA_target",
-        ),
-        ]
-    ),
 ]
 
 def main():
-    liveshow = False
+    liveshow = True
 
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
@@ -693,21 +647,38 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
     # print("T-statistic:", t_statistic)
     # print(" - P-value:", p_value)
 
-    # # levene test
-    # statistic, p_value = stats.levene(dataserie[0], dataserie[2])
-    # print("levene-statistic:", statistic)
-    # print(" - P-value:", p_value)
+    # levene test
+    statistic, p_value = stats.levene(dataserie[0], dataserie[1])
+    print("levene-statistic:", statistic)
+    print(" - P-value:", p_value)
+    # levene su due code
+    # omnibus test (tra questi 3 gruppi ce differenza)
+    # post hoc test (tra questi 3 gruppi quale differenza) p x 2 (due test complessivi)
 
-    # # F test
-    # F = np.var(dataserie[0]) / np.var(dataserie[2])
-    # df1 = len(dataserie[0])
-    # df2 = len(dataserie[2])
-    # critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
-    # if F > critical_value or F < 1 / critical_value:
-    #     print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
-    # else:
-    #     print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
+    # F test
+    F = np.var(dataserie[0]) / np.var(dataserie[1])
+    print("F-statistic:", F)
+    df1 = len(dataserie[0])-1
+    df2 = len(dataserie[1])-1
+    critical_value = stats.f.ppf(1 - 0.05 / 2, df1, df2)
+    if F > critical_value or F < 1 / critical_value:
+        print("F: Reject the null hypothesis: The groups have significantly different standard deviations.")
+    else:
+        print("F: Fail to reject the null hypothesis: The groups may have similar standard deviations.")
+    # moltiplicare per 2 il p 
+    # F di snedeco = tabulare   
+    stats.f.cdf(F, df1, df2)
+    print("F-cdf:", stats.f.cdf(F, df1, df2))
+    print("F p:", 1-stats.f.cdf(F, df1, df2)) # coda destar
+    print("F coda sinistra", 1/stats.f.cdf(F, df1, df2)) #coda sinistra
 
+    # Ftest a una coda
+
+    print("F-test P totale", 1-stats.f.cdf(F, df1, df2) + 1/stats.f.cdf(F, df1, df2))
+    # moltiplicato per 2 perche stiamo analizzando solo fase 0 e 1
+
+    # rifare la stessa cosa tra fase 1 e 2
+    # moltiplicato per 2 perche stiamo analizzando solo fase 1 e 2
     
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
