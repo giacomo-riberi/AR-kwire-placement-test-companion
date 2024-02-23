@@ -201,13 +201,13 @@ aaa: list[analysis] = [
 
     # -------------------------- STATISTICAL -------------------------- #
     analysis(
-        "ECP duration by ease of placement",
+        "ECP ease of placement by duration",
         "statistical",
         "correlation",
         (8, 8),
         "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
-        "ease_of_placement",
         "ECP_D",
+        "ease_of_placement",
     ),
     analysis(
         "ECP PACF by phase",
@@ -674,7 +674,7 @@ def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataF
     else:
         plt.xticks(dataframe[a.predictor])
 
-    plt.grid(True)
+    plt.grid(True, alpha=0.5)
 
     # save graph to file
     if save:
@@ -839,7 +839,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         plt.yticks(np.arange(min(dataframe), max(dataframe)+1, 1))    # Set y-axis ticks to integers if all data is integer
     plt.xticks(summary[a.predictor])                        # Set x-axis ticks to follow a.predictor
 
-    plt.grid(True)
+    plt.grid(True, alpha=0.5)
 
     # save graph to file
     if save:
