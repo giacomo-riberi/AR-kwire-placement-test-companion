@@ -1,0 +1,170 @@
+2024-02-23 09:49:10,703 - [  INFO] - flags: []
+2024-02-23 09:49:10,703 - [  INFO] - # POSITIONING PHASE COMPANION (v1.27)
+2024-02-23 09:49:10,703 - [  INFO] - # What a beautiful day to stick some anti-pigeon spikes into plastic!
+2024-02-23 09:49:10,705 - [  INFO] - # BEGIN POSITIONING PHASE FOR A CANDIDATE, ONE SINGLE PHASE (4c5b15)
+2024-02-23 09:49:10,705 - [  INFO] - # 2024/02/23 - 09:49:10
+2024-02-23 09:49:10,706 - [  INFO] - DATA COLLECTION - PHASE - (4c5b15)
+2024-02-23 09:49:20,280 - [ DEBUG] - |-- phase      [INTEGER]:           	|1|
+2024-02-23 09:49:20,281 - [ DEBUG] - |-- phantom id [STRING]:            	|05|
+2024-02-23 09:49:20,285 - [ DEBUG] - |-- country origin [STRING]:        	|italy|
+2024-02-23 09:49:20,285 - [ DEBUG] - |-- country    [STRING]:            	|italy|
+2024-02-23 09:49:20,286 - [ DEBUG] - |-- city       [STRING]:            	|turin|
+2024-02-23 09:49:20,287 - [ DEBUG] - |-- institute  [STRING]:            	|cto|
+2024-02-23 09:49:20,287 - [ DEBUG] - |-- name [STRING]:                  	|andrea|
+2024-02-23 09:49:20,288 - [ DEBUG] - |-- surname [STRING]:               	|michelauz|
+2024-02-23 09:49:20,288 - [ DEBUG] - |-- gender                          	|m|
+2024-02-23 09:49:20,289 - [ DEBUG] - |-- right-handed [Y/N]:             	|true|
+2024-02-23 09:49:20,289 - [ DEBUG] - |-- age [INTEGER]:                  	|33|
+2024-02-23 09:49:20,289 - [ DEBUG] - |-- career:   	|sp|
+2024-02-23 09:49:20,290 - [ DEBUG] - |-- medsurg year        [-1 : 7]:   	|-1|
+2024-02-23 09:49:20,291 - [ DEBUG] - |-- specialization year [-1 : 5]:   	|3|
+2024-02-23 09:49:20,291 - [ DEBUG] - |-- surgeon year        [-1 : 100]: 	|-1|
+2024-02-23 09:49:20,292 - [ DEBUG] - |-- exp operation count [INTEGER]:  	|30|
+2024-02-23 09:49:20,292 - [ DEBUG] - |-- glasses [Y/N]:                  	|true|
+2024-02-23 09:49:20,293 - [ DEBUG] - |-- glasses type [None [] / Myopia (Nearsightedness) [M] / Hyperopia (Farsightedness) [H] / Astigmatism [AS] / Presbyopia [P] / Strabismus [S] / Amblyopia (Lazy Eye) [AM] / Cataract [C]: 	|m|
+2024-02-23 09:49:20,293 - [ DEBUG] - |-- glasses power [-1 : 100]         |-- glasses power [-1 : 100]        	|2.5|
+2024-02-23 09:49:20,293 - [ DEBUG] - |-- exp Virtual Reality   [0 : 5]:  	|2|
+2024-02-23 09:49:20,294 - [ DEBUG] - |-- exp Augmented Reality [0 : 5]:  	|2|
+2024-02-23 09:49:30,107 - [ DEBUG] - |-- exp 3D editors        [0 : 5]:  	|4|
+2024-02-23 09:49:41,311 - [ DEBUG] - TECHNICAL:	 is data entered correct? [Y/N]: 	|y|
+2024-02-23 09:49:41,312 - [  INFO] - ########################
+2024-02-23 09:49:41,312 - [  INFO] - ECP1 START! (5f5102e1)
+2024-02-23 09:49:41,313 - [  INFO] - ------------------------
+2024-02-23 09:49:41,313 - [  INFO] - PA1.1 START! (b73e924e2c)
+2024-02-23 10:07:08,995 - [ DEBUG] - PERFORM:	 reset x-ray machine [ENTER when done]: 	||
+2024-02-23 10:07:09,442 - [ DEBUG] - PERFORM:	 give instruction to insert k-wire [ENTER when instruction given]: 	||
+2024-02-23 10:08:57,175 - [ DEBUG] - CANDIDATE:	 inserting k-wire... -> checks it and declares it Failed or Successful (Restart timer)	|r|
+2024-02-23 10:08:57,175 - [  INFO] - \_restart timer!
+2024-02-23 10:12:24,394 - [ DEBUG] - CANDIDATE:	 inserting k-wire... -> checks it and declares it Failed or Successful (Restart timer)	|s|
+2024-02-23 10:12:24,395 - [  INFO] - \_candidate has performed SUCCESSFUL positioning attempt!
+2024-02-23 10:12:24,395 - [  INFO] - DATA COLLECTION - PA1.1 - (b73e924e2c)
+2024-02-23 10:12:43,020 - [ DEBUG] - |-- CANDIDATE: entrance point distance from entrance point target? [FLOAT]:  |-- CANDIDATE: entrance point distance from entrance point target? [FLOAT]: 	|0|
+2024-02-23 10:12:46,550 - [ DEBUG] - |-- CANDIDATE: confidence on angle in deg? [FLOAT]:                          |-- CANDIDATE: confidence on angle in deg? [FLOAT]:                         	|0|
+2024-02-23 10:12:53,288 - [ DEBUG] - |-- CANDIDATE: estimate structures hit [Y/N]?:                              	|n|
+2024-02-23 10:12:59,108 - [ DEBUG] - |-- RADIATION picture count [INT] : 	|6|
+2024-02-23 10:13:02,437 - [ DEBUG] - |-- P from unity	|12|
+2024-02-23 10:13:22,090 - [ DEBUG] - |-- P1M:2 [FLOAT]:  |-- P1M:2 [FLOAT]: 	|78.850|
+2024-02-23 10:13:22,091 - [ DEBUG] - |-- P1M:3 [FLOAT]:  |-- P1M:3 [FLOAT]: 	|68.333|
+2024-02-23 10:13:22,092 - [ DEBUG] - |-- P1M:7 [FLOAT]:  |-- P1M:7 [FLOAT]: 	|103.185|
+2024-02-23 10:13:22,093 - [ DEBUG] - |-- P1M:8 [FLOAT]:  |-- P1M:8 [FLOAT]: 	|97.133|
+2024-02-23 10:13:22,094 - [ DEBUG] - |-- P2M:2 [FLOAT]:  |-- P2M:2 [FLOAT]: 	|62.194|
+2024-02-23 10:13:22,094 - [ DEBUG] - |-- P2M:3 [FLOAT]:  |-- P2M:3 [FLOAT]: 	|53.492|
+2024-02-23 10:13:22,095 - [ DEBUG] - |-- P2M:7 [FLOAT]:  |-- P2M:7 [FLOAT]: 	|78.837|
+2024-02-23 10:13:23,636 - [ DEBUG] - |-- P2M:8 [FLOAT]:  |-- P2M:8 [FLOAT]: 	|71.636|
+2024-02-23 10:13:26,169 - [ DEBUG] - |-- P1M:2 unity [FLOAT]:   |-- P1M:2 unity [FLOAT]:  	|78.850|
+2024-02-23 10:13:26,170 - [ DEBUG] - |-- P1M:3 unity [FLOAT]:   |-- P1M:3 unity [FLOAT]:  	|68.333|
+2024-02-23 10:13:26,171 - [ DEBUG] - |-- P1M:7 unity [FLOAT]:   |-- P1M:7 unity [FLOAT]:  	|103.185|
+2024-02-23 10:13:26,172 - [ DEBUG] - |-- P1M:8 unity [FLOAT]:   |-- P1M:8 unity [FLOAT]:  	|97.133|
+2024-02-23 10:13:26,172 - [ DEBUG] - |-- P2eM:2 unity [FLOAT]:  |-- P2eM:2 unity [FLOAT]: 	|62.194|
+2024-02-23 10:13:26,173 - [ DEBUG] - |-- P2eM:3 unity [FLOAT]:  |-- P2eM:3 unity [FLOAT]: 	|53.492|
+2024-02-23 10:13:26,174 - [ DEBUG] - |-- P2eM:7 unity [FLOAT]:  |-- P2eM:7 unity [FLOAT]: 	|78.837|
+2024-02-23 10:13:26,744 - [ DEBUG] - |-- P2eM:8 unity [FLOAT]:  |-- P2eM:8 unity [FLOAT]: 	|71.636|
+2024-02-23 10:13:29,791 - [ DEBUG] - TECHNICAL:	 is data entered correct? [Y/N]: 	|y|
+2024-02-23 10:13:29,796 - [  INFO] - PERFORM:	 test following string on fusion 360 (already copied in clipboard) -> 
+{"datatype": "PA", "PHASE_id": "4c5b15", "ECP_id": "5f5102e1", "id": "b73e924e2c", "comment": "", "time_init": 1708679337.18, "phase": 1, "ECP_number": 1, "PA_number": 1, "success": true, "entered_articulation": -1, "PA_D": -1.0, "PA_RPC": 6, "values_from_unity": "12", "P1A": 78.85, "P1B": 68.333, "P1C": 103.185, "P1D": 97.133, "P2A": 62.194, "P2B": 53.492, "P2C": 78.837, "P2D": 71.636, "P1A_F": -1.0, "P1B_F": -1.0, "P1C_F": -1.0, "P1D_F": -1.0, "P2A_F": -1.0, "P2B_F": -1.0, "P2C_F": -1.0, "P2D_F": -1.0, "P2eA_F": -1.0, "P2eB_F": -1.0, "P2eC_F": -1.0, "P2eD_F": -1.0, "P1A_U": 78.85, "P1B_U": 68.333, "P1C_U": 103.185, "P1D_U": 97.133, "P2eA_U": 62.194, "P2eB_U": 53.492, "P2eC_U": 78.837, "P2eD_U": 71.636, "P1_mean_max": 1.0, "P1_mean": -1.0, "P2_mean_max": 2.0, "P2_mean": -1.0, "confidence_position": 0.0, "confidence_angle": 0.0, "estimate_hit": false, "target": "ECP:1", "markers": {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"}, "fusion_computed": false, "anatomy": {"basilic vein": -1.0, "brachial artery": -1.0, "brachial vein": -1.0, "cephalic vein": -1.0, "inferior ulnar collateral artery": -1.0, "median antebrachial vein": -1.0, "median cubital vein": -1.0, "median cubital vein 1": -1.0, "middle collateral artery": -1.0, "radial artery": -1.0, "radial collateral artery": -1.0, "radial veins": -1.0, "random artery 1": -1.0, "random artery 2": -1.0, "ulnar artery": -1.0, "ulnar veins": -1.0, "anterior branch of medial antebrachial cutaneous nerve": -1.0, "anterior interosseous nerve of forearm": -1.0, "deep branch of radial nerve": -1.0, "lateral antebrachial cutaneous nerve": -1.0, "median nerve": -1.0, "muscular branches of radial nerve": -1.0, "musculocutaneous nerve": -1.0, "posterior antebrachial cutaneous nerve": -1.0, "posterior branch of medial antebrachial cutaneous nerve": -1.0, "radial nerve": -1.0, "superficial branch of radial nerve": -1.0, "ulnar nerve": -1.0}, "hit_count": -1.0, "angle_PA_target": -1.0, "distance_P1_PA_target": -1.0, "distance_P1_PA_target_X": -1.0, "distance_P1_PA_target_Y": -1.0, "distance_P1_PA_target_Z": -1.0, "distance_P2_PA_target": -1.0, "distance_P2_PA_target_X": -1.0, "distance_P2_PA_target_Y": -1.0, "distance_P2_PA_target_Z": -1.0, "distance_P2e_PA_target": -1.0, "distance_P2e_PA_target_X": -1.0, "distance_P2e_PA_target_Y": -1.0, "distance_P2e_PA_target_Z": -1.0, "delta_id_PA_target": -1.0}
+2024-02-23 10:14:21,722 - [ DEBUG] - PERFORM:	 enter data from fusion 360: 	|{"datatype": "PA", "PHASE_id": "4c5b15", "ECP_id": "5f5102e1", "id": "b73e924e2c", "comment": "", "time_init": 1708679337.18, "phase": 1, "ECP_number": 1, "PA_number": 1, "success": true, "entered_articulation": -1, "PA_D": -1.0, "PA_RPC": 6, "values_from_unity": "12", "P1A": 78.85, "P1B": 68.333, "P1C": 103.185, "P1D": 97.133, "P2A": 62.194, "P2B": 53.492, "P2C": 78.837, "P2D": 71.636, "P1A_F": 78.85, "P1B_F": 68.333, "P1C_F": 103.185, "P1D_F": 97.133, "P2A_F": 62.194, "P2B_F": 53.492, "P2C_F": 78.837, "P2D_F": 71.636, "P2eA_F": 62.194, "P2eB_F": 53.492, "P2eC_F": 78.837, "P2eD_F": 71.636, "P1A_U": 78.85, "P1B_U": 68.333, "P1C_U": 103.185, "P1D_U": 97.133, "P2eA_U": 62.194, "P2eB_U": 53.492, "P2eC_U": 78.837, "P2eD_U": 71.636, "P1_mean_max": 1.0, "P1_mean": 0.001, "P2_mean_max": 2.0, "P2_mean": 0.001, "confidence_position": 0.0, "confidence_angle": 0.0, "estimate_hit": false, "target": "ECP:1", "markers": {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"}, "fusion_computed": true, "anatomy": {"basilic vein": 18.485, "brachial artery": 22.954, "brachial vein": 18.806, "cephalic vein": 31.329, "inferior ulnar collateral artery": 18.555, "median antebrachial vein": 35.749, "median cubital vein": 24.09, "median cubital vein 1": 26.451, "middle collateral artery": 9.633, "radial artery": 27.623, "radial collateral artery": 18.628, "radial veins": 36.613, "random artery 1": 6.418, "random artery 2": 31.089, "ulnar artery": 27.623, "ulnar veins": 36.638, "anterior branch of medial antebrachial cutaneous nerve": 27.341, "anterior interosseous nerve of forearm": 26.828, "deep branch of radial nerve": 25.589, "lateral antebrachial cutaneous nerve": 24.607, "median nerve": 23.695, "muscular branches of radial nerve": 13.924, "musculocutaneous nerve": 20.03, "posterior antebrachial cutaneous nerve": 18.232, "posterior branch of medial antebrachial cutaneous nerve": 2.076, "radial nerve": 22.977, "superficial branch of radial nerve": 25.811, "ulnar nerve": 5.429}, "hit_count": 0, "angle_PA_target": 5.057, "distance_P1_PA_target": 2.749, "distance_P1_PA_target_X": -1.1, "distance_P1_PA_target_Y": 1.98, "distance_P1_PA_target_Z": 1.558, "distance_P2_PA_target": 2.038, "distance_P2_PA_target_X": -1.034, "distance_P2_PA_target_Y": -1.557, "distance_P2_PA_target_Z": -0.811, "distance_P2e_PA_target": 2.038, "distance_P2e_PA_target_X": -1.034, "distance_P2e_PA_target_Y": -1.557, "distance_P2e_PA_target_Z": -0.811, "delta_id_PA_target": 0.515}|
+2024-02-23 10:14:24,712 - [ DEBUG] - TECHNICAL:	 want to remeasure P1 and/or P2? [Y/N]: 	|n|
+2024-02-23 10:14:28,840 - [ DEBUG] - |-- ENTERED ARTICULATION [-1 / 0 (not entered) / 1 (entered)] : 	|0|
+2024-02-23 10:14:31,449 - [ DEBUG] - TECHNICAL:	 comment on PA (b73e924e2c) [STRING]: 	||
+2024-02-23 10:14:33,028 - [ DEBUG] - TECHNICAL:	 remove kwire from phanotm [ENTER when done]: 	||
+2024-02-23 10:14:33,028 - [  INFO] - PA1.1 FINISHED!
+2024-02-23 10:14:33,029 - [  INFO] - DATA COLLECTION - ECP1 - (5f5102e1)
+2024-02-23 10:14:50,532 - [ DEBUG] - |-- ease of placement [0 difficult - 5 easy]: 	|4|
+2024-02-23 10:14:50,533 - [  INFO] - ########################
+2024-02-23 10:14:50,533 - [  INFO] - ECP2 START! (efb463a6)
+2024-02-23 10:14:50,535 - [  INFO] - ------------------------
+2024-02-23 10:14:50,536 - [  INFO] - PA2.1 START! (e91fb125d0)
+2024-02-23 10:15:31,507 - [ DEBUG] - PERFORM:	 reset x-ray machine [ENTER when done]: 	||
+2024-02-23 10:15:35,900 - [ DEBUG] - PERFORM:	 give instruction to insert k-wire [ENTER when instruction given]: 	||
+2024-02-23 10:19:17,476 - [ DEBUG] - CANDIDATE:	 inserting k-wire... -> checks it and declares it Failed or Successful (Restart timer)	|r|
+2024-02-23 10:19:17,476 - [  INFO] - \_restart timer!
+2024-02-23 10:19:37,600 - [ DEBUG] - CANDIDATE:	 inserting k-wire... -> checks it and declares it Failed or Successful (Restart timer)	|r|
+2024-02-23 10:19:37,600 - [  INFO] - \_restart timer!
+2024-02-23 10:24:58,648 - [ DEBUG] - CANDIDATE:	 inserting k-wire... -> checks it and declares it Failed or Successful (Restart timer)	|s|
+2024-02-23 10:24:58,648 - [  INFO] - \_candidate has performed SUCCESSFUL positioning attempt!
+2024-02-23 10:24:58,649 - [  INFO] - DATA COLLECTION - PA2.1 - (e91fb125d0)
+2024-02-23 10:27:17,163 - [ DEBUG] - |-- CANDIDATE: entrance point distance from entrance point target? [FLOAT]:  |-- CANDIDATE: entrance point distance from entrance point target? [FLOAT]: 	|5|
+2024-02-23 10:27:26,787 - [ DEBUG] - |-- CANDIDATE: confidence on angle in deg? [FLOAT]:                          |-- CANDIDATE: confidence on angle in deg? [FLOAT]:                         	|0|
+2024-02-23 10:27:32,203 - [ DEBUG] - |-- CANDIDATE: estimate structures hit [Y/N]?:                              	|n|
+2024-02-23 10:27:46,791 - [ DEBUG] - |-- RADIATION picture count [INT] : 	|21|
+2024-02-23 10:27:48,671 - [ DEBUG] - |-- P from unity	|12|
+2024-02-23 10:28:09,440 - [ DEBUG] - |-- P1M:3 [FLOAT]:  |-- P1M:3 [FLOAT]: 	|68.153|
+2024-02-23 10:28:09,440 - [ DEBUG] - |-- P1M:4 [FLOAT]:  |-- P1M:4 [FLOAT]: 	|54.515|
+2024-02-23 10:28:09,441 - [ DEBUG] - |-- P1M:8 [FLOAT]:  |-- P1M:8 [FLOAT]: 	|108.407|
+2024-02-23 10:28:09,442 - [ DEBUG] - |-- P1M:9 [FLOAT]:  |-- P1M:9 [FLOAT]: 	|101.054|
+2024-02-23 10:28:09,443 - [ DEBUG] - |-- P2M:3 [FLOAT]:  |-- P2M:3 [FLOAT]: 	|64.025|
+2024-02-23 10:28:09,443 - [ DEBUG] - |-- P2M:4 [FLOAT]:  |-- P2M:4 [FLOAT]: 	|55.916|
+2024-02-23 10:28:09,457 - [ DEBUG] - |-- P2M:8 [FLOAT]:  |-- P2M:8 [FLOAT]: 	|73.480|
+2024-02-23 10:28:10,260 - [ DEBUG] - |-- P2M:9 [FLOAT]:  |-- P2M:9 [FLOAT]: 	|66.231|
+2024-02-23 10:28:12,489 - [ DEBUG] - |-- P1M:3 unity [FLOAT]:   |-- P1M:3 unity [FLOAT]:  	|68.153|
+2024-02-23 10:28:12,490 - [ DEBUG] - |-- P1M:4 unity [FLOAT]:   |-- P1M:4 unity [FLOAT]:  	|54.515|
+2024-02-23 10:28:12,490 - [ DEBUG] - |-- P1M:8 unity [FLOAT]:   |-- P1M:8 unity [FLOAT]:  	|108.407|
+2024-02-23 10:28:12,492 - [ DEBUG] - |-- P1M:9 unity [FLOAT]:   |-- P1M:9 unity [FLOAT]:  	|101.054|
+2024-02-23 10:28:12,493 - [ DEBUG] - |-- P2eM:3 unity [FLOAT]:  |-- P2eM:3 unity [FLOAT]: 	|64.025|
+2024-02-23 10:28:12,494 - [ DEBUG] - |-- P2eM:4 unity [FLOAT]:  |-- P2eM:4 unity [FLOAT]: 	|55.916|
+2024-02-23 10:28:12,495 - [ DEBUG] - |-- P2eM:8 unity [FLOAT]:  |-- P2eM:8 unity [FLOAT]: 	|73.480|
+2024-02-23 10:28:12,904 - [ DEBUG] - |-- P2eM:9 unity [FLOAT]:  |-- P2eM:9 unity [FLOAT]: 	|66.231|
+2024-02-23 10:28:16,231 - [ DEBUG] - TECHNICAL:	 is data entered correct? [Y/N]: 	|y|
+2024-02-23 10:28:16,235 - [  INFO] - PERFORM:	 test following string on fusion 360 (already copied in clipboard) -> 
+{"datatype": "PA", "PHASE_id": "4c5b15", "ECP_id": "efb463a6", "id": "e91fb125d0", "comment": "", "time_init": 1708679977.6, "phase": 1, "ECP_number": 2, "PA_number": 1, "success": true, "entered_articulation": -1, "PA_D": -1.0, "PA_RPC": 21, "values_from_unity": "12", "P1A": 68.153, "P1B": 54.515, "P1C": 108.407, "P1D": 101.054, "P2A": 64.025, "P2B": 55.916, "P2C": 73.48, "P2D": 66.231, "P1A_F": -1.0, "P1B_F": -1.0, "P1C_F": -1.0, "P1D_F": -1.0, "P2A_F": -1.0, "P2B_F": -1.0, "P2C_F": -1.0, "P2D_F": -1.0, "P2eA_F": -1.0, "P2eB_F": -1.0, "P2eC_F": -1.0, "P2eD_F": -1.0, "P1A_U": 68.153, "P1B_U": 54.515, "P1C_U": 108.407, "P1D_U": 101.054, "P2eA_U": 64.025, "P2eB_U": 55.916, "P2eC_U": 73.48, "P2eD_U": 66.231, "P1_mean_max": 1.0, "P1_mean": -1.0, "P2_mean_max": 2.0, "P2_mean": -1.0, "confidence_position": 5.0, "confidence_angle": 0.0, "estimate_hit": false, "target": "ECP:2", "markers": {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"}, "fusion_computed": false, "anatomy": {"basilic vein": -1.0, "brachial artery": -1.0, "brachial vein": -1.0, "cephalic vein": -1.0, "inferior ulnar collateral artery": -1.0, "median antebrachial vein": -1.0, "median cubital vein": -1.0, "median cubital vein 1": -1.0, "middle collateral artery": -1.0, "radial artery": -1.0, "radial collateral artery": -1.0, "radial veins": -1.0, "random artery 1": -1.0, "random artery 2": -1.0, "ulnar artery": -1.0, "ulnar veins": -1.0, "anterior branch of medial antebrachial cutaneous nerve": -1.0, "anterior interosseous nerve of forearm": -1.0, "deep branch of radial nerve": -1.0, "lateral antebrachial cutaneous nerve": -1.0, "median nerve": -1.0, "muscular branches of radial nerve": -1.0, "musculocutaneous nerve": -1.0, "posterior antebrachial cutaneous nerve": -1.0, "posterior branch of medial antebrachial cutaneous nerve": -1.0, "radial nerve": -1.0, "superficial branch of radial nerve": -1.0, "ulnar nerve": -1.0}, "hit_count": -1.0, "angle_PA_target": -1.0, "distance_P1_PA_target": -1.0, "distance_P1_PA_target_X": -1.0, "distance_P1_PA_target_Y": -1.0, "distance_P1_PA_target_Z": -1.0, "distance_P2_PA_target": -1.0, "distance_P2_PA_target_X": -1.0, "distance_P2_PA_target_Y": -1.0, "distance_P2_PA_target_Z": -1.0, "distance_P2e_PA_target": -1.0, "distance_P2e_PA_target_X": -1.0, "distance_P2e_PA_target_Y": -1.0, "distance_P2e_PA_target_Z": -1.0, "delta_id_PA_target": -1.0}
+2024-02-23 10:30:41,419 - [ DEBUG] - PERFORM:	 enter data from fusion 360: 	|{"datatype": "PA", "PHASE_id": "4c5b15", "ECP_id": "efb463a6", "id": "e91fb125d0", "comment": "", "time_init": 1708679977.6, "phase": 1, "ECP_number": 2, "PA_number": 1, "success": true, "entered_articulation": -1, "PA_D": -1.0, "PA_RPC": 21, "values_from_unity": "12", "P1A": 68.153, "P1B": 54.515, "P1C": 108.407, "P1D": 101.054, "P2A": 64.025, "P2B": 55.916, "P2C": 73.48, "P2D": 66.231, "P1A_F": 68.153, "P1B_F": 54.515, "P1C_F": 108.407, "P1D_F": 101.054, "P2A_F": 64.025, "P2B_F": 55.916, "P2C_F": 73.48, "P2D_F": 66.231, "P2eA_F": 64.025, "P2eB_F": 55.917, "P2eC_F": 73.479, "P2eD_F": 66.23, "P1A_U": 68.153, "P1B_U": 54.515, "P1C_U": 108.407, "P1D_U": 101.054, "P2eA_U": 64.025, "P2eB_U": 55.916, "P2eC_U": 73.48, "P2eD_U": 66.231, "P1_mean_max": 1.0, "P1_mean": 0.001, "P2_mean_max": 2.0, "P2_mean": 0.0, "confidence_position": 5.0, "confidence_angle": 0.0, "estimate_hit": false, "target": "ECP:2", "markers": {"A": "M:3", "B": "M:4", "C": "M:8", "D": "M:9"}, "fusion_computed": true, "anatomy": {"basilic vein": 37.808, "brachial artery": 16.846, "brachial vein": 6.449, "cephalic vein": 22.177, "inferior ulnar collateral artery": 18.435, "median antebrachial vein": 36.914, "median cubital vein": 28.159, "median cubital vein 1": 18.698, "middle collateral artery": 13.305, "radial artery": 9.9, "radial collateral artery": 20.27, "radial veins": 7.143, "random artery 1": 20.634, "random artery 2": 20.789, "ulnar artery": 9.148, "ulnar veins": 7.169, "anterior branch of medial antebrachial cutaneous nerve": 30.427, "anterior interosseous nerve of forearm": 9.657, "deep branch of radial nerve": 13.573, "lateral antebrachial cutaneous nerve": 14.189, "median nerve": 11.365, "muscular branches of radial nerve": 14.775, "musculocutaneous nerve": 17.602, "posterior antebrachial cutaneous nerve": 27.634, "posterior branch of medial antebrachial cutaneous nerve": 37.598, "radial nerve": 17.074, "superficial branch of radial nerve": 14.737, "ulnar nerve": 33.409}, "hit_count": 0, "angle_PA_target": 11.777, "distance_P1_PA_target": 15.035, "distance_P1_PA_target_X": -13.254, "distance_P1_PA_target_Y": -4.171, "distance_P1_PA_target_Z": -5.742, "distance_P2_PA_target": 9.346, "distance_P2_PA_target_X": -9.193, "distance_P2_PA_target_Y": 0.375, "distance_P2_PA_target_Z": 1.647, "distance_P2e_PA_target": 9.347, "distance_P2e_PA_target_X": -9.193, "distance_P2e_PA_target_Y": 0.376, "distance_P2e_PA_target_Z": 1.648, "delta_id_PA_target": -4.202}|
+2024-02-23 10:30:45,471 - [ DEBUG] - TECHNICAL:	 want to remeasure P1 and/or P2? [Y/N]: 	|n|
+2024-02-23 10:30:47,065 - [ DEBUG] - |-- ENTERED ARTICULATION [-1 / 0 (not entered) / 1 (entered)] : 	|0|
+2024-02-23 10:30:48,230 - [ DEBUG] - TECHNICAL:	 comment on PA (e91fb125d0) [STRING]: 	||
+2024-02-23 10:30:57,800 - [ DEBUG] - TECHNICAL:	 remove kwire from phanotm [ENTER when done]: 	||
+2024-02-23 10:30:57,800 - [  INFO] - PA2.1 FINISHED!
+2024-02-23 10:30:57,800 - [  INFO] - DATA COLLECTION - ECP2 - (efb463a6)
+2024-02-23 10:31:09,324 - [ DEBUG] - |-- ease of placement [0 difficult - 5 easy]: 	|2|
+2024-02-23 10:31:09,325 - [  INFO] - ########################
+2024-02-23 10:31:09,326 - [  INFO] - ECP3 START! (3b034505)
+2024-02-23 10:31:09,328 - [  INFO] - ------------------------
+2024-02-23 10:31:09,328 - [  INFO] - PA3.1 START! (39232085cb)
+2024-02-23 10:31:11,719 - [ DEBUG] - PERFORM:	 reset x-ray machine [ENTER when done]: 	||
+2024-02-23 10:34:02,174 - [ DEBUG] - PERFORM:	 give instruction to insert k-wire [ENTER when instruction given]: 	||
+2024-02-23 10:39:21,993 - [ DEBUG] - CANDIDATE:	 inserting k-wire... -> checks it and declares it Failed or Successful (Restart timer)	|s|
+2024-02-23 10:39:21,993 - [  INFO] - \_candidate has performed SUCCESSFUL positioning attempt!
+2024-02-23 10:39:21,993 - [  INFO] - DATA COLLECTION - PA3.1 - (39232085cb)
+2024-02-23 10:39:40,273 - [ DEBUG] - |-- CANDIDATE: entrance point distance from entrance point target? [FLOAT]:  |-- CANDIDATE: entrance point distance from entrance point target? [FLOAT]: 	|0|
+2024-02-23 10:39:45,060 - [ DEBUG] - |-- CANDIDATE: confidence on angle in deg? [FLOAT]:                          |-- CANDIDATE: confidence on angle in deg? [FLOAT]:                         	|0|
+2024-02-23 10:39:49,582 - [ DEBUG] - |-- CANDIDATE: estimate structures hit [Y/N]?:                              	|n|
+2024-02-23 10:39:54,139 - [ DEBUG] - |-- RADIATION picture count [INT] : 	|12|
+2024-02-23 10:39:56,324 - [ DEBUG] - |-- P from unity	|12|
+2024-02-23 10:40:07,638 - [ DEBUG] - |-- P1M:2 [FLOAT]:  |-- P1M:2 [FLOAT]: 	|107.785|
+2024-02-23 10:40:07,639 - [ DEBUG] - |-- P1M:3 [FLOAT]:  |-- P1M:3 [FLOAT]: 	|98.220|
+2024-02-23 10:40:07,640 - [ DEBUG] - |-- P1M:7 [FLOAT]:  |-- P1M:7 [FLOAT]: 	|74.856|
+2024-02-23 10:40:07,640 - [ DEBUG] - |-- P1M:8 [FLOAT]:  |-- P1M:8 [FLOAT]: 	|61.697|
+2024-02-23 10:40:07,641 - [ DEBUG] - |-- P2M:2 [FLOAT]:  |-- P2M:2 [FLOAT]: 	|71.066|
+2024-02-23 10:40:07,641 - [ DEBUG] - |-- P2M:3 [FLOAT]:  |-- P2M:3 [FLOAT]: 	|60.401|
+2024-02-23 10:40:07,642 - [ DEBUG] - |-- P2M:7 [FLOAT]:  |-- P2M:7 [FLOAT]: 	|73.630|
+2024-02-23 10:40:08,056 - [ DEBUG] - |-- P2M:8 [FLOAT]:  |-- P2M:8 [FLOAT]: 	|62.788|
+2024-02-23 10:40:09,481 - [ DEBUG] - |-- P1M:2 unity [FLOAT]:   |-- P1M:2 unity [FLOAT]:  	|107.785|
+2024-02-23 10:40:09,482 - [ DEBUG] - |-- P1M:3 unity [FLOAT]:   |-- P1M:3 unity [FLOAT]:  	|98.220|
+2024-02-23 10:40:09,483 - [ DEBUG] - |-- P1M:7 unity [FLOAT]:   |-- P1M:7 unity [FLOAT]:  	|74.856|
+2024-02-23 10:40:09,483 - [ DEBUG] - |-- P1M:8 unity [FLOAT]:   |-- P1M:8 unity [FLOAT]:  	|61.697|
+2024-02-23 10:40:09,484 - [ DEBUG] - |-- P2eM:2 unity [FLOAT]:  |-- P2eM:2 unity [FLOAT]: 	|71.066|
+2024-02-23 10:40:09,485 - [ DEBUG] - |-- P2eM:3 unity [FLOAT]:  |-- P2eM:3 unity [FLOAT]: 	|60.401|
+2024-02-23 10:40:09,486 - [ DEBUG] - |-- P2eM:7 unity [FLOAT]:  |-- P2eM:7 unity [FLOAT]: 	|73.630|
+2024-02-23 10:40:10,286 - [ DEBUG] - |-- P2eM:8 unity [FLOAT]:  |-- P2eM:8 unity [FLOAT]: 	|62.788|
+2024-02-23 10:40:12,849 - [ DEBUG] - TECHNICAL:	 is data entered correct? [Y/N]: 	|y|
+2024-02-23 10:40:12,853 - [  INFO] - PERFORM:	 test following string on fusion 360 (already copied in clipboard) -> 
+{"datatype": "PA", "PHASE_id": "4c5b15", "ECP_id": "3b034505", "id": "39232085cb", "comment": "", "time_init": 1708680842.17, "phase": 1, "ECP_number": 3, "PA_number": 1, "success": true, "entered_articulation": -1, "PA_D": -1.0, "PA_RPC": 12, "values_from_unity": "12", "P1A": 107.785, "P1B": 98.22, "P1C": 74.856, "P1D": 61.697, "P2A": 71.066, "P2B": 60.401, "P2C": 73.63, "P2D": 62.788, "P1A_F": -1.0, "P1B_F": -1.0, "P1C_F": -1.0, "P1D_F": -1.0, "P2A_F": -1.0, "P2B_F": -1.0, "P2C_F": -1.0, "P2D_F": -1.0, "P2eA_F": -1.0, "P2eB_F": -1.0, "P2eC_F": -1.0, "P2eD_F": -1.0, "P1A_U": 107.785, "P1B_U": 98.22, "P1C_U": 74.856, "P1D_U": 61.697, "P2eA_U": 71.066, "P2eB_U": 60.401, "P2eC_U": 73.63, "P2eD_U": 62.788, "P1_mean_max": 1.0, "P1_mean": -1.0, "P2_mean_max": 2.0, "P2_mean": -1.0, "confidence_position": 0.0, "confidence_angle": 0.0, "estimate_hit": false, "target": "ECP:3", "markers": {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"}, "fusion_computed": false, "anatomy": {"basilic vein": -1.0, "brachial artery": -1.0, "brachial vein": -1.0, "cephalic vein": -1.0, "inferior ulnar collateral artery": -1.0, "median antebrachial vein": -1.0, "median cubital vein": -1.0, "median cubital vein 1": -1.0, "middle collateral artery": -1.0, "radial artery": -1.0, "radial collateral artery": -1.0, "radial veins": -1.0, "random artery 1": -1.0, "random artery 2": -1.0, "ulnar artery": -1.0, "ulnar veins": -1.0, "anterior branch of medial antebrachial cutaneous nerve": -1.0, "anterior interosseous nerve of forearm": -1.0, "deep branch of radial nerve": -1.0, "lateral antebrachial cutaneous nerve": -1.0, "median nerve": -1.0, "muscular branches of radial nerve": -1.0, "musculocutaneous nerve": -1.0, "posterior antebrachial cutaneous nerve": -1.0, "posterior branch of medial antebrachial cutaneous nerve": -1.0, "radial nerve": -1.0, "superficial branch of radial nerve": -1.0, "ulnar nerve": -1.0}, "hit_count": -1.0, "angle_PA_target": -1.0, "distance_P1_PA_target": -1.0, "distance_P1_PA_target_X": -1.0, "distance_P1_PA_target_Y": -1.0, "distance_P1_PA_target_Z": -1.0, "distance_P2_PA_target": -1.0, "distance_P2_PA_target_X": -1.0, "distance_P2_PA_target_Y": -1.0, "distance_P2_PA_target_Z": -1.0, "distance_P2e_PA_target": -1.0, "distance_P2e_PA_target_X": -1.0, "distance_P2e_PA_target_Y": -1.0, "distance_P2e_PA_target_Z": -1.0, "delta_id_PA_target": -1.0}
+2024-02-23 10:42:03,089 - [ DEBUG] - PERFORM:	 enter data from fusion 360: 	|{"datatype": "PA", "PHASE_id": "4c5b15", "ECP_id": "3b034505", "id": "39232085cb", "comment": "", "time_init": 1708680842.17, "phase": 1, "ECP_number": 3, "PA_number": 1, "success": true, "entered_articulation": -1, "PA_D": -1.0, "PA_RPC": 12, "values_from_unity": "12", "P1A": 107.785, "P1B": 98.22, "P1C": 74.856, "P1D": 61.697, "P2A": 71.066, "P2B": 60.401, "P2C": 73.63, "P2D": 62.788, "P1A_F": 107.785, "P1B_F": 98.22, "P1C_F": 74.856, "P1D_F": 61.697, "P2A_F": 71.066, "P2B_F": 60.401, "P2C_F": 73.63, "P2D_F": 62.788, "P2eA_F": 71.067, "P2eB_F": 60.402, "P2eC_F": 73.629, "P2eD_F": 62.787, "P1A_U": 107.785, "P1B_U": 98.22, "P1C_U": 74.856, "P1D_U": 61.697, "P2eA_U": 71.066, "P2eB_U": 60.401, "P2eC_U": 73.63, "P2eD_U": 62.788, "P1_mean_max": 1.0, "P1_mean": 0.001, "P2_mean_max": 2.0, "P2_mean": 0.001, "confidence_position": 0.0, "confidence_angle": 0.0, "estimate_hit": false, "target": "ECP:3", "markers": {"A": "M:2", "B": "M:3", "C": "M:7", "D": "M:8"}, "fusion_computed": true, "anatomy": {"basilic vein": 21.017, "brachial artery": 27.115, "brachial vein": 23.732, "cephalic vein": 31.293, "inferior ulnar collateral artery": 24.007, "median antebrachial vein": 30.463, "median cubital vein": 22.398, "median cubital vein 1": 32.535, "middle collateral artery": 5.431, "radial artery": 42.576, "radial collateral artery": 14.27, "radial veins": 54.279, "random artery 1": 2.956, "random artery 2": 32.558, "ulnar artery": 42.576, "ulnar veins": 54.244, "anterior branch of medial antebrachial cutaneous nerve": 29.674, "anterior interosseous nerve of forearm": 36.595, "deep branch of radial nerve": 46.078, "lateral antebrachial cutaneous nerve": 39.613, "median nerve": 26.754, "muscular branches of radial nerve": 8.119, "musculocutaneous nerve": 23.347, "posterior antebrachial cutaneous nerve": 36.647, "posterior branch of medial antebrachial cutaneous nerve": 2.826, "radial nerve": 31.183, "superficial branch of radial nerve": 46.169, "ulnar nerve": 2.487}, "hit_count": 0, "angle_PA_target": 11.682, "distance_P1_PA_target": 11.286, "distance_P1_PA_target_X": 8.326, "distance_P1_PA_target_Y": 4.846, "distance_P1_PA_target_Z": -5.879, "distance_P2_PA_target": 4.709, "distance_P2_PA_target_X": 3.91, "distance_P2_PA_target_Y": -2.62, "distance_P2_PA_target_Z": 0.153, "distance_P2e_PA_target": 4.707, "distance_P2e_PA_target_X": 3.908, "distance_P2e_PA_target_Y": -2.619, "distance_P2e_PA_target_Z": 0.151, "delta_id_PA_target": -4.381}|
+2024-02-23 10:42:05,994 - [ DEBUG] - TECHNICAL:	 want to remeasure P1 and/or P2? [Y/N]: 	|n|
+2024-02-23 10:42:09,134 - [ DEBUG] - |-- ENTERED ARTICULATION [-1 / 0 (not entered) / 1 (entered)] : 	|0|
+2024-02-23 10:42:11,832 - [ DEBUG] - TECHNICAL:	 comment on PA (39232085cb) [STRING]: 	||
+2024-02-23 10:42:14,536 - [ DEBUG] - TECHNICAL:	 remove kwire from phanotm [ENTER when done]: 	||
+2024-02-23 10:42:14,536 - [  INFO] - PA3.1 FINISHED!
+2024-02-23 10:42:14,536 - [  INFO] - DATA COLLECTION - ECP3 - (3b034505)
+2024-02-23 10:42:26,345 - [ DEBUG] - |-- ease of placement [0 difficult - 5 easy]: 	|3|
+2024-02-23 10:42:26,345 - [  INFO] - DATA COLLECTION - PHASE - (4c5b15)
+2024-02-23 10:42:42,571 - [ DEBUG] - |-- realism xray               [-1 : 5]: 	|4|
+2024-02-23 10:42:48,231 - [ DEBUG] - |-- simulation quality xray    [-1 : 5]: 	|5|
+2024-02-23 10:42:52,925 - [ DEBUG] - |-- comfort xray               [-1 : 5]: 	|5|
+2024-02-23 10:43:01,573 - [ DEBUG] - |-- realism AR                 [-1 : 5]: 	|4|
+2024-02-23 10:43:07,248 - [ DEBUG] - |-- simulation quality AR      [-1 : 5]: 	|5|
+2024-02-23 10:43:14,343 - [ DEBUG] - |-- comfort AR                 [-1 : 5]: 	|5|
+2024-02-23 10:43:26,925 - [ DEBUG] - |-- realism phantom            [-1 : 5]: 	|4|
+2024-02-23 10:43:30,223 - [ DEBUG] - |-- simulation quality phantom [-1 : 5]: 	|5|
+2024-02-23 10:43:32,966 - [ DEBUG] - TECHNICAL:	 comment on PHASE (4c5b15) [STRING]: 	||
+2024-02-23 10:43:32,976 - [  INFO] - SAVED ON DATABASE!
+2024-02-23 10:43:32,978 - [  INFO] - bye!
