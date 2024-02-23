@@ -16,9 +16,11 @@ from PIL import Image, ImageDraw, ImageFont
 script_dir = os.path.dirname(os.path.realpath(__file__))
 
 # palette (mi paice la RdYlBu)
-color1 = 'crimson'
-color2 = 'royalblue'
-colors = ['crimson', 'royalblue', 'forestgreen', 'darkorange', 'saddlebrown', 'darkslategray']
+color1      = 'crimson'
+color2      = 'royalblue'
+color3      = 'aquamarine'
+color_text  = 'indigo'
+colors = ['crimson', 'royalblue', 'forestgreen', 'darkorange', 'darkslategray']
 # ['darkred', 'darkblue', 'purple', 'darkgreen', 'red']
 # ['crimson', 'maroon', 'firebrick', 'blue', 'navy']
 # ['royalblue', 'steelblue', 'purple', 'indigo', 'darkorchid']
@@ -572,7 +574,7 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
         plt.text(min_x, min_y-0.1*(max_y-min_y),
                     f"Chi-square ({'-'.join([str(i) for i in cross_tab.index])}): {chi2:7.4f}\n └ p:               {p:7.4f}",
                     ha='left', va='top',
-                    color='indigo', fontsize=font_size_analysis)
+                    color=color_text, fontsize=font_size_analysis)
 
         # post hoc test
         # https://www.researchgate.net/post/How_Bonferroni_correction_be_applied_for_chi_square_test_on_comparison_of_three_groups
@@ -584,7 +586,7 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
             plt.text(min_x, min_y-0.16*(max_y-min_y)-0.06*(max_y-min_y)*i,
                     f"Chi-Square ({g1}-{g2}):   {chi2:7.4f}\n └ p (Bonferroni):  {p*bonferroni_correction:7.4f}",
                     ha='left', va='top',
-                    color='indigo', fontsize=font_size_analysis)
+                    color=color_text, fontsize=font_size_analysis)
 
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
@@ -652,7 +654,7 @@ def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataF
     correlation_coefficient = np.corrcoef(dataframe[a.predictor], dataframe[a.outcome])[0, 1]
     plt.text(max_x, min_y-0.1*(max_y-min_y),
                     f'Pearson corr. coeff.: {correlation_coefficient:.2f}',
-                    ha='right', va='center', color=color1, fontsize=font_size_text)
+                    ha='right', va='center', color=color_text, fontsize=font_size_text)
 
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
@@ -718,7 +720,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
                     fmt='o', markersize=6, capsize=6, linewidth=3)
     
     bp  = plt.boxplot(dataserie, positions=summary[a.predictor], widths=width,
-                boxprops=dict(color=color2), whiskerprops=dict(color=color2), capprops=dict(color=color2), medianprops=dict(color='aquamarine'),
+                boxprops=dict(color=color2), whiskerprops=dict(color=color2), capprops=dict(color=color2), medianprops=dict(color=color3),
                 showfliers=False, notch=False,)
 
     # get actual plot dimensions
@@ -742,25 +744,25 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
                     ha='left', va='center', color=color2, fontsize=font_size_text)
 
     # ANOVA test
-    if "anova" in a.type:
+    if "anova" in a.type.lower():
         plt.subplots_adjust(bottom=0.2)
         if all(len(lst) <= 1 for lst in dataserie):
             plt.text(min_x, min_y-0.1*(max_y-min_y),
                     f"ANOVA (Fisher's)\nwarning:\nnot enough data!",
-                    ha='left', va='top', color='indigo', fontsize=font_size_analysis)
+                    ha='left', va='top', color=color_text, fontsize=font_size_analysis)
         else:
             anova_f, anova_p = stats.f_oneway(*dataserie)
             plt.text(min_x, min_y-0.1*(max_y-min_y),
                     f"ANOVA (Fisher's)\nf: {anova_f:6.4f}\np: {anova_p:6.4f}",
-                    ha='left', va='top', color='indigo', fontsize=font_size_analysis)
+                    ha='left', va='top', color=color_text, fontsize=font_size_analysis)
 
     # DUNNETT test
-    if "dunnett" in a.type:
+    if "dunnett" in a.type.lower():
         plt.subplots_adjust(bottom=0.2)
         if len(dataserie[0]) <= 1:
             plt.text(max_x, min_y-0.1*(max_y-min_y),
                     f"DUNNETT (control: {0})\nwarning:\nnot enough data in control!",
-                    ha='right', va='top', color='indigo', fontsize=font_size_analysis)
+                    ha='right', va='top', color=color_text, fontsize=font_size_analysis)
         else:
             dunnett_stat = stats.dunnett(*dataserie[1:], control=dataserie[0])
             dunnett_f, dunnett_p, dunnett_ci = dunnett_stat.statistic, dunnett_stat.pvalue, dunnett_stat.confidence_interval()
@@ -770,29 +772,29 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             dunnett_table_pad = "\n".join([l.ljust(max(len(s) for s in dunnett_table_str.splitlines())) for l in dunnett_table_str.splitlines()])
             plt.text(max_x, min_y-0.1*(max_y-min_y),
                     f"DUNNETT (control: {0})\n{dunnett_table_pad}",
-                    ha='right', va='top', color='indigo', fontsize=font_size_analysis)
+                    ha='right', va='top', color=color_text, fontsize=font_size_analysis)
 
-    # levene test su due code
-    if "levene" in a.type:
+    # LEVENE test su due code
+    if "levene" in a.type.lower():
         plt.subplots_adjust(bottom=0.25)
 
         # omnibus test (tra questi 3 gruppi ce differenza)
         dataserie_analysis_index = [idx for idx in dataserie.index if idx != -1] # exclude phase -1
         statistic, p_value = stats.levene(*dataserie.iloc[dataserie_analysis_index])
         plt.text(min_x, min_y-0.1*(max_y-min_y),
-                f"levene ({'-'.join([str(i) for i in dataserie_analysis_index])}):    {statistic:6.4f}\n └ p:              {p_value:6.4f}",
-                ha='left', va='top', color='indigo', fontsize=font_size_analysis)
+                f"LEVENE ({'-'.join([str(i) for i in dataserie_analysis_index])}):    {statistic:6.4f}\n └ p:              {p_value:6.4f}",
+                ha='left', va='top', color=color_text, fontsize=font_size_analysis)
 
         # post hoc test 
         bonferroni_correction = 2 # p x 2 (due test complessivi)     
         for i, (g1, g2) in enumerate(combinations(dataserie_analysis_index, 2)):
             statistic, p_value = stats.levene(dataserie[g1], dataserie[g2])
             plt.text(min_x, min_y-0.16*(max_y-min_y)-0.06*(max_y-min_y)*i,
-                    f"levene ({g1}-{g2}):      {statistic:6.4f}\n └ p (Bonferroni): {p_value*bonferroni_correction:6.4f}",
-                    ha='left', va='top', color='indigo', fontsize=font_size_analysis)
+                    f"LEVENE ({g1}-{g2}):      {statistic:6.4f}\n └ p (Bonferroni): {p_value*bonferroni_correction:6.4f}",
+                    ha='left', va='top', color=color_text, fontsize=font_size_analysis)
         
     # F test
-    if "f-test" in a.type:
+    if "f-test" in a.type.lower():
         plt.subplots_adjust(bottom=0.2)
 
         # F di snedeco = tabulare
@@ -824,7 +826,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             # F-test P totale (1-2): 1.0003748432
             plt.text(min_x, min_y-0.1*(max_y-min_y)-0.06*(max_y-min_y)*i,
                     f"f-test ({g1}-{g2}):      {F:6.4f}\n └ p (Bonferroni): {p_value*bonferroni_correction:6.4f}",
-                    ha='left', va='top', color='indigo', fontsize=font_size_analysis)
+                    ha='left', va='top', color=color_text, fontsize=font_size_analysis)
     
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
