@@ -21,3 +21,33 @@
 
 # ECP / PA has hit by phase
     - calcolo della probabilità? che un dato ECP / PA colpisca una struttura a seconda della fase?
+    - probabilita stimada dai dati
+
+
+######
+# appunti con berchialla:
+pa angle to target by phase
+Dunnet
+ - correzione bonferroni, moltiplicare P value * 2
+
+
+################
+ECP PACF by phase
+0, 1, >=2
+BARPLOT
+p chi quadrato x 2 variabili categoriche (chi quadrato funziona bene x 144 valori)
+chi quadrato x adattamento del p devo prendere le colonne singole (controllo + fase 2 (anche come conteggi))
+
+ECP hit count by phase
+0, 1, >=2
+BARPLOT
+p chi quadrato x 2 variabili categoriche (chi quadrato funziona bene x 144 valori)
+
+
+
+##########
+ulnar nerve
+non avere un p 0.05 e buono perche 
+lassenza di signifactivita statistica la differenza tra le medie é puramente casuale
+
+
