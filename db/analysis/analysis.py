@@ -1,4 +1,4 @@
-import os, io, re
+import os, io, re, sns
 
 import sqlite3
 from dataclasses import dataclass
@@ -12,7 +12,20 @@ from itertools import combinations
 
 from PIL import Image, ImageDraw, ImageFont
 
+# https://www.practicalpythonfordatascience.com/ap_seaborn_palette
 script_dir = os.path.dirname(os.path.realpath(__file__))
+
+# palette (mi paice la RdYlBu)
+color1 = 'crimson'
+color2 = 'royalblue'
+colors = ['crimson', 'royalblue', 'forestgreen', 'darkorange', 'saddlebrown', 'darkslategray']
+# ['darkred', 'darkblue', 'purple', 'darkgreen', 'red']
+# ['crimson', 'maroon', 'firebrick', 'blue', 'navy']
+# ['royalblue', 'steelblue', 'purple', 'indigo', 'darkorchid']
+# ['mediumpurple', 'green', 'forestgreen', 'olive', 'teal']
+# ['darkorange', 'saddlebrown', 'darkslategray', 'darkcyan', 'darkgoldenrod']
+# ['mediumvioletred', 'coral', 'darkkhaki', 'mediumseagreen', 'mediumslateblue']
+
 
 
 @dataclass
@@ -46,8 +59,8 @@ aaa: list[analysis] = [
     analysis(
         "PA delta insertion depth by phase - student",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
         "phase",
         "delta_id_PA_target",
@@ -55,8 +68,8 @@ aaa: list[analysis] = [
     analysis(
         "PA delta insertion depth by phase - resident",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
         "phase",
         "delta_id_PA_target",
@@ -64,8 +77,8 @@ aaa: list[analysis] = [
     analysis(
         "PA delta insertion depth by phase - surgeon",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
         "phase",
         "delta_id_PA_target",
@@ -74,8 +87,8 @@ aaa: list[analysis] = [
     analysis(
         "PA angle to target by phase",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
         "phase",
         "angle_PA_target",
@@ -83,8 +96,8 @@ aaa: list[analysis] = [
     analysis(
         "PA angle to target by phase - Student",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
         "phase",
         "angle_PA_target",
@@ -92,8 +105,8 @@ aaa: list[analysis] = [
     analysis(
         "PA angle to target by phase - Resident",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
         "phase",
         "angle_PA_target",
@@ -101,8 +114,8 @@ aaa: list[analysis] = [
     analysis(
         "PA angle to target by phase - Surgeon",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.angle_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
         "phase",
         "angle_PA_target",
@@ -112,8 +125,8 @@ aaa: list[analysis] = [
     analysis(
         "PA angle confidence from target by phase",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
         "phase",
         "confidence_angle",
@@ -121,8 +134,8 @@ aaa: list[analysis] = [
     analysis(
         "PA angle real from target by phase",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
         "phase",
         "angle_PA_target",
@@ -131,17 +144,26 @@ aaa: list[analysis] = [
         "PA angle by confidence",
         "positional",
         "correlation",
-        (6, 8),
+        (8, 8),
         "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
         "confidence_angle",
         "angle_PA_target",
     ),
 
     analysis(
+        "PA P2e by confidence",
+        "positional",
+        "correlation",
+        (8, 8),
+        "SELECT phase, confidence_position, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
+        "confidence_position",
+        "distance_P2e_PA_target",
+    ),
+    analysis(
         "PA P2e distance of PA from target by phase",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
         "phase",
         "distance_P2e_PA_target",
@@ -149,8 +171,8 @@ aaa: list[analysis] = [
     analysis(
         "PA P2e from target by phase - Student",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
         "phase",
         "distance_P2e_PA_target",
@@ -158,8 +180,8 @@ aaa: list[analysis] = [
     analysis(
         "PA P2e from target by phase - Resident",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp' ;",
         "phase",
         "distance_P2e_PA_target",
@@ -167,8 +189,8 @@ aaa: list[analysis] = [
     analysis(
         "PA P2e from target by phase - Surgeon",
         "positional",
-        "errorbox anova dunnett",
-        (6, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.distance_P2e_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'su' ;",
         "phase",
         "distance_P2e_PA_target",
@@ -180,7 +202,7 @@ aaa: list[analysis] = [
         "ECP duration by ease of placement",
         "statistical",
         "correlation",
-        (6, 8),
+        (8, 8),
         "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
         "ease_of_placement",
         "ECP_D",
@@ -209,8 +231,8 @@ aaa: list[analysis] = [
     analysis(
         "ECP duration by phase",
         "duration",
-        "errorbox",
-        (6, 8),
+        "errorbox anova dunnett",
+        (8, 8),
         "SELECT PHASE.phase, ECP.ECP_D FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
         "ECP_D",
@@ -218,8 +240,8 @@ aaa: list[analysis] = [
     analysis(
         "PA duration by phase",
         "duration",
-        "errorbox",
-        (6, 8),
+        "errorbox anova dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.PA_D FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
         "PA_D",
@@ -229,8 +251,8 @@ aaa: list[analysis] = [
     analysis(
         "ECP RPC by phase",
         "RPC",
-        "errorbox",
-        (6, 8),
+        "errorbox anova dunnett",
+        (8, 8),
         "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
         "ECP_RPC",
@@ -238,8 +260,8 @@ aaa: list[analysis] = [
     analysis(
         "PA RPC by phase",
         "RPC",
-        "errorbox",
-        (6, 8),
+        "errorbox anova dunnett",
+        (8, 8),
         "SELECT PHASE.phase, PA.PA_RPC FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
         "PA_RPC",
@@ -298,7 +320,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from ulnar nerve by phase - ECP 1",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
         "phase",
@@ -307,7 +329,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from ulnar nerve by phase - ECP 2",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 2",
         "phase",
@@ -316,7 +338,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from ulnar nerve by phase - ECP 3",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 3",
         "phase",
@@ -326,7 +348,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from middle collateral artery by phase - ECP 1",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 1",
         "phase",
@@ -335,7 +357,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from middle collateral artery by phase - ECP 2",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 2",
         "phase",
@@ -344,7 +366,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from middle collateral artery by phase - ECP 3",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 3",
         "phase",
@@ -355,7 +377,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from median nerve by phase - ECP 1",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 1",
         "phase",
@@ -364,7 +386,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from median nerve by phase - ECP 2",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 2",
         "phase",
@@ -373,7 +395,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from median nerve by phase - ECP 3",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, median_nerve FROM PA WHERE ECP_number == 3",
         "phase",
@@ -383,7 +405,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from brachial artery by phase - ECP 1",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 1",
         "phase",
@@ -392,7 +414,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from brachial artery by phase - ECP 2",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 2",
         "phase",
@@ -401,7 +423,7 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from brachial artery by phase - ECP 3",
         "anatomical",
-        "errorbox levene",
+        "errorbox levene dunnett",
         (8, 8),
         "SELECT phase, brachial_artery FROM PA WHERE ECP_number == 3",
         "phase",
@@ -500,9 +522,6 @@ def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFram
 def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
     plt.rcParams['font.family'] = 'Courier New'
-    min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
-    min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
-    width = 0.06 * (max_x_preplot-min_x_preplot)
 
     font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
     # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
@@ -510,9 +529,13 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
     font_size_text      = 0.6 * font_size_title
     font_size_analysis  = 0.6 * font_size_title
 
-    # Creating cross-tabulation of phases and items
+    # Creating cross-tabulation of predictor and outcome
     cross_tab = pd.crosstab(dataframe[a.predictor], dataframe[a.outcome])
     # cross_tab.plot.bar()
+
+    min_x_preplot, max_x_preplot = cross_tab.index.min(), cross_tab.index.max()
+    min_y_preplot, max_y_preplot = cross_tab.min().min(), cross_tab.max().max()
+    width = 0.06 * (max_x_preplot-min_x_preplot)
 
     # Get the number of phases and items
     predictor_count = cross_tab.shape[0]
@@ -521,41 +544,47 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
     # Set width of bar
     bar_width = 0.6/outcome_count
 
-    colors = ['darkred', 'darkblue', 'purple', 'darkgreen']
     for i, item in enumerate(cross_tab.columns):
         bar_Xs = [p - (outcome_count * bar_width) / 2 + (bar_width / 2) + i * bar_width for p in range(predictor_count)]
         bar_Ys = cross_tab[item]
         plt.bar(bar_Xs, bar_Ys,
                 bar_width, label=item,
                 color=colors[i % len(colors)])
-        
+
         for i, y in enumerate(bar_Ys):
+            phase_total = sum(cross_tab.iloc[i])  # Sum of counts for the current phase
+            percentage = y / phase_total * 100 if phase_total != 0 else 0  # Calculate percentage, handle division by zero
             plt.text(bar_Xs[i], y,
-                        f'n={y}\n',
-                        ha='center', va='center', color='black', fontsize=font_size_text)
+                        f'{y} ({percentage:.1f}%)',
+                        ha='center', va=('top' if y>(max_y_preplot/2) else 'bottom'), rotation='vertical',
+                        color=('white' if y>(max_y_preplot/2) else 'black'), fontsize=font_size_text)
     
     # get actual plot dimensions
-    min_x, max_x = plt.xlim()
-    min_y, max_y = plt.ylim()
+        min_x, max_x = plt.xlim()
+        min_y, max_y = plt.ylim()
 
     # Chi-square test
     if "chi-square" in a.type:
-        plt.subplots_adjust(bottom=0.2)
+        plt.subplots_adjust(bottom=0.25)
 
         # omnibus test
         chi2, p, dof, expected = stats.chi2_contingency(cross_tab)
-        plt.text(max_x, min_y-0.08*(max_y-min_y),
-                    f"Chi-square ({'-'.join([str(i) for i in cross_tab.index])}): {chi2:6.4f}\n  └ p             : {p:6.4f}",
-                    ha='right', va='top', color='purple', fontsize=font_size_analysis)
+        plt.text(min_x, min_y-0.1*(max_y-min_y),
+                    f"Chi-square ({'-'.join([str(i) for i in cross_tab.index])}): {chi2:7.4f}\n └ p:               {p:7.4f}",
+                    ha='left', va='top',
+                    color='indigo', fontsize=font_size_analysis)
 
         # post hoc test
         # https://www.researchgate.net/post/How_Bonferroni_correction_be_applied_for_chi_square_test_on_comparison_of_three_groups
         bonferroni_correction = predictor_count*outcome_count
         for i, (g1, g2) in enumerate(combinations(cross_tab.index, 2)):
+            if min(cross_tab.iloc[g1]) == 0 and min(cross_tab.iloc[g2]) == 0:
+                continue
             chi2, p, dof, expected = stats.chi2_contingency(cross_tab.iloc[[g1, g2]])
-            plt.text(min_x, min_y-0.08*(max_y-min_y)*i,
-                    f"Chi-square ({g1}-{g2})\n └ p        (Bonferroni): {p*bonferroni_correction:6.4f}",
-                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
+            plt.text(min_x, min_y-0.16*(max_y-min_y)-0.06*(max_y-min_y)*i,
+                    f"Chi-Square ({g1}-{g2}):   {chi2:7.4f}\n └ p (Bonferroni):  {p*bonferroni_correction:7.4f}",
+                    ha='left', va='top',
+                    color='indigo', fontsize=font_size_analysis)
 
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
@@ -565,10 +594,10 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
 
     # Set axis ticks
     if all(isinstance(x, int) for x in dataframe):
-        plt.yticks(np.arange(min(dataframe), max(dataframe)+1, 1))    # Set y-axis ticks to integers if all data is integer
-    plt.xticks(summary[a.predictor])                        # Set x-axis ticks to follow a.predictor
+        plt.yticks(np.arange(min(dataframe), max(dataframe)+1, 1))  # Set y-axis ticks to integers if all data is integer
+    plt.xticks(summary[a.predictor])                                # Set x-axis ticks to follow a.predictor
 
-    plt.grid(True, axis='y')
+    plt.grid(True, axis='y', alpha=0.5)
 
     # save graph to file
     if save:
@@ -613,7 +642,7 @@ def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataF
                 color='black', alpha=0.5,
                 s=10)
     
-    plt.plot(line_x, line_y, color='darkred', label='Correlation')
+    plt.plot(line_x, line_y, color=color1, label='Correlation')
 
     # get actual plot dimensions
     min_x, max_x = plt.xlim()
@@ -621,9 +650,9 @@ def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataF
     
     plt.subplots_adjust(bottom=0.2)
     correlation_coefficient = np.corrcoef(dataframe[a.predictor], dataframe[a.outcome])[0, 1]
-    plt.text(max_x, -0.08*(max_y-min_y),
+    plt.text(max_x, min_y-0.1*(max_y-min_y),
                     f'Pearson corr. coeff.: {correlation_coefficient:.2f}',
-                    ha='right', va='center', color='darkred', fontsize=font_size_text)
+                    ha='right', va='center', color=color1, fontsize=font_size_text)
 
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
@@ -685,11 +714,11 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
 
     eb = plt.errorbar(summary[a.predictor], summary['mean'], yerr=summary['std'],
                     label=f'{a.outcome} Mean and Stddev', 
-                    color='darkred',
+                    color=color1,
                     fmt='o', markersize=6, capsize=6, linewidth=3)
     
     bp  = plt.boxplot(dataserie, positions=summary[a.predictor], widths=width,
-                boxprops=dict(color='darkblue'), whiskerprops=dict(color='darkblue'), capprops=dict(color='darkblue'), medianprops=dict(color='aquamarine'),
+                boxprops=dict(color=color2), whiskerprops=dict(color=color2), capprops=dict(color=color2), medianprops=dict(color='aquamarine'),
                 showfliers=False, notch=False,)
 
     # get actual plot dimensions
@@ -700,17 +729,17 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
     for i, (index, mean, std, stderr, count, q1, median, q3) in enumerate(zip(dataserie.index, summary['mean'], summary['std'], summary['stderr'], summary['count'], dataserie.apply(np.percentile, args=(25,)), dataserie.apply(np.median), dataserie.apply(np.percentile, args=(75,)))):
         plt.text(summary[a.predictor][i]-width/1.9, min_y+0.85*(max_y-min_y),
                     f'Mean:\nStddev:\nStderr:\nCount:',
-                    ha='right', va='center', color='darkred', fontsize=font_size_text)
+                    ha='right', va='center', color=color1, fontsize=font_size_text)
         plt.text(summary[a.predictor][i]+width/1.9, 0.85*(max_y-min_y)+min_y,
                     f'{mean:6.2f}\n{std:6.2f}\n{stderr:6.2f}\n{count:6.0f}   ',
-                    ha='left', va='center', color='darkred', fontsize=font_size_text)
+                    ha='left', va='center', color=color1, fontsize=font_size_text)
         
         plt.text(summary[a.predictor][i]-width/1.9, 0.75*(max_y-min_y)+min_y,
                     f'Q3:\nMedian:\nQ1:',
-                    ha='right', va='center', color='darkblue', fontsize=font_size_text)
+                    ha='right', va='center', color=color2, fontsize=font_size_text)
         plt.text(summary[a.predictor][i]+width/1.9, 0.75*(max_y-min_y)+min_y,
                     f'{q3:6.2f}\n{median:6.2f}\n{q1:6.2f}',
-                    ha='left', va='center', color='darkblue', fontsize=font_size_text)
+                    ha='left', va='center', color=color2, fontsize=font_size_text)
 
     # ANOVA test
     if "anova" in a.type:
@@ -718,12 +747,12 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         if all(len(lst) <= 1 for lst in dataserie):
             plt.text(min_x, min_y-0.1*(max_y-min_y),
                     f"ANOVA (Fisher's)\nwarning:\nnot enough data!",
-                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
+                    ha='left', va='top', color='indigo', fontsize=font_size_analysis)
         else:
             anova_f, anova_p = stats.f_oneway(*dataserie)
             plt.text(min_x, min_y-0.1*(max_y-min_y),
-                    f"ANOVA (Fisher's)\nf = {anova_f:6.4f}\np = {anova_p:6.4f}",
-                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
+                    f"ANOVA (Fisher's)\nf: {anova_f:6.4f}\np: {anova_p:6.4f}",
+                    ha='left', va='top', color='indigo', fontsize=font_size_analysis)
 
     # DUNNETT test
     if "dunnett" in a.type:
@@ -731,7 +760,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         if len(dataserie[0]) <= 1:
             plt.text(max_x, min_y-0.1*(max_y-min_y),
                     f"DUNNETT (control: {0})\nwarning:\nnot enough data in control!",
-                    ha='right', va='top', color='purple', fontsize=font_size_analysis)
+                    ha='right', va='top', color='indigo', fontsize=font_size_analysis)
         else:
             dunnett_stat = stats.dunnett(*dataserie[1:], control=dataserie[0])
             dunnett_f, dunnett_p, dunnett_ci = dunnett_stat.statistic, dunnett_stat.pvalue, dunnett_stat.confidence_interval()
@@ -741,7 +770,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             dunnett_table_pad = "\n".join([l.ljust(max(len(s) for s in dunnett_table_str.splitlines())) for l in dunnett_table_str.splitlines()])
             plt.text(max_x, min_y-0.1*(max_y-min_y),
                     f"DUNNETT (control: {0})\n{dunnett_table_pad}",
-                    ha='right', va='top', color='purple', fontsize=font_size_analysis)
+                    ha='right', va='top', color='indigo', fontsize=font_size_analysis)
 
     # levene test su due code
     if "levene" in a.type:
@@ -752,7 +781,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         statistic, p_value = stats.levene(*dataserie.iloc[dataserie_analysis_index])
         plt.text(min_x, min_y-0.1*(max_y-min_y),
                 f"levene ({'-'.join([str(i) for i in dataserie_analysis_index])}):    {statistic:6.4f}\n └ p:              {p_value:6.4f}",
-                ha='left', va='top', color='purple', fontsize=font_size_analysis)
+                ha='left', va='top', color='indigo', fontsize=font_size_analysis)
 
         # post hoc test 
         bonferroni_correction = 2 # p x 2 (due test complessivi)     
@@ -760,7 +789,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             statistic, p_value = stats.levene(dataserie[g1], dataserie[g2])
             plt.text(min_x, min_y-0.16*(max_y-min_y)-0.06*(max_y-min_y)*i,
                     f"levene ({g1}-{g2}):      {statistic:6.4f}\n └ p (Bonferroni): {p_value*bonferroni_correction:6.4f}",
-                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
+                    ha='left', va='top', color='indigo', fontsize=font_size_analysis)
         
     # F test
     if "f-test" in a.type:
@@ -795,7 +824,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             # F-test P totale (1-2): 1.0003748432
             plt.text(min_x, min_y-0.1*(max_y-min_y)-0.06*(max_y-min_y)*i,
                     f"f-test ({g1}-{g2}):      {F:6.4f}\n └ p (Bonferroni): {p_value*bonferroni_correction:6.4f}",
-                    ha='left', va='top', color='purple', fontsize=font_size_analysis)
+                    ha='left', va='top', color='indigo', fontsize=font_size_analysis)
     
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
