@@ -75,7 +75,7 @@ aaa: list[analysis] = [
         "positional",
         "errorbox levene dunnett",
         (8, 8),
-        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st' ;",
+        "SELECT PHASE.phase, PA.delta_id_PA_target FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st';",
         "phase",
         "delta_id_PA_target",
     ),
@@ -357,6 +357,24 @@ aaa: list[analysis] = [
         "errorbox anova dunnett",
         (8, 8),
         "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
+        "phase",
+        "ECP_RPC",
+    ),
+    analysis(
+        "ECP RPC by phase\n(Student)",
+        "RPC",
+        "errorbox anova dunnett",
+        (8, 8),
+        "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1 AND career == 'st';",
+        "phase",
+        "ECP_RPC",
+    ),
+    analysis(
+        "ECP RPC by phase\n(Resident)",
+        "RPC",
+        "errorbox anova dunnett",
+        (8, 8),
+        "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1 AND career == 'sp';",
         "phase",
         "ECP_RPC",
     ),
@@ -867,7 +885,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
     font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
     # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
     font_size_legend    = 0.6 * font_size_title
-    font_size_text      = 0.6 * font_size_title
+    font_size_text      = 0.5 * font_size_title
     font_size_analysis  = 0.6 * font_size_title
 
     # PLOT
@@ -890,18 +908,24 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
     min_y, max_y = plt.ylim()
 
     # Mean and Median tests
+    mean_control = None
     for i, (index, mean, std, stderr, count, q1, median, q3) in enumerate(zip(dataserie.index, summary['mean'], summary['std'], summary['stderr'], summary['count'], dataserie.apply(np.percentile, args=(25,)), dataserie.apply(np.median), dataserie.apply(np.percentile, args=(75,)))):
-        plt.text(summary[a.predictor][i]-width/1.9, min_y+0.85*(max_y-min_y),
-                    f'Mean:\nStddev:\nStderr:\nCount:',
+        if mean_control == None:
+            mean_control = mean
+
+        mean_diff_str = f"{mean-mean_control:+6.2f}({(mean-mean_control)/mean_control*100:+4.0f}%)" if mean_control != mean else ""
+
+        plt.text(summary[a.predictor][i]-width/1.9, min_y+0.80*(max_y-min_y),
+                    f'Mean:\n\nStddev:\nStderr:\nCount:',
                     ha='right', va='center', color=color1, fontsize=font_size_text)
-        plt.text(summary[a.predictor][i]+width/1.9, 0.85*(max_y-min_y)+min_y,
-                    f'{mean:6.2f}\n{std:6.2f}\n{stderr:6.2f}\n{count:6.0f}   ',
+        plt.text(summary[a.predictor][i]+width/1.9, 0.80*(max_y-min_y)+min_y,
+                    f'{mean:6.2f}\n{mean_diff_str}\n{std:6.2f}\n{stderr:6.2f}\n{count:6.0f}   ',
                     ha='left', va='center', color=color1, fontsize=font_size_text)
         
-        plt.text(summary[a.predictor][i]-width/1.9, 0.75*(max_y-min_y)+min_y,
+        plt.text(summary[a.predictor][i]-width/1.9, 0.65*(max_y-min_y)+min_y,
                     f'Q3:\nMedian:\nQ1:',
                     ha='right', va='center', color=color2, fontsize=font_size_text)
-        plt.text(summary[a.predictor][i]+width/1.9, 0.75*(max_y-min_y)+min_y,
+        plt.text(summary[a.predictor][i]+width/1.9, 0.65*(max_y-min_y)+min_y,
                     f'{q3:6.2f}\n{median:6.2f}\n{q1:6.2f}',
                     ha='left', va='center', color=color2, fontsize=font_size_text)
 
