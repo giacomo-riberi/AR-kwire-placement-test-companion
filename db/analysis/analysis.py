@@ -913,13 +913,14 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         if mean_control == None:
             mean_control = mean
 
-        mean_diff_str = f"{mean-mean_control:+6.2f}({(mean-mean_control)/mean_control*100:+4.0f}%)" if mean_control != mean else ""
+        mean_diff_str = f"{mean-mean_control:+6.2f}" if mean_control != mean else ""
+        mean_diff_perc_str = f"  {(mean-mean_control)/mean_control*100:+4.0f}%" if mean_control != mean else ""
 
         plt.text(summary[a.predictor][i]-width/1.9, min_y+0.80*(max_y-min_y),
-                    f'Mean:\n\nStddev:\nStderr:\nCount:',
+                    f'Mean:\n\n\nStddev:\nStderr:\nCount:',
                     ha='right', va='center', color=color1, fontsize=font_size_text)
         plt.text(summary[a.predictor][i]+width/1.9, 0.80*(max_y-min_y)+min_y,
-                    f'{mean:6.2f}\n{mean_diff_str}\n{std:6.2f}\n{stderr:6.2f}\n{count:6.0f}   ',
+                    f'{mean:6.2f}\n{mean_diff_str}\n{mean_diff_perc_str}\n{std:6.2f}\n{stderr:6.2f}\n{count:6.0f}   ',
                     ha='left', va='center', color=color1, fontsize=font_size_text)
         
         plt.text(summary[a.predictor][i]-width/1.9, 0.65*(max_y-min_y)+min_y,
