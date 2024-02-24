@@ -257,12 +257,30 @@ aaa: list[analysis] = [
     ),
 
     analysis(
+        "ECP ease of placement by phase",
+        "statistical",
+        "errorbox anova dunnett",
+        (8, 8),
+        "SELECT phase, ease_of_placement FROM ECP WHERE phase <> -1",
+        "phase",
+        "ease_of_placement",
+    ),
+    analysis(
         "ECP ease of placement by duration",
         "statistical",
         "correlation",
         (8, 8),
         "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
         "ECP_D",
+        "ease_of_placement",
+    ),
+    analysis(
+        "ECP ease of placement by RPC",
+        "statistical",
+        "correlation",
+        (8, 8),
+        "SELECT ease_of_placement, ECP_RPC FROM ECP WHERE phase <> -1",
+        "ECP_RPC",
         "ease_of_placement",
     ),
     analysis(
@@ -540,7 +558,7 @@ mmm: list[multianalysis] = [
 ]
 
 def main():
-    liveshow = True
+    liveshow = False
 
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
