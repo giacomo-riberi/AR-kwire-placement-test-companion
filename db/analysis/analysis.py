@@ -6,6 +6,7 @@ from tabulate import tabulate
 
 import pandas as pd
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 from itertools import combinations
@@ -501,52 +502,6 @@ aaa: list[analysis] = [
         "phase",
         "ulnar_nerve_hit",
     ),
-    analysis(
-        "PA has hit ulnar nerve by phase\n(ECP 2)",
-        "anatomical",
-        "barplot chi-square",
-        (8, 8),
-        "SELECT phase, CASE WHEN ulnar_nerve = 0 THEN 1 ELSE 0 END AS ulnar_nerve_hit FROM PA WHERE ECP_number = 2 AND phase <> -1;",
-        "phase",
-        "ulnar_nerve_hit",
-    ),
-    analysis(
-        "PA has hit ulnar nerve by phase\n(ECP 3)",
-        "anatomical",
-        "barplot chi-square",
-        (8, 8),
-        "SELECT phase, CASE WHEN ulnar_nerve = 0 THEN 1 ELSE 0 END AS ulnar_nerve_hit FROM PA WHERE ECP_number = 3 AND phase <> -1;",
-        "phase",
-        "ulnar_nerve_hit",
-    ),
-
-    analysis(
-        "PA distance from middle collateral artery by phase\n(ECP 1)",
-        "anatomical",
-        "errorbox levene dunnett",
-        (8, 8),
-        "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 1",
-        "phase",
-        "middle_collateral_artery",
-    ),
-    analysis(
-        "PA distance from middle collateral artery by phase\n(ECP 2)",
-        "anatomical",
-        "errorbox levene dunnett",
-        (8, 8),
-        "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 2",
-        "phase",
-        "middle_collateral_artery",
-    ),
-    analysis(
-        "PA distance from middle collateral artery by phase\n(ECP 3)",
-        "anatomical",
-        "errorbox levene dunnett",
-        (8, 8),
-        "SELECT phase, middle_collateral_artery FROM PA WHERE ECP_number == 3",
-        "phase",
-        "middle_collateral_artery",
-    ),
 
 
     analysis(
@@ -612,7 +567,7 @@ mmm: list[multianalysis] = [
 ]
 
 def main():
-    liveshow = True
+    liveshow = False
 
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
@@ -745,7 +700,7 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
         # omnibus test
         chi2, p, dof, expected = stats.chi2_contingency(cross_tab)
         plt.text(min_x, min_y-0.1*(max_y-min_y),
-                    f"Chi-square ({'-'.join([str(i) for i in cross_tab.index])}): {chi2:7.4f}\n └ p:               {p:7.4f}",
+                    f"Chi-square ({'-'.join([str(i) for i in cross_tab.index])}): {chi2:5.2f}\n └ p:               {p:7.4f}",
                     ha='left', va='top',
                     color=color_text, fontsize=font_size_analysis)
 
@@ -757,7 +712,7 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
                 continue
             chi2, p, dof, expected = stats.chi2_contingency(cross_tab.loc[[g1, g2]])
             plt.text(min_x, min_y-0.16*(max_y-min_y)-0.06*(max_y-min_y)*i,
-                    f"Chi-Square ({g1}-{g2}):   {chi2:7.4f}\n └ p (Bonferroni):  {p*bonferroni_correction:7.4f}",
+                    f"Chi-Square ({g1}-{g2}):   {chi2:5.2f}\n └ p (Bonferroni):  {p*bonferroni_correction:7.4f}",
                     ha='left', va='top',
                     color=color_text, fontsize=font_size_analysis)
 
@@ -809,15 +764,15 @@ def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFr
     # LINEAR REGRESSION
     res = stats.linregress(dataframe[a.predictor], dataframe[a.outcome])
 
-    result_str  = f"Pearson corr. coeff.: {res.rvalue:7.4f}\n"
-    result_str += f"R-squared:            {res.rvalue**2:7.4f}\n" # Coefficient of determination (R-squared):
+    result_str  = f"Pearson corr. coeff.: {res.rvalue:4.2f}\n"
+    result_str += f"R-squared:            {res.rvalue**2:4.2f}\n" # Coefficient of determination (R-squared):
 
     # calculate 95% confidence interval on slope and intercept
     tinv = lambda p, df: abs(stats.t.ppf(p/2, df)) # Two-sided inverse Students t-distribution (p: probability, df: degrees of freedom)
     ts = tinv(0.05, len(dataframe[a.predictor])-2)
-    result_str += f"slope     (95%):      {res.slope:5.2f} +/- {ts*res.stderr:5.2f}\n"
-    result_str += f"intercept (95%):      {res.intercept:5.2f} +/- {ts*res.intercept_stderr:5.2f}\n"
-    result_str += f"p:                    {res.pvalue:7.4f}\n"
+    result_str += f"slope     (95%):      {res.slope:4.2f} +/- {ts*res.stderr:4.2f}\n"
+    result_str += f"intercept (95%):      {res.intercept:4.2f} +/- {ts*res.intercept_stderr:4.2f}\n"
+    result_str += f"p:                    {res.pvalue:6.4f}\n"
     
     # PLOT
     sc = plt.scatter(dataframe[a.predictor], dataframe[a.outcome],
@@ -911,16 +866,20 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
     mean_control = None
     std_control  = None
     for i, (index, mean, std, stderr, count, q1, median, q3) in enumerate(zip(dataserie.index, summary['mean'], summary['std'], summary['stderr'], summary['count'], dataserie.apply(np.percentile, args=(25,)), dataserie.apply(np.median), dataserie.apply(np.percentile, args=(75,)))):
-        if mean_control == None:
+        if mean_control == None and not math.isnan(mean):
             mean_control = mean
-        if std_control == None:
+        if std_control == None and not math.isnan(std):
             std_control = std
 
-        mean_diff_str = f"{mean-mean_control:+6.2f}" if mean_control != mean else ""
-        mean_diff_perc_str = f"  {(mean-mean_control)/mean_control*100:+4.0f}%" if mean_control != mean else ""
+        mean_diff_str, mean_diff_perc_str = "", ""
+        if mean_control != mean and not math.isnan(mean):
+            mean_diff_str       = f"{mean-mean_control:+6.2f}"
+            mean_diff_perc_str  = f"{(mean-mean_control)/mean_control*100:+6.0f}%"
 
-        std_diff_str = f"{std-std_control:+6.2f}" if std_control != std else ""
-        std_diff_perc_str = f"  {(std-std_control)/std_control*100:+4.0f}%" if std_control != std else ""
+        std_diff_str, std_diff_perc_str = "", ""
+        if std_control != std and not math.isnan(std):
+            std_diff_str        = f"{std-std_control:+6.2f}"
+            std_diff_perc_str   = f"{(std-std_control)/std_control*100:+6.0f}%"
 
         plt.text(summary[a.predictor][i]-width/1.9, min_y+0.80*(max_y-min_y),
                     f'Mean:\nStderr:\n\n\nStddev:\n\n\nCount:',
@@ -946,7 +905,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         else:
             anova_f, anova_p = stats.f_oneway(*dataserie)
             plt.text(min_x, min_y-0.1*(max_y-min_y),
-                    f"ANOVA (Fisher's)\nf: {anova_f:6.4f}\np: {anova_p:6.4f}",
+                    f"ANOVA (Fisher's)\nf: {anova_f:5.2f}\np: {anova_p:7.4f}",
                     ha='left', va='top', color=color_text, fontsize=font_size_analysis)
 
     # DUNNETT test
@@ -960,7 +919,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             dunnett_stat = stats.dunnett(*dataserie[1:], control=dataserie[0])
             dunnett_f, dunnett_p, dunnett_ci = dunnett_stat.statistic, dunnett_stat.pvalue, dunnett_stat.confidence_interval()
             
-            dunnett_table_rows = [[f"{i}", f"{stat:6.4f}", f"{p_val:6.4f}", f"{ci_low:9.4f}<>{ci_high:9.4f}"] for i, stat, p_val, ci_low, ci_high in zip(dataserie[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
+            dunnett_table_rows = [[f"{i}", f"{stat:4.2f}", f"{p_val:6.4f}", f"{ci_low:7.2f}<>{ci_high:7.2f}"] for i, stat, p_val, ci_low, ci_high in zip(dataserie[1:].index, dunnett_f, dunnett_p, dunnett_ci[0], dunnett_ci[1])]
             dunnett_table_str = tabulate(dunnett_table_rows, headers=['i', 'stat', 'p', 'CI'], colalign=('center', 'center', 'center', 'center'),)
             dunnett_table_pad = "\n".join([l.ljust(max(len(s) for s in dunnett_table_str.splitlines())) for l in dunnett_table_str.splitlines()])
             plt.text(max_x, min_y-0.1*(max_y-min_y),
@@ -975,7 +934,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         dataserie_analysis_index = [idx for idx in dataserie.index if idx != -1] # exclude phase -1
         statistic, p_value = stats.levene(*dataserie.iloc[dataserie_analysis_index])
         plt.text(min_x, min_y-0.1*(max_y-min_y),
-                f"LEVENE ({'-'.join([str(i) for i in dataserie_analysis_index])}):    {statistic:6.4f}\n └ p:              {p_value:6.4f}",
+                f"LEVENE ({'-'.join([str(i) for i in dataserie_analysis_index])}):    {statistic:4.2f}\n └ p:              {p_value:6.4f}",
                 ha='left', va='top', color=color_text, fontsize=font_size_analysis)
 
         # post hoc test 
@@ -983,7 +942,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         for i, (g1, g2) in enumerate(combinations(dataserie_analysis_index, 2)):
             statistic, p_value = stats.levene(dataserie[g1], dataserie[g2])
             plt.text(min_x, min_y-0.16*(max_y-min_y)-0.06*(max_y-min_y)*i,
-                    f"LEVENE ({g1}-{g2}):      {statistic:6.4f}\n └ p (Bonferroni): {p_value*bonferroni_correction:6.4f}",
+                    f"LEVENE ({g1}-{g2}):      {statistic:4.2f}\n └ p (Bonferroni): {p_value*bonferroni_correction:6.4f}",
                     ha='left', va='top', color=color_text, fontsize=font_size_analysis)
         
     # F test
