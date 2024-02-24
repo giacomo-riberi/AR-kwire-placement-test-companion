@@ -135,7 +135,7 @@ aaa: list[analysis] = [
         "confidence_angle",
     ),
     analysis(
-        "PA angle to target by confidence by phase\n(phase 0)",
+        "PA angle to target by confidence\n(phase 0)",
         "positional",
         "linregress",
         (8, 8),
@@ -144,7 +144,7 @@ aaa: list[analysis] = [
         "angle_PA_target",
     ),
     analysis(
-        "PA angle to target by confidence by phase\n(phase 1)",
+        "PA angle to target by confidence\n(phase 1)",
         "positional",
         "linregress",
         (8, 8),
@@ -153,7 +153,7 @@ aaa: list[analysis] = [
         "angle_PA_target",
     ),
     analysis(
-        "PA angle to target by confidence by phase\n(phase 2)",
+        "PA angle to target by confidence\n(phase 2)",
         "positional",
         "linregress",
         (8, 8),
