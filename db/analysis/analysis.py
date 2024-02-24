@@ -135,11 +135,29 @@ aaa: list[analysis] = [
         "confidence_angle",
     ),
     analysis(
-        "PA angle to target by confidence",
+        "PA angle to target by confidence by phase\n(phase 0)",
         "positional",
-        "correlation",
+        "linregress",
         (8, 8),
-        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase <> -1;",
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 0;",
+        "confidence_angle",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle to target by confidence by phase\n(phase 1)",
+        "positional",
+        "linregress",
+        (8, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 1;",
+        "confidence_angle",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA angle to target by confidence by phase\n(phase 2)",
+        "positional",
+        "linregress",
+        (8, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 2;",
         "confidence_angle",
         "angle_PA_target",
     ),
@@ -181,13 +199,31 @@ aaa: list[analysis] = [
         "distance_P2e_PA_target",
     ),
     analysis(
-        "PA P2e by confidence",
+        "PA P2e by confidence\n(phase 0)",
         "positional",
-        "correlation",
+        "linregress",
         (8, 8),
-        "SELECT phase, confidence_position, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
-        "confidence_position",
-        "distance_P2e_PA_target",
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 0;",
+        "confidence_angle",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA P2e by confidence\n(phase 1)",
+        "positional",
+        "linregress",
+        (8, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 2;",
+        "confidence_angle",
+        "angle_PA_target",
+    ),
+    analysis(
+        "PA P2e by confidence\n(phase 2)",
+        "positional",
+        "linregress",
+        (8, 8),
+        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 1;",
+        "confidence_angle",
+        "angle_PA_target",
     ),
     analysis(
         "PA P2e from target by phase\n(Student)",
@@ -268,7 +304,7 @@ aaa: list[analysis] = [
     analysis(
         "ECP ease of placement by duration",
         "statistical",
-        "correlation",
+        "linregress",
         (8, 8),
         "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
         "ECP_D",
@@ -277,7 +313,7 @@ aaa: list[analysis] = [
     analysis(
         "ECP ease of placement by RPC",
         "statistical",
-        "correlation",
+        "linregress",
         (8, 8),
         "SELECT ease_of_placement, ECP_RPC FROM ECP WHERE phase <> -1",
         "ECP_RPC",
@@ -567,8 +603,8 @@ def main():
             if "errorbox" in a.type:
                 _ = errorbox(dataframe, dataserie, summary, a, save=True, show=liveshow)
             
-            elif "correlation" in a.type:
-                _ = correlation(dataframe, dataserie, summary, a, save=True, show=liveshow)
+            elif "linregress" in a.type:
+                _ = linregress(dataframe, dataserie, summary, a, save=True, show=liveshow)
             
             elif "barplot" in a.type:
                 _ = barplot(dataframe, dataserie, summary, a, save=True, show=liveshow)
@@ -584,8 +620,8 @@ def main():
                 if a.type == "errorbox":
                     imgsBytes.append(errorbox(dataframe, dataserie, summary, a, save=False, show=False))    # saving at the end
                 
-                elif a.type == "correlation":
-                    imgsBytes.append(correlation(dataframe, dataserie, summary, a, save=False, show=False)) # saving at the end
+                elif a.type == "linregress":
+                    imgsBytes.append(linregress(dataframe, dataserie, summary, a, save=False, show=False)) # saving at the end
                 
                 else:
                     print("unknown analysis type")
@@ -739,7 +775,7 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
 
     return img_data
 
-def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
+def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
     plt.figure(figsize=a.size)
     plt.rcParams['font.family'] = 'Courier New'
     min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
@@ -750,31 +786,38 @@ def correlation(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataF
     # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
     font_size_legend    = 0.6 * font_size_title
     font_size_text      = 0.6 * font_size_title
+    font_size_analysis  = 0.6 * font_size_title
 
-    # Calculate line of best fit
-    coefficients = np.polyfit(dataframe[a.predictor], dataframe[a.outcome], 1)
-    poly_function = np.poly1d(coefficients)
-    line_x = np.linspace(min(dataframe[a.predictor]), max(dataframe[a.predictor]), 100)
-    line_y = poly_function(line_x)
+    # LINEAR REGRESSION
+    res = stats.linregress(dataframe[a.predictor], dataframe[a.outcome])
 
+    result_str  = f"Pearson corr. coeff.: {res.rvalue:7.4f}\n"
+    result_str += f"R-squared:            {res.rvalue**2:7.4f}\n" # Coefficient of determination (R-squared):
+
+    # calculate 95% confidence interval on slope and intercept
+    tinv = lambda p, df: abs(stats.t.ppf(p/2, df)) # Two-sided inverse Students t-distribution (p: probability, df: degrees of freedom)
+    ts = tinv(0.05, len(dataframe[a.predictor])-2)
+    result_str += f"slope     (95%):      {res.slope:5.2f} +/- {ts*res.stderr:5.2f}\n"
+    result_str += f"intercept (95%):      {res.intercept:5.2f} +/- {ts*res.intercept_stderr:5.2f}\n"
+    result_str += f"p:                    {res.pvalue:7.4f}\n"
+    
     # PLOT
     sc = plt.scatter(dataframe[a.predictor], dataframe[a.outcome],
                 label=f'{a.outcome} Data Points', 
                 color='black', alpha=0.5,
                 s=10)
     
-    plt.plot(line_x, line_y, color=color1, label='Correlation')
+    plt.plot(dataframe[a.predictor], res.intercept + res.slope * dataframe[a.predictor], color=color1, label='Fitted line')
 
     # get actual plot dimensions
     min_x, max_x = plt.xlim()
-    min_y, max_y = plt.ylim()
+    min_y, max_y = plt.ylim()    
     
     plt.subplots_adjust(bottom=0.2)
-    correlation_coefficient = np.corrcoef(dataframe[a.predictor], dataframe[a.outcome])[0, 1]
-    plt.text(max_x, min_y-0.1*(max_y-min_y),
-                    f'Pearson corr. coeff.: {correlation_coefficient:.2f}',
-                    ha='right', va='center', color=color_text, fontsize=font_size_text)
-
+    plt.text(min_x, min_y-0.2*(max_y-min_y),
+                    result_str,
+                    ha='left', va='center', color=color_text, fontsize=font_size_analysis)
+    
     # Adding labels and title
     plt.xlabel(a.predictor, fontsize=font_size_title)
     plt.ylabel(a.outcome,   fontsize=font_size_title)
