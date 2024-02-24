@@ -46,6 +46,12 @@ class multianalysis:
     category: str
     aaa: list[analysis]
 
+
+# !!! aggiungere quanti hit count reispetto a alla percezione
+# !!! ECP PACF by phase and ECP
+# !!! comparare solo pa successful
+    
+# !!! Tabella angolo deviazione e distanza da nervo
 aaa: list[analysis] = [
 
     # --------------------------- POSITIONAL -------------------------- #
@@ -200,6 +206,15 @@ aaa: list[analysis] = [
     
 
     # -------------------------- STATISTICAL -------------------------- #
+    analysis(
+        "ECP PACF by ECP",
+        "statistical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT ECP_number, ECP_PACF FROM ECP WHERE phase <> -1",
+        "ECP_number",
+        "ECP_PACF",
+    ),
     analysis(
         "ECP ease of placement by duration",
         "statistical",
@@ -439,7 +454,7 @@ mmm: list[multianalysis] = [
 ]
 
 def main():
-    liveshow = True
+    liveshow = False
 
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
@@ -546,11 +561,11 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
     # Set width of bar
     bar_width = 0.6/outcome_count
 
-    for i, item in enumerate(cross_tab.columns):
-        bar_Xs = [p - (outcome_count * bar_width) / 2 + (bar_width / 2) + i * bar_width for p in range(predictor_count)]
-        bar_Ys = cross_tab[item]
+    for i, predictor in enumerate(cross_tab):
+        bar_Xs = [p - (outcome_count * bar_width) / 2 + (bar_width / 2) + i * bar_width for p in cross_tab.index]
+        bar_Ys = cross_tab[predictor]
         plt.bar(bar_Xs, bar_Ys,
-                bar_width, label=item,
+                bar_width, label=predictor,
                 color=colors[i % len(colors)])
 
         for i, y in enumerate(bar_Ys):
@@ -580,9 +595,9 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
         # https://www.researchgate.net/post/How_Bonferroni_correction_be_applied_for_chi_square_test_on_comparison_of_three_groups
         bonferroni_correction = predictor_count*outcome_count
         for i, (g1, g2) in enumerate(combinations(cross_tab.index, 2)):
-            if min(cross_tab.iloc[g1]) == 0 and min(cross_tab.iloc[g2]) == 0:
+            if min(cross_tab.loc[g1]) == 0 and min(cross_tab.loc[g2]) == 0:
                 continue
-            chi2, p, dof, expected = stats.chi2_contingency(cross_tab.iloc[[g1, g2]])
+            chi2, p, dof, expected = stats.chi2_contingency(cross_tab.loc[[g1, g2]])
             plt.text(min_x, min_y-0.16*(max_y-min_y)-0.06*(max_y-min_y)*i,
                     f"Chi-Square ({g1}-{g2}):   {chi2:7.4f}\n └ p (Bonferroni):  {p*bonferroni_correction:7.4f}",
                     ha='left', va='top',
