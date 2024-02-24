@@ -46,12 +46,9 @@ class multianalysis:
     category: str
     aaa: list[analysis]
 
-
-# !!! aggiungere quanti hit count reispetto a alla percezione
-# !!! ECP PACF by phase and ECP
-# !!! comparare solo pa successful
+        
+# !!! Tabella angolo deviazione e distanza da nervo ???
     
-# !!! Tabella angolo deviazione e distanza da nervo
 aaa: list[analysis] = [
 
     # --------------------------- POSITIONAL -------------------------- #
@@ -65,7 +62,7 @@ aaa: list[analysis] = [
         "delta_id_PA_target",
     ),
     analysis(
-        "PA delta insertion depth by phase - student",
+        "PA delta insertion depth by phase\nstudent",
         "positional",
         "errorbox levene dunnett",
         (8, 8),
@@ -74,7 +71,7 @@ aaa: list[analysis] = [
         "delta_id_PA_target",
     ),
     analysis(
-        "PA delta insertion depth by phase - resident",
+        "PA delta insertion depth by phase\nresident",
         "positional",
         "errorbox levene dunnett",
         (8, 8),
@@ -83,7 +80,7 @@ aaa: list[analysis] = [
         "delta_id_PA_target",
     ),
     analysis(
-        "PA delta insertion depth by phase - surgeon",
+        "PA delta insertion depth by phase\nsurgeon",
         "positional",
         "errorbox levene dunnett",
         (8, 8),
@@ -92,6 +89,15 @@ aaa: list[analysis] = [
         "delta_id_PA_target",
     ),
 
+    analysis(
+        "PA angle to target by phase\nonly success",
+        "positional",
+        "errorbox levene dunnett",
+        (8, 8),
+        "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1 AND success == 1;",
+        "phase",
+        "angle_PA_target",
+    ),
     analysis(
         "PA angle to target by phase",
         "positional",
@@ -102,7 +108,7 @@ aaa: list[analysis] = [
         "angle_PA_target",
     ),
     analysis(
-        "PA angle to target by phase - Student",
+        "PA angle to target by phase\nStudent",
         "positional",
         "errorbox levene dunnett",
         (8, 8),
@@ -111,7 +117,7 @@ aaa: list[analysis] = [
         "angle_PA_target",
     ),
     analysis(
-        "PA angle to target by phase - Resident",
+        "PA angle to target by phase\nResident",
         "positional",
         "errorbox levene dunnett",
         (8, 8),
@@ -120,7 +126,7 @@ aaa: list[analysis] = [
         "angle_PA_target",
     ),
     analysis(
-        "PA angle to target by phase - Surgeon",
+        "PA angle to target by phase\nSurgeon",
         "positional",
         "errorbox levene dunnett",
         (8, 8),
@@ -159,6 +165,24 @@ aaa: list[analysis] = [
     ),
 
     analysis(
+        "PA P2e from target by phase\nonly success",
+        "positional",
+        "errorbox levene dunnett",
+        (8, 8),
+        "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1 AND success == 1;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+    analysis(
+        "PA P2e from target by phase",
+        "positional",
+        "errorbox levene dunnett",
+        (8, 8),
+        "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
+        "phase",
+        "distance_P2e_PA_target",
+    ),
+    analysis(
         "PA P2e by confidence",
         "positional",
         "correlation",
@@ -168,16 +192,7 @@ aaa: list[analysis] = [
         "distance_P2e_PA_target",
     ),
     analysis(
-        "PA P2e distance of PA from target by phase",
-        "positional",
-        "errorbox levene dunnett",
-        (8, 8),
-        "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
-        "phase",
-        "distance_P2e_PA_target",
-    ),
-    analysis(
-        "PA P2e from target by phase - Student",
+        "PA P2e from target by phase\nStudent",
         "positional",
         "errorbox levene dunnett",
         (8, 8),
@@ -186,7 +201,7 @@ aaa: list[analysis] = [
         "distance_P2e_PA_target",
     ),
     analysis(
-        "PA P2e from target by phase - Resident",
+        "PA P2e from target by phase\nResident",
         "positional",
         "errorbox levene dunnett",
         (8, 8),
@@ -195,7 +210,7 @@ aaa: list[analysis] = [
         "distance_P2e_PA_target",
     ),
     analysis(
-        "PA P2e from target by phase - Surgeon",
+        "PA P2e from target by phase\nSurgeon",
         "positional",
         "errorbox levene dunnett",
         (8, 8),
@@ -207,6 +222,15 @@ aaa: list[analysis] = [
 
     # -------------------------- STATISTICAL -------------------------- #
     analysis(
+        "ECP PACF by phase",
+        "statistical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT phase, ECP_PACF FROM ECP WHERE phase <> -1",
+        "phase",
+        "ECP_PACF",
+    ),
+    analysis(
         "ECP PACF by ECP",
         "statistical",
         "barplot chi-square",
@@ -216,6 +240,34 @@ aaa: list[analysis] = [
         "ECP_PACF",
     ),
     analysis(
+        "ECP PACF by ECP\nphase 0",
+        "statistical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT ECP_number, ECP_PACF FROM ECP WHERE phase == 0",
+        "ECP_number",
+        "ECP_PACF",
+    ),
+    analysis(
+        "ECP PACF by ECP\nphase 1",
+        "statistical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT ECP_number, ECP_PACF FROM ECP WHERE phase == 1",
+        "ECP_number",
+        "ECP_PACF",
+    ),
+    analysis(
+        "ECP PACF by ECP\nphase 2",
+        "statistical",
+        "barplot chi-square",
+        (6, 8),
+        "SELECT ECP_number, ECP_PACF FROM ECP WHERE phase == 2",
+        "ECP_number",
+        "ECP_PACF",
+    ),
+
+    analysis(
         "ECP ease of placement by duration",
         "statistical",
         "correlation",
@@ -223,15 +275,6 @@ aaa: list[analysis] = [
         "SELECT ease_of_placement, ECP_D FROM ECP WHERE phase <> -1",
         "ECP_D",
         "ease_of_placement",
-    ),
-    analysis(
-        "ECP PACF by phase",
-        "statistical",
-        "barplot chi-square",
-        (6, 8),
-        "SELECT phase, ECP_PACF FROM ECP WHERE phase <> -1",
-        "phase",
-        "ECP_PACF",
     ),
     analysis(
         "PA success by phase",
@@ -333,9 +376,36 @@ aaa: list[analysis] = [
         "phase",
         "PA_has_hit",
     ),
+    analysis(
+        "PA has hit vs estimate\nphase 0",
+        "positional",
+        "barplot chi-square",
+        (4.5, 8),
+        "SELECT hit_count, estimate_hit FROM PA WHERE phase == 0;",
+        "estimate_hit",
+        "hit_count",
+    ),
+    analysis(
+        "PA has hit vs estimate\nphase 1",
+        "positional",
+        "barplot chi-square",
+        (4.5, 8),
+        "SELECT hit_count, estimate_hit FROM PA WHERE phase == 1;",
+        "estimate_hit",
+        "hit_count",
+    ),
+    analysis(
+        "PA has hit vs estimate\nphase 2",
+        "positional",
+        "barplot chi-square",
+        (4.5, 8),
+        "SELECT hit_count, estimate_hit FROM PA WHERE phase == 2;",
+        "estimate_hit",
+        "hit_count",
+    ),
 
     analysis(
-        "PA distance from ulnar nerve by phase - ECP 1",
+        "PA distance from ulnar nerve by phase\nECP 1",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -344,7 +414,7 @@ aaa: list[analysis] = [
         "ulnar_nerve",
     ),
     analysis(
-        "PA distance from ulnar nerve by phase - ECP 2",
+        "PA distance from ulnar nerve by phase\nECP 2",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -353,7 +423,7 @@ aaa: list[analysis] = [
         "ulnar_nerve",
     ),
     analysis(
-        "PA distance from ulnar nerve by phase - ECP 3",
+        "PA distance from ulnar nerve by phase\nECP 3",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -361,9 +431,36 @@ aaa: list[analysis] = [
         "phase",
         "ulnar_nerve",
     ),
+    analysis(
+        "PA has hit ulnar nerve by phase\nECP 1",
+        "anatomical",
+        "barplot chi-square",
+        (8, 8),
+        "SELECT phase, CASE WHEN ulnar_nerve = 0 THEN 1 ELSE 0 END AS ulnar_nerve_hit FROM PA WHERE ECP_number = 1 AND phase <> -1;",
+        "phase",
+        "ulnar_nerve_hit",
+    ),
+    analysis(
+        "PA has hit ulnar nerve by phase\nECP 2",
+        "anatomical",
+        "barplot chi-square",
+        (8, 8),
+        "SELECT phase, CASE WHEN ulnar_nerve = 0 THEN 1 ELSE 0 END AS ulnar_nerve_hit FROM PA WHERE ECP_number = 2 AND phase <> -1;",
+        "phase",
+        "ulnar_nerve_hit",
+    ),
+    analysis(
+        "PA has hit ulnar nerve by phase\nECP 3",
+        "anatomical",
+        "barplot chi-square",
+        (8, 8),
+        "SELECT phase, CASE WHEN ulnar_nerve = 0 THEN 1 ELSE 0 END AS ulnar_nerve_hit FROM PA WHERE ECP_number = 3 AND phase <> -1;",
+        "phase",
+        "ulnar_nerve_hit",
+    ),
 
     analysis(
-        "PA distance from middle collateral artery by phase - ECP 1",
+        "PA distance from middle collateral artery by phase\nECP 1",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -372,7 +469,7 @@ aaa: list[analysis] = [
         "middle_collateral_artery",
     ),
     analysis(
-        "PA distance from middle collateral artery by phase - ECP 2",
+        "PA distance from middle collateral artery by phase\nECP 2",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -381,7 +478,7 @@ aaa: list[analysis] = [
         "middle_collateral_artery",
     ),
     analysis(
-        "PA distance from middle collateral artery by phase - ECP 3",
+        "PA distance from middle collateral artery by phase\nECP 3",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -392,7 +489,7 @@ aaa: list[analysis] = [
 
 
     analysis(
-        "PA distance from median nerve by phase - ECP 1",
+        "PA distance from median nerve by phase\nECP 1",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -401,7 +498,7 @@ aaa: list[analysis] = [
         "median_nerve",
     ),
     analysis(
-        "PA distance from median nerve by phase - ECP 2",
+        "PA distance from median nerve by phase\nECP 2",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -410,7 +507,7 @@ aaa: list[analysis] = [
         "median_nerve",
     ),
     analysis(
-        "PA distance from median nerve by phase - ECP 3",
+        "PA distance from median nerve by phase\nECP 3",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -420,7 +517,7 @@ aaa: list[analysis] = [
     ),
 
     analysis(
-        "PA distance from brachial artery by phase - ECP 1",
+        "PA distance from brachial artery by phase\nECP 1",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -429,7 +526,7 @@ aaa: list[analysis] = [
         "brachial_artery",
     ),
     analysis(
-        "PA distance from brachial artery by phase - ECP 2",
+        "PA distance from brachial artery by phase\nECP 2",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -438,7 +535,7 @@ aaa: list[analysis] = [
         "brachial_artery",
     ),
     analysis(
-        "PA distance from brachial artery by phase - ECP 3",
+        "PA distance from brachial artery by phase\nECP 3",
         "anatomical",
         "errorbox levene dunnett",
         (8, 8),
@@ -454,7 +551,7 @@ mmm: list[multianalysis] = [
 ]
 
 def main():
-    liveshow = False
+    liveshow = True
 
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
