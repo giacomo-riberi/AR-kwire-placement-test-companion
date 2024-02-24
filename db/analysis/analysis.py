@@ -612,7 +612,7 @@ mmm: list[multianalysis] = [
 ]
 
 def main():
-    liveshow = False
+    liveshow = True
 
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
@@ -909,26 +909,32 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
 
     # Mean and Median tests
     mean_control = None
+    std_control  = None
     for i, (index, mean, std, stderr, count, q1, median, q3) in enumerate(zip(dataserie.index, summary['mean'], summary['std'], summary['stderr'], summary['count'], dataserie.apply(np.percentile, args=(25,)), dataserie.apply(np.median), dataserie.apply(np.percentile, args=(75,)))):
         if mean_control == None:
             mean_control = mean
+        if std_control == None:
+            std_control = std
 
         mean_diff_str = f"{mean-mean_control:+6.2f}" if mean_control != mean else ""
         mean_diff_perc_str = f"  {(mean-mean_control)/mean_control*100:+4.0f}%" if mean_control != mean else ""
 
+        std_diff_str = f"{std-std_control:+6.2f}" if std_control != std else ""
+        std_diff_perc_str = f"  {(std-std_control)/std_control*100:+4.0f}%" if std_control != std else ""
+
         plt.text(summary[a.predictor][i]-width/1.9, min_y+0.80*(max_y-min_y),
-                    f'Mean:\n\n\nStddev:\nStderr:\nCount:',
-                    ha='right', va='center', color=color1, fontsize=font_size_text)
+                    f'Mean:\nStderr:\n\n\nStddev:\n\n\nCount:',
+                    ha='right', va='top', color=color1, fontsize=font_size_text)
         plt.text(summary[a.predictor][i]+width/1.9, 0.80*(max_y-min_y)+min_y,
-                    f'{mean:6.2f}\n{mean_diff_str}\n{mean_diff_perc_str}\n{std:6.2f}\n{stderr:6.2f}\n{count:6.0f}   ',
-                    ha='left', va='center', color=color1, fontsize=font_size_text)
+                    f'{mean:6.2f}\n{stderr:6.2f}\n{mean_diff_str}\n{mean_diff_perc_str}\n{std:6.2f}\n{std_diff_str}\n{std_diff_perc_str}\n{count:6.0f}   ',
+                    ha='left', va='top', color=color1, fontsize=font_size_text)
         
-        plt.text(summary[a.predictor][i]-width/1.9, 0.65*(max_y-min_y)+min_y,
+        plt.text(summary[a.predictor][i]-width/1.9, 0.20*(max_y-min_y)+min_y,
                     f'Q3:\nMedian:\nQ1:',
-                    ha='right', va='center', color=color2, fontsize=font_size_text)
-        plt.text(summary[a.predictor][i]+width/1.9, 0.65*(max_y-min_y)+min_y,
+                    ha='right', va='bottom', color=color2, fontsize=font_size_text)
+        plt.text(summary[a.predictor][i]+width/1.9, 0.20*(max_y-min_y)+min_y,
                     f'{q3:6.2f}\n{median:6.2f}\n{q1:6.2f}',
-                    ha='left', va='center', color=color2, fontsize=font_size_text)
+                    ha='left', va='bottom', color=color2, fontsize=font_size_text)
 
     # ANOVA test
     if "anova" in a.type.lower():
