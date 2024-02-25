@@ -204,27 +204,27 @@ aaa: list[analysis] = [
         "positional",
         "linregress",
         (8, 8),
-        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 0;",
-        "confidence_angle",
-        "angle_PA_target",
+        "SELECT phase, confidence_position, distance_P1_PA_target FROM PA WHERE phase == 0;",
+        "confidence_position",
+        "distance_P1_PA_target",
     ),
     analysis(
         "PA P2e by confidence\n(phase 1)",
         "positional",
         "linregress",
         (8, 8),
-        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 2;",
-        "confidence_angle",
-        "angle_PA_target",
+        "SELECT phase, confidence_position, distance_P1_PA_target FROM PA WHERE phase == 1;",
+        "confidence_position",
+        "distance_P1_PA_target",
     ),
     analysis(
         "PA P2e by confidence\n(phase 2)",
         "positional",
         "linregress",
         (8, 8),
-        "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 1;",
-        "confidence_angle",
-        "angle_PA_target",
+        "SELECT phase, confidence_position, distance_P1_PA_target FROM PA WHERE phase == 2;",
+        "confidence_position",
+        "distance_P1_PA_target",
     ),
     analysis(
         "PA P2e from target by phase\n(Student)",
@@ -773,6 +773,11 @@ def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFr
     result_str += f"slope     (95%):      {res.slope:4.2f} +/- {ts*res.stderr:4.2f}\n"
     result_str += f"intercept (95%):      {res.intercept:4.2f} +/- {ts*res.intercept_stderr:4.2f}\n"
     result_str += f"p:                    {res.pvalue:6.4f}\n"
+
+    # Calculate the interception point
+    x_intersect = (res.intercept) / (1 - res.slope)
+    y_intersect = res.intercept + res.slope * x_intersect
+    result_str += (f"Intersect (x, y):    {float(x_intersect):.2f}, {y_intersect:.2f}\n")
     
     # PLOT
     sc = plt.scatter(dataframe[a.predictor], dataframe[a.outcome],
@@ -781,6 +786,7 @@ def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFr
                 s=10)
     
     plt.plot(dataframe[a.predictor], res.intercept + res.slope * dataframe[a.predictor], color=color1, label='Fitted line')
+    plt.plot([min(dataframe[a.predictor]), max(dataframe[a.predictor])], [0, max(dataframe[a.predictor])-min(dataframe[a.predictor])], color=color2, label='Ideal line', linestyle='dashed')
 
     # get actual plot dimensions
     min_x, max_x = plt.xlim()
@@ -801,13 +807,28 @@ def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFr
     if all(isinstance(x, int) for x in dataframe):
         plt.yticks(np.arange(min(dataframe), max(dataframe)+1, 1))    # Set y-axis ticks to integers if all data is integer
     
-    if len(dataframe[a.predictor].value_counts()) > 8:
-        predictor_values = dataframe[a.predictor]
-        num_ticks = 8
-        equidistant_ticks = np.linspace(min(predictor_values), max(predictor_values), num_ticks)
-        plt.xticks(equidistant_ticks)
+    xticks = []
+    if len(dataframe[a.predictor].value_counts()) <= 8:
+        xticks = dataframe[a.predictor]
     else:
-        plt.xticks(dataframe[a.predictor])
+        max_val = max(dataframe[a.predictor])
+        if max_val < 10:
+            xticks = np.arange(0, max_val + 1, step=2, dtype=int)
+        elif max_val < 40:
+            xticks = np.arange(0, max_val + 1, step=5, dtype=int)
+        elif max_val < 100:
+            xticks = np.arange(0, max_val + 1, step=10, dtype=int)
+        elif max_val < 200:
+            xticks = np.arange(0, max_val + 1, step=20, dtype=int)
+        elif max_val < 500:
+            xticks = np.arange(0, max_val + 1, step=50, dtype=int)
+        else:
+            xticks = np.arange(0, max_val + 1, step=100, dtype=int)
+    
+    xticks = [int(x) for x in xticks]
+    if x_intersect > min_x and x_intersect < max_x:
+        xticks = np.concatenate([xticks, [x_intersect]])
+    plt.xticks(xticks)
 
     plt.grid(True, alpha=0.5)
 
