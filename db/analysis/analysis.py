@@ -138,7 +138,7 @@ aaa: list[analysis] = [
     analysis(
         "PA angle to target by confidence\n(phase 0)",
         "positional",
-        "linregress",
+        "linregress idealline",
         (8, 8),
         "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 0;",
         "confidence_angle",
@@ -147,7 +147,7 @@ aaa: list[analysis] = [
     analysis(
         "PA angle to target by confidence\n(phase 1)",
         "positional",
-        "linregress",
+        "linregress idealline",
         (8, 8),
         "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 1;",
         "confidence_angle",
@@ -156,7 +156,7 @@ aaa: list[analysis] = [
     analysis(
         "PA angle to target by confidence\n(phase 2)",
         "positional",
-        "linregress",
+        "linregress idealline",
         (8, 8),
         "SELECT phase, confidence_angle, angle_PA_target FROM PA WHERE phase == 2;",
         "confidence_angle",
@@ -202,7 +202,7 @@ aaa: list[analysis] = [
     analysis(
         "PA P2e by confidence\n(phase 0)",
         "positional",
-        "linregress",
+        "linregress idealline",
         (8, 8),
         "SELECT phase, confidence_position, distance_P1_PA_target FROM PA WHERE phase == 0;",
         "confidence_position",
@@ -211,7 +211,7 @@ aaa: list[analysis] = [
     analysis(
         "PA P2e by confidence\n(phase 1)",
         "positional",
-        "linregress",
+        "linregress idealline",
         (8, 8),
         "SELECT phase, confidence_position, distance_P1_PA_target FROM PA WHERE phase == 1;",
         "confidence_position",
@@ -220,7 +220,7 @@ aaa: list[analysis] = [
     analysis(
         "PA P2e by confidence\n(phase 2)",
         "positional",
-        "linregress",
+        "linregress idealline",
         (8, 8),
         "SELECT phase, confidence_position, distance_P1_PA_target FROM PA WHERE phase == 2;",
         "confidence_position",
@@ -567,7 +567,7 @@ mmm: list[multianalysis] = [
 ]
 
 def main():
-    liveshow = False
+    liveshow = True
 
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
@@ -774,10 +774,11 @@ def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFr
     result_str += f"intercept (95%):      {res.intercept:4.2f} +/- {ts*res.intercept_stderr:4.2f}\n"
     result_str += f"p:                    {res.pvalue:6.4f}\n"
 
-    # Calculate the interception point
-    x_intersect = (res.intercept) / (1 - res.slope)
-    y_intersect = res.intercept + res.slope * x_intersect
-    result_str += (f"Intersect (x, y):    {float(x_intersect):.2f}, {y_intersect:.2f}\n")
+    if "idealline" in a.type:
+        # Calculate the intersect point
+        x_intersect = (res.intercept) / (1 - res.slope)
+        y_intersect = res.intercept + res.slope * x_intersect
+        result_str += (f"Intersect (x, y):    {float(x_intersect):.2f}, {y_intersect:.2f}\n")
     
     # PLOT
     sc = plt.scatter(dataframe[a.predictor], dataframe[a.outcome],
@@ -786,7 +787,9 @@ def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFr
                 s=10)
     
     plt.plot(dataframe[a.predictor], res.intercept + res.slope * dataframe[a.predictor], color=color1, label='Fitted line')
-    plt.plot([min(dataframe[a.predictor]), max(dataframe[a.predictor])], [0, max(dataframe[a.predictor])-min(dataframe[a.predictor])], color=color2, label='Ideal line', linestyle='dashed')
+    
+    if "idealline" in a.type:
+        plt.plot([min(dataframe[a.predictor]), max(dataframe[a.predictor])], [0, max(dataframe[a.predictor])-min(dataframe[a.predictor])], color=color2, label='Ideal line', linestyle='dashed')
 
     # get actual plot dimensions
     min_x, max_x = plt.xlim()
@@ -812,22 +815,24 @@ def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFr
         xticks = dataframe[a.predictor]
     else:
         max_val = max(dataframe[a.predictor])
-        if max_val < 10:
+        if max_val <= 10:
+            xticks = np.arange(0, max_val + 1, step=1, dtype=int)
+        if max_val <= 20:
             xticks = np.arange(0, max_val + 1, step=2, dtype=int)
-        elif max_val < 40:
+        elif max_val <= 40:
             xticks = np.arange(0, max_val + 1, step=5, dtype=int)
-        elif max_val < 100:
+        elif max_val <= 100:
             xticks = np.arange(0, max_val + 1, step=10, dtype=int)
-        elif max_val < 200:
+        elif max_val <= 200:
             xticks = np.arange(0, max_val + 1, step=20, dtype=int)
-        elif max_val < 500:
+        elif max_val <= 500:
             xticks = np.arange(0, max_val + 1, step=50, dtype=int)
         else:
             xticks = np.arange(0, max_val + 1, step=100, dtype=int)
     
-    xticks = [int(x) for x in xticks]
-    if x_intersect > min_x and x_intersect < max_x:
-        xticks = np.concatenate([xticks, [x_intersect]])
+    if "idealline" in a.type:
+        if x_intersect > min_x and x_intersect < max_x:
+            xticks = np.concatenate([xticks, [x_intersect]])
     plt.xticks(xticks)
 
     plt.grid(True, alpha=0.5)
@@ -903,10 +908,10 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             std_diff_perc_str   = f"{(std-std_control)/std_control*100:+6.0f}%"
 
         plt.text(summary[a.predictor][i]-width/1.9, min_y+0.80*(max_y-min_y),
-                    f'Mean:\nStderr:\n\n\nStddev:\n\n\nCount:',
+                    f'Count:\nMean:\n\n\nStddev:\n\n\nStderr:\n',
                     ha='right', va='top', color=color1, fontsize=font_size_text)
         plt.text(summary[a.predictor][i]+width/1.9, 0.80*(max_y-min_y)+min_y,
-                    f'{mean:6.2f}\n{stderr:6.2f}\n{mean_diff_str}\n{mean_diff_perc_str}\n{std:6.2f}\n{std_diff_str}\n{std_diff_perc_str}\n{count:6.0f}   ',
+                    f'{count:3.0f}\n{mean:6.2f}\n{mean_diff_str}\n{mean_diff_perc_str}\n{std:6.2f}\n{std_diff_str}\n{std_diff_perc_str}\n{stderr:6.2f}',
                     ha='left', va='top', color=color1, fontsize=font_size_text)
         
         plt.text(summary[a.predictor][i]-width/1.9, 0.20*(max_y-min_y)+min_y,
