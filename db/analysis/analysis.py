@@ -1,4 +1,4 @@
-import os, io, re, sns
+import os, io, re, subprocess
 
 import sqlite3
 from dataclasses import dataclass
@@ -596,6 +596,10 @@ mmm: list[multianalysis] = [
 
 def main():
     liveshow = False
+
+    process = subprocess.Popen(["git", "checkout", "master"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, error = process.communicate()
+    quit()
 
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
