@@ -485,6 +485,24 @@ aaa: list[analysis] = [
         "ulnar_nerve",
     ),
     analysis(
+        "PA distance from ulnar nerve by phase\n(ECP 2) - Student",
+        "anatomical",
+        "errorbox levene dunnett",
+        (8, 8),
+        "SELECT PHASE.phase, PA.ulnar_nerve FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PA.ECP_number == 2 AND (PHASE.career == 'st' OR PHASE.phase == -1);",
+        "phase",
+        "ulnar_nerve",
+    ),
+    analysis(
+        "PA distance from ulnar nerve by phase\n(ECP 2) - Resident",
+        "anatomical",
+        "errorbox levene dunnett",
+        (8, 8),
+        "SELECT PHASE.phase, PA.ulnar_nerve FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PA.ECP_number == 2 AND (PHASE.career == 'sp' OR PHASE.phase == -1);",
+        "phase",
+        "ulnar_nerve",
+    ),
+    analysis(
         "PA distance from ulnar nerve by phase\n(ECP 3)",
         "anatomical",
         "errorbox levene dunnett",
@@ -567,7 +585,7 @@ mmm: list[multianalysis] = [
 ]
 
 def main():
-    liveshow = True
+    liveshow = False
 
     with sqlite3.connect(os.path.join(script_dir, f"..\\positioning_test_data-(v1.27).db")) as conn:
         for a in aaa:
