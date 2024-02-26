@@ -10,6 +10,7 @@ import math
 import matplotlib.pyplot as plt
 import scipy.stats as stats
 from itertools import combinations
+import statistics
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -430,15 +431,6 @@ aaa: list[analysis] = [
         "ECP_has_hit",
     ),
     analysis(
-        "PA has hit by phase",
-        "anatomical",
-        "barplot chi-square",
-        (6, 8),
-        "SELECT phase, CASE WHEN hit_count >= 1 THEN 1 ELSE 0 END AS PA_has_hit FROM PA WHERE phase <> -1;",
-        "phase",
-        "PA_has_hit",
-    ),
-    analysis(
         "PA has hit vs estimate\n(phase 0)",
         "anatomical",
         "barplot chi-square",
@@ -517,6 +509,24 @@ aaa: list[analysis] = [
         "barplot chi-square",
         (8, 8),
         "SELECT phase, CASE WHEN ulnar_nerve = 0 THEN 1 ELSE 0 END AS ulnar_nerve_hit FROM PA WHERE ECP_number = 1 AND phase <> -1;",
+        "phase",
+        "ulnar_nerve_hit",
+    ),
+    analysis(
+        "PA has hit ulnar nerve by phase\n(ECP 1) - Student",
+        "anatomical",
+        "barplot chi-square",
+        (8, 8),
+        "SELECT PHASE.phase, CASE WHEN PA.ulnar_nerve = 0 THEN 1 ELSE 0 END AS ulnar_nerve_hit FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PA.ECP_number = 1 AND PHASE.career = 'st' AND PHASE.phase <> -1;",
+        "phase",
+        "ulnar_nerve_hit",
+    ),
+    analysis(
+        "PA has hit ulnar nerve by phase\n(ECP 1) - Resident",
+        "anatomical",
+        "barplot chi-square",
+        (8, 8),
+        "SELECT PHASE.phase, CASE WHEN PA.ulnar_nerve = 0 THEN 1 ELSE 0 END AS ulnar_nerve_hit FROM PHASE LEFT JOIN PA ON PHASE.id = PA.PHASE_id WHERE PA.ECP_number = 1 AND PHASE.career = 'sp' AND PHASE.phase <> -1;",
         "phase",
         "ulnar_nerve_hit",
     ),
@@ -700,12 +710,17 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
                 color=colors[i % len(colors)])
 
         for i, y in enumerate(bar_Ys):
-            phase_total = sum(cross_tab.iloc[i])  # Sum of counts for the current phase
-            percentage = y / phase_total * 100 if phase_total != 0 else 0  # Calculate percentage, handle division by zero
+            total = sum(cross_tab.iloc[i])  # Sum of counts for the current phase
+            percentage = y / total * 100 if total != 0 else 0  # Calculate percentage, handle division by zero
             plt.text(bar_Xs[i], y,
                         f'{y} ({percentage:.1f}%)',
                         ha='center', va=('top' if y>(max_y_preplot/2) else 'bottom'), rotation='vertical',
                         color=('white' if y>(max_y_preplot/2) else 'black'), fontsize=font_size_text)
+            if i == predictor:
+                plt.text(predictor, cross_tab.iloc[i].max(),
+                            f'n={total}',
+                            ha='center', va='bottom',
+                            color='black', fontsize=font_size_text)
     
     # get actual plot dimensions
         min_x, max_x = plt.xlim()
