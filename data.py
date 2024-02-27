@@ -323,9 +323,9 @@ class PAdata(data_elaboration):
     P2eC_U: float
     P2eD_U: float
 
-    P1_mean_max: float
+    P1_mean_max: float;   "P1 triangulation distances divergence"
     P1_mean:  float
-    P2_mean_max: float
+    P2_mean_max: float;   "P2 triangulation distances divergence"
     P2_mean:  float
     
     confidence_position: float
