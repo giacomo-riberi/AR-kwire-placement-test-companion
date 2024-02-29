@@ -96,7 +96,7 @@ class data_elaboration:
                 dbvals.append(v)
             elif type(v) == list:
                 dbkeys.append(f"`{k}`")
-                dbvals.append(";".join(v))
+                dbvals.append(";".join(map(str, v)))
             elif type(v) == dict:
                 dbkeys.extend([f"`{kk.replace(" ", "_")}`" for kk in v.keys()])
                 dbvals.extend(v.values())
@@ -128,7 +128,7 @@ class data_elaboration:
                 dbvals.append(v)
             elif type(v) == list:
                 dbkeys.append(f"`{k}`")
-                dbvals.append(";".join(v))
+                dbvals.append(";".join(map(str, v)))
             elif type(v) == dict:
                 dbkeys.extend([f"`{kk.replace(" ", "_")}`" for kk in v.keys()])
                 dbvals.extend(v.values())
