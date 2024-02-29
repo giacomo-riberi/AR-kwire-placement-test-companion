@@ -418,7 +418,7 @@ def PA(phase: int, test_id: str, ECP_number: int, ECP_id: str, PA_number: int) -
     
     # k-wire extraction of PA is not counted in PA_D
     PA_data.PA_D = chrono.reset()
-    PA_data.PA_D = ci.flo(f" |-- set PA duration manually [FLOAT, EMPTY for automatic]: ", default=PA_data.PA_D)
+    PA_data.PA_D = ci.flo(f" |-- set PA duration manually [FLOAT, EMPTY for automatic ({PA_data.PA_D}s)]: ", default=PA_data.PA_D)
     
     PA_data.entered_articulation = ci.int(f" |-- ENTERED ARTICULATION [-1 / 0 (not entered) / 1 (entered)] : ", min=-1, max=1)
 
