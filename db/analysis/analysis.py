@@ -518,7 +518,7 @@ aaa: list[analysis] = [
     # ),
 
     analysis(
-        "PA distance from Ulnar nerve\nby phase\n(ECP 1)",
+        "PA distance from Ulnar nerve\nby phase\n(target 1)",
         "anatomical",
         "errorbox",
         (6, 8),
@@ -534,7 +534,7 @@ aaa: list[analysis] = [
         ],
     ),
     analysis(
-        "PA distance from Ulnar nerve\nby phase\n(ECP 2)",
+        "PA distance from Ulnar nerve\nby phase\n(target 2)",
         "anatomical",
         "errorbox",
         (6, 8),
