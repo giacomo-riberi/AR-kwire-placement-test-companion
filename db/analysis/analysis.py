@@ -211,7 +211,7 @@ aaa: list[analysis] = [
     #     "angle PA from target (deg)",
     # ),
     analysis(
-        "PA angle disparity from target\nby phase",
+        "PA angle disparity\nfrom target\nby phase",
         "positional",
         "errorbox",
         (5, 8),
@@ -298,7 +298,7 @@ aaa: list[analysis] = [
     #     "distance of skin entrance point from target (mm)",
     # ),
     analysis(
-        "PA P2e distance from target P2e\nby phase",
+        "PA P2e distance\nfrom target P2e\nby phase",
         "positional",
         "errorbox",
         (5, 8),
@@ -396,7 +396,7 @@ aaa: list[analysis] = [
 
     # # ------------------------------ RPC ------------------------------ #
     analysis(
-        "Radiation pictures to reach ECP\nby phase",
+        "Radiation pictures\nto reach ECP\nby phase",
         "RPC",
         "errorbox",
         (5, 8),
@@ -766,10 +766,10 @@ def get_data_summary(conn: sqlite3.Connection, a: analysis) -> tuple[pd.DataFram
     return dataframe.sort_index(), dataserie.sort_index(), summary.sort_index()
 
 def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
-    plt.figure(figsize=a.size)
+    fig = plt.figure(figsize=a.size)
     plt.rcParams['font.family'] = 'Courier New'
 
-    font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
+    font_size_title = 500 * 0.040
     # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
     font_size_legend    = 0.6 * font_size_title
     font_size_text      = 0.6 * font_size_title
@@ -863,7 +863,7 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
         save_path = os.path.join(script_dir, a.category, sanitize_filename(f"{a.title}.png"))
         if not os.path.exists(save_path):
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        plt.savefig(save_path)
+        plt.savefig(save_path, dpi=300, bbox_inches='tight', pad_inches=0.2)
 
     # save graph to variable
     img_data = io.BytesIO()
@@ -878,13 +878,13 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
     return img_data
 
 def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True):
-    plt.figure(figsize=a.size)
+    fig = plt.figure(figsize=a.size)
     plt.rcParams['font.family'] = 'Courier New'
     min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
     min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
     width = 0.06 * (max_x_preplot-min_x_preplot)
 
-    font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
+    font_size_title = 500 * 0.040
     # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
     font_size_legend    = 0.6 * font_size_title
     font_size_text      = 0.6 * font_size_title
@@ -977,7 +977,7 @@ def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFr
         save_path = os.path.join(script_dir, a.category, sanitize_filename(f"{a.title}.png"))
         if not os.path.exists(save_path):
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        plt.savefig(save_path)
+        plt.savefig(save_path, dpi=300, bbox_inches='tight', pad_inches=0.2)
     
     # save graph to variable
     img_data = io.BytesIO()
@@ -992,13 +992,13 @@ def linregress(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFr
     return img_data
 
 def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame, a: analysis, save: bool = True, show: bool = True) -> io.BytesIO:
-    plt.figure(figsize=a.size)
+    fig = plt.figure(figsize=a.size)
     plt.rcParams['font.family'] = 'Courier New'
     min_x_preplot, max_x_preplot = dataframe[a.predictor].min(), dataframe[a.predictor].max()
     min_y_preplot, max_y_preplot = dataframe[a.outcome].min(), dataframe[a.outcome].max()
     width = 0.15 * (max_x_preplot-min_x_preplot)
 
-    font_size_title = min(plt.get_current_fig_manager().window.winfo_width(), plt.get_current_fig_manager().window.winfo_height()) * 0.08
+    font_size_title = 500 * 0.040
     # plt.rcParams.update({'font.size': font_size_title}) # set default dimension
     font_size_legend    = 0.6 * font_size_title
     font_size_text      = 0.5 * font_size_title
@@ -1165,7 +1165,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
         save_path = os.path.join(script_dir, a.category, sanitize_filename(f"{a.title}.png"))
         if not os.path.exists(save_path):
             os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        plt.savefig(save_path)
+        plt.savefig(save_path, dpi=300, bbox_inches='tight', pad_inches=0.1)
 
     # save graph to variable
     img_data = io.BytesIO()
