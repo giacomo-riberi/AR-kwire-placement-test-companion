@@ -368,7 +368,7 @@ aaa: list[analysis] = [
 
     # # ---------------------------- DURATION --------------------------- #
     analysis(
-        "Time to reach ECP\nby phase",
+        "Time\nto reach ECP\nby phase",
         "duration",
         "errorbox",
         (5, 8),
@@ -396,14 +396,14 @@ aaa: list[analysis] = [
 
     # # ------------------------------ RPC ------------------------------ #
     analysis(
-        "Radiation pictures\nto reach ECP\nby phase",
+        "Fluoroscopic images\nto reach ECP\nby phase",
         "RPC",
         "errorbox",
         (5, 8),
         "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
         "ECP_RPC",
-        "Radiation pictures to reach ECP",
+        "Fluoroscopic images to reach ECP",
         legend=[
             Line2D([0], [0], label=f'ECP RPC',          color='w', marker='o',  markerfacecolor='black', markeredgecolor='black', markersize=3.5, alpha=0.5),
             Line2D([0], [0], label=f'Mean & Stddev',    color=palette[0], lw=2),
@@ -800,22 +800,22 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
         for i, y in enumerate(bar_Ys):
             total = sum(cross_tab.iloc[i])  # Sum of counts for the current phase
             percentage = y / total * 100 if total != 0 else 0  # Calculate percentage, handle division by zero
-            plt.text(bar_Xs[i], y-0.01*(max_y_preplot-min_y_preplot) if y>(max_y_preplot-min_y_preplot)/2 else y+0.01*(max_y_preplot-min_y_preplot),
-                        f'{y} ({percentage:.1f}%)',
-                        ha='center', va=('top' if y>(max_y_preplot-min_y_preplot)/2 else 'bottom'), rotation='vertical',
-                        color=('black' if y>(max_y_preplot-min_y_preplot)/2 else 'black'), fontsize=font_size_text) # make both cases black
+            # plt.text(bar_Xs[i], y-0.01*(max_y_preplot-min_y_preplot) if y>(max_y_preplot-min_y_preplot)/2 else y+0.01*(max_y_preplot-min_y_preplot),
+            #             f'{y} ({percentage:.1f}%)',
+            #             ha='center', va=('top' if y>(max_y_preplot-min_y_preplot)/2 else 'bottom'), rotation='vertical',
+            #             color=('black' if y>(max_y_preplot-min_y_preplot)/2 else 'black'), fontsize=font_size_text) # make both cases black
         
     # get actual plot dimensions
     min_x, max_x = plt.xlim()
     min_y, max_y = plt.ylim()
 
-    for i, predictor in enumerate(cross_tab.index):
-        total = sum(cross_tab.iloc[i])
-        y = cross_tab.iloc[i].max()
-        plt.text(predictor, (y if y>(max_y-min_y)/2 else y+0.15*(max_y-min_y)),
-                    f'n={total}',
-                    ha='center', va='bottom',
-                    color='black', fontsize=font_size_text)
+    # for i, predictor in enumerate(cross_tab.index):
+    #     total = sum(cross_tab.iloc[i])
+    #     y = cross_tab.iloc[i].max()
+    #     plt.text(predictor, (y if y>(max_y-min_y)/2 else y+0.15*(max_y-min_y)),
+    #                 f'n={total}',
+    #                 ha='center', va='bottom',
+    #                 color='black', fontsize=font_size_text)
 
     # Chi-square test
     if "chi-square" in a.type:
@@ -1038,7 +1038,7 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             mean_diff_perc_str  = f"{(mean-mean_control)/mean_control*100:+6.0f}%"
 
         std_diff_str, std_diff_perc_str = "", ""
-        if std_control != std and not math.isnan(std):
+        if std_control != std and not math.isnan(std) and std_control != 0:
             std_diff_str        = f"{std-std_control:+6.2f}"
             std_diff_perc_str   = f"{(std-std_control)/std_control*100:+6.0f}%"
 
