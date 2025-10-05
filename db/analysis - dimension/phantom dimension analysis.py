@@ -68,11 +68,11 @@ try:
         
         # Try to get the data
         query = f"SELECT * FROM {phantom_table}"
-        df = pd.read_sql_query(query, conn)
+        df_all = pd.read_sql_query(query, conn)
         
         # Print actual column names from dataframe
         print("\nActual DataFrame columns:")
-        for col in df.columns:
+        for col in df_all.columns:
             print(f"  - '{col}' (length: {len(col)})")
     else:
         print("\nNo phantom table found")
@@ -95,7 +95,7 @@ measurement_cols = ["M:2-M:3", "M:3-M:4", "M:7-M:8", "M:8-M:9",
 # Create a mapping to handle column name variations (with/without spaces)
 column_mapping = {}
 for desired_col in measurement_cols:
-    for actual_col in df.columns:
+    for actual_col in df_all.columns:
         # Strip spaces and compare
         if desired_col.replace(" ", "") == actual_col.replace(" ", "").replace(":", ":"):
             column_mapping[desired_col] = actual_col
@@ -111,10 +111,30 @@ for desired, actual in column_mapping.items():
 
 # Rename columns to standardized names
 for desired, actual in column_mapping.items():
-    if actual in df.columns and desired != actual:
-        df[desired] = df[actual]
+    if actual in df_all.columns and desired != actual:
+        df_all[desired] = df_all[actual]
         if actual != desired:  # Don't drop if they're the same
-            df = df.drop(columns=[actual])
+            df_all = df_all.drop(columns=[actual])
+
+# Convert id column to string for consistent comparison
+if 'id' in df_all.columns:
+    df_all['id'] = df_all['id'].astype(str)
+
+# Separate CAD reference (id=00 or id=0) and filter data
+cad_reference = None
+if 'id' in df_all.columns:
+    # Find CAD reference row (id = '0' or '00')
+    cad_mask = (df_all['id'] == '0') | (df_all['id'] == '00')
+    if cad_mask.any():
+        cad_reference = df_all[cad_mask].iloc[0]
+        print(f"\nCAD Reference (id={cad_reference['id']}) values found and will be shown as reference line")
+    
+    # Filter out id 0, 00, 10 for analysis
+    df = df_all[~df_all['id'].isin(['0', '00', '10'])].copy()
+    print(f"\nExcluded phantoms with id: 0/00, 10 from analysis")
+    print(f"Remaining phantom IDs for analysis: {sorted(df['id'].unique())}")
+else:
+    df = df_all.copy()
 
 # Now check available columns
 available_cols = [col for col in measurement_cols if col in df.columns]
@@ -123,15 +143,20 @@ print(f"\nAvailable measurement columns after mapping: {available_cols}")
 # Display the data in a nice table format
 if available_cols:
     display_cols = ['id'] + available_cols if 'id' in df.columns else available_cols
-    print("\nData Table:")
+    print("\nFiltered Data Table (excluding id: 0/00, 10):")
     print(tabulate(df[display_cols], headers='keys', tablefmt='grid', floatfmt=".3f"))
+    
+    if cad_reference is not None:
+        print("\nCAD Reference Values (id=00):")
+        cad_display = cad_reference[display_cols].to_frame().T
+        print(tabulate(cad_display, headers='keys', tablefmt='grid', floatfmt=".3f"))
 
 # Define short and long distance groups
 short_distances = ["M:2-M:3", "M:3-M:4", "M:7-M:8", "M:8-M:9"]
 long_distances = ["M:2-M:7", "M:3-M:8", "M:4-M:9"]
 
 # Function to create a plot for a group of measurements
-def create_measurement_plot(df, measurement_list, title, filename, palette):
+def create_measurement_plot(df, measurement_list, title, filename, palette, cad_reference=None):
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     
     # Font sizes
@@ -140,10 +165,14 @@ def create_measurement_plot(df, measurement_list, title, filename, palette):
     font_size_tick = 11
     font_size_text = 10
     
+    # Box width
+    box_width = 0.35
+    
     # Prepare data
     all_data = []
     all_positions = []
     all_labels = []
+    cad_values = []
     
     for idx, col in enumerate(measurement_list):
         if col in df.columns:
@@ -152,6 +181,12 @@ def create_measurement_plot(df, measurement_list, title, filename, palette):
                 all_data.append(values)
                 all_positions.append(idx)
                 all_labels.append(col)
+                
+                # Get CAD reference value if available
+                if cad_reference is not None and col in cad_reference.index:
+                    cad_val = cad_reference[col]
+                    if pd.notna(cad_val):
+                        cad_values.append((idx, cad_val))
             else:
                 print(f"  Warning: Column '{col}' has no data")
         else:
@@ -174,13 +209,13 @@ def create_measurement_plot(df, measurement_list, title, filename, palette):
         pc.set_linewidth(0.5)
     
     # Create box plots
-    bp = ax.boxplot(all_data, positions=all_positions, widths=0.35,
+    bp = ax.boxplot(all_data, positions=all_positions, widths=box_width,
                    patch_artist=True, notch=False,
                    boxprops=dict(alpha=0.6),
                    whiskerprops=dict(color='black', linewidth=1.2),
                    capprops=dict(color='black', linewidth=1.2),
                    medianprops=dict(color=palette[2], linewidth=2.5),
-                   flierprops=dict(marker='o', markersize=4, alpha=0.5))
+                   flierprops=dict(marker='o', markersize=2, alpha=0.5))
     
     # Color each box
     for patch, color in zip(bp['boxes'], palette[:len(bp['boxes'])]):
@@ -199,10 +234,18 @@ def create_measurement_plot(df, measurement_list, title, filename, palette):
     ax.scatter(all_positions, means, color=palette[0], s=150, marker='D', 
               zorder=4, edgecolor='black', linewidth=1.5)
     
+    # Add CAD reference lines (only as wide as the box) if available
+    if cad_values:
+        for pos, val in cad_values:
+            # Draw a horizontal line segment only as wide as the box
+            x_start = pos - box_width/2
+            x_end = pos + box_width/2
+            ax.plot([x_start, x_end], [val, val], color='red', linestyle='-', linewidth=3, alpha=0.8, zorder=5)
+    
     # Formatting
     ax.set_xticks(all_positions)
     ax.set_xticklabels(all_labels, fontsize=font_size_tick, rotation=0)
-    ax.set_xlabel('Measurement Type', fontsize=font_size_label, fontweight='bold')
+    ax.set_xlabel('Marker distance', fontsize=font_size_label, fontweight='bold')
     ax.set_ylabel('Distance (mm)', fontsize=font_size_label, fontweight='bold')
     ax.set_title(title, fontsize=font_size_title, fontweight='bold', pad=20)
     
@@ -210,32 +253,19 @@ def create_measurement_plot(df, measurement_list, title, filename, palette):
     ax.grid(True, alpha=0.3, axis='y', linestyle='--')
     ax.set_axisbelow(True)
     
-    # Add statistics annotations
-    for i, (pos, data) in enumerate(zip(all_positions, all_data)):
-        n = len(data)
-        mean = np.mean(data)
-        std = np.std(data)
-        
-        # Add n at the bottom
-        ax.text(pos, ax.get_ylim()[0] + 0.01 * (ax.get_ylim()[1] - ax.get_ylim()[0]),
-               f'n={n}', ha='center', va='bottom', fontsize=font_size_text)
-        
-        # Add mean and std at the top
-        ax.text(pos, ax.get_ylim()[1] - 0.02 * (ax.get_ylim()[1] - ax.get_ylim()[0]),
-               f'μ={mean:.1f}\nσ={std:.2f}', ha='center', va='top', 
-               fontsize=font_size_text-1,
-               bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.7))
-    
     # Create legend
     legend_elements = [
         Line2D([0], [0], marker='o', color='w', markerfacecolor='black', 
-               markersize=6, alpha=0.7, label='Data points'),
+               markersize=4, alpha=0.7, label='Data points'),
         Line2D([0], [0], marker='D', color='w', markerfacecolor=palette[0], 
                markeredgecolor='black', markersize=10, label='Mean'),
         Line2D([0], [0], color=palette[2], linewidth=2.5, label='Median'),
-        Line2D([0], [0], color=palette[3], linewidth=10, alpha=0.6, label='IQR (Box)'),
-        Line2D([0], [0], color='black', linewidth=1.2, label='Whiskers'),
     ]
+    
+    # Add CAD reference to legend if present
+    if cad_values:
+        legend_elements.append(Line2D([0], [0], color='red', linestyle='-', linewidth=3, label='3D CAD design'))
+    
     ax.legend(handles=legend_elements, loc='upper right', fontsize=font_size_text)
     
     # Adjust layout
@@ -256,37 +286,63 @@ print("="*70)
 create_measurement_plot(df, short_distances, 
                        'Phantom Marker Measurements', 
                        'phantom_measurements_2.png',
-                       palette)
+                       palette,
+                       cad_reference)
 
 # Plot 2: Long distances
 create_measurement_plot(df, long_distances,
                        'Phantom Marker Measurements',
                        'phantom_measurements_1.png',
-                       palette)
+                       palette,
+                       cad_reference)
 
-# Print summary statistics for both groups
+# Print summary statistics for both groups (filtered data only)
 print("\n" + "="*70)
-print("SUMMARY STATISTICS BY GROUP")
+print("SUMMARY STATISTICS BY GROUP (excluding id: 0/00, 10)")
 print("="*70)
 
 print("\nShort Distances (Pin-to-Pin):")
 print("-"*40)
-print(f"{'Measurement':<12} {'Mean':<10} {'Std':<10} {'Min':<10} {'Max':<10}")
+print(f"{'Measurement':<12} {'Mean':<10} {'Std':<10} {'Min':<10} {'Max':<10} {'CAD Ref':<10}")
 for col in short_distances:
     if col in df.columns:
         data = df[col].dropna()
+        cad_val = cad_reference[col] if cad_reference is not None and col in cad_reference.index else np.nan
         if len(data) > 0:
-            print(f"{col:<12} {data.mean():<10.3f} {data.std():<10.3f} {data.min():<10.3f} {data.max():<10.3f}")
+            cad_str = f"{cad_val:<10.3f}" if pd.notna(cad_val) else "N/A"
+            print(f"{col:<12} {data.mean():<10.3f} {data.std():<10.3f} {data.min():<10.3f} {data.max():<10.3f} {cad_str}")
     else:
         print(f"{col:<12} NOT FOUND")
 
 print("\nLong Distances (Diagonal):")
 print("-"*40)
-print(f"{'Measurement':<12} {'Mean':<10} {'Std':<10} {'Min':<10} {'Max':<10}")
+print(f"{'Measurement':<12} {'Mean':<10} {'Std':<10} {'Min':<10} {'Max':<10} {'CAD Ref':<10}")
 for col in long_distances:
     if col in df.columns:
         data = df[col].dropna()
+        cad_val = cad_reference[col] if cad_reference is not None and col in cad_reference.index else np.nan
         if len(data) > 0:
-            print(f"{col:<12} {data.mean():<10.3f} {data.std():<10.3f} {data.min():<10.3f} {data.max():<10.3f}")
+            cad_str = f"{cad_val:<10.3f}" if pd.notna(cad_val) else "N/A"
+            print(f"{col:<12} {data.mean():<10.3f} {data.std():<10.3f} {data.min():<10.3f} {data.max():<10.3f} {cad_str}")
     else:
         print(f"{col:<12} NOT FOUND")
+
+# Print comparison with CAD reference
+if cad_reference is not None:
+    print("\n" + "="*70)
+    print("DEVIATION FROM CAD REFERENCE")
+    print("="*70)
+    
+    for group_name, group_cols in [("Short Distances", short_distances), ("Long Distances", long_distances)]:
+        print(f"\n{group_name}:")
+        print("-"*40)
+        print(f"{'Measurement':<12} {'Mean Dev':<12} {'Mean Dev %':<12}")
+        
+        for col in group_cols:
+            if col in df.columns and col in cad_reference.index:
+                data = df[col].dropna()
+                cad_val = cad_reference[col]
+                if len(data) > 0 and pd.notna(cad_val):
+                    mean_deviation = data.mean() - cad_val
+                    mean_deviation_pct = (mean_deviation / cad_val) * 100
+                    print(f"{col:<12} {mean_deviation:<+12.3f} {mean_deviation_pct:<+12.2f}%")
