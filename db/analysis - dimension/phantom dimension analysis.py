@@ -159,11 +159,11 @@ long_distances = ["M:2-M:7", "M:3-M:8", "M:4-M:9"]
 def create_measurement_plot(df, measurement_list, title, filename, palette, cad_reference=None):
     fig, ax = plt.subplots(1, 1, figsize=(12, 8))
     
-    # Font sizes
-    font_size_title = 18
-    font_size_label = 14
-    font_size_tick = 11
-    font_size_text = 10
+    # Font sizes - INCREASED
+    font_size_title = 24
+    font_size_label = 20
+    font_size_tick = 18
+    font_size_text = 18
     
     # Box width
     box_width = 0.35
@@ -242,7 +242,7 @@ def create_measurement_plot(df, measurement_list, title, filename, palette, cad_
             x_end = pos + box_width/2
             ax.plot([x_start, x_end], [val, val], color='red', linestyle='-', linewidth=3, alpha=0.8, zorder=5)
     
-    # Formatting
+    # Formatting - INCREASED FONT SIZES
     ax.set_xticks(all_positions)
     ax.set_xticklabels(all_labels, fontsize=font_size_tick, rotation=0)
     ax.set_xlabel('Marker distance', fontsize=font_size_label, fontweight='bold')
@@ -253,12 +253,15 @@ def create_measurement_plot(df, measurement_list, title, filename, palette, cad_
     ax.grid(True, alpha=0.3, axis='y', linestyle='--')
     ax.set_axisbelow(True)
     
-    # Create legend
+    # Increase tick label size for y-axis as well
+    ax.tick_params(axis='y', labelsize=font_size_tick)
+    
+    # Create legend - INCREASED FONT SIZE
     legend_elements = [
         Line2D([0], [0], marker='o', color='w', markerfacecolor='black', 
-               markersize=4, alpha=0.7, label='Data points'),
+               markersize=6, alpha=0.7, label='Data points'),  # Increased markersize
         Line2D([0], [0], marker='D', color='w', markerfacecolor=palette[0], 
-               markeredgecolor='black', markersize=10, label='Mean'),
+               markeredgecolor='black', markersize=12, label='Mean'),  # Increased markersize
         Line2D([0], [0], color=palette[2], linewidth=2.5, label='Median'),
     ]
     
