@@ -98,7 +98,7 @@ aaa: list[analysis] = [
     analysis(
         "ECPs reached after X PA failed\nby phase",
         "statistical",
-        "barplot",
+        "barplot chi-square",
         (6, 8),
         "SELECT phase, ECP_PACF FROM ECP WHERE phase <> -1",
         "phase",
@@ -149,7 +149,7 @@ aaa: list[analysis] = [
     analysis(
         "PA result count\nby phase",
         "statistical",
-        "barplot",
+        "barplot chi-square",
         (5, 8),
         "SELECT phase, success FROM PA WHERE phase <> -1;",
         "phase",
@@ -213,8 +213,8 @@ aaa: list[analysis] = [
     analysis(
         "PA angle disparity\nfrom target\nby phase",
         "positional",
-        "errorbox",
-        (5, 8),
+        "errorbox levene dunnett",
+        (8, 8),
         "SELECT phase, angle_PA_target FROM PA WHERE phase <> -1;",
         "phase",
         "angle_PA_target",
@@ -300,7 +300,7 @@ aaa: list[analysis] = [
     analysis(
         "PA P2e distance\nfrom target P2e\nby phase",
         "positional",
-        "errorbox",
+        "errorbox levene dunnett",
         (5, 8),
         "SELECT phase, distance_P2e_PA_target FROM PA WHERE phase <> -1;",
         "phase",
@@ -370,7 +370,7 @@ aaa: list[analysis] = [
     analysis(
         "Time\nto reach ECP\nby phase",
         "duration",
-        "errorbox",
+        "errorbox anova dunnett",
         (5, 8),
         "SELECT PHASE.phase, ECP.ECP_D FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
@@ -398,7 +398,7 @@ aaa: list[analysis] = [
     analysis(
         "Fluoroscopic images\nto reach ECP\nby phase",
         "RPC",
-        "errorbox",
+        "errorbox anova dunnett",
         (5, 8),
         "SELECT PHASE.phase, ECP.ECP_RPC FROM PHASE LEFT JOIN ECP ON PHASE.id = ECP.PHASE_id WHERE PHASE.phase <> -1;",
         "phase",
@@ -520,8 +520,8 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from Ulnar nerve\nby phase\n(target 1)",
         "anatomical",
-        "errorbox",
-        (6, 8),
+        "errorbox dunnett levene",
+        (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 1",
         "phase",
         "ulnar_nerve",
@@ -536,8 +536,8 @@ aaa: list[analysis] = [
     analysis(
         "PA distance from Ulnar nerve\nby phase\n(target 2)",
         "anatomical",
-        "errorbox",
-        (6, 8),
+        "errorbox dunnett levene",
+        (8, 8),
         "SELECT phase, ulnar_nerve FROM PA WHERE ECP_number == 2",
         "phase",
         "ulnar_nerve",
@@ -800,22 +800,22 @@ def barplot(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFrame
         for i, y in enumerate(bar_Ys):
             total = sum(cross_tab.iloc[i])  # Sum of counts for the current phase
             percentage = y / total * 100 if total != 0 else 0  # Calculate percentage, handle division by zero
-            # plt.text(bar_Xs[i], y-0.01*(max_y_preplot-min_y_preplot) if y>(max_y_preplot-min_y_preplot)/2 else y+0.01*(max_y_preplot-min_y_preplot),
-            #             f'{y} ({percentage:.1f}%)',
-            #             ha='center', va=('top' if y>(max_y_preplot-min_y_preplot)/2 else 'bottom'), rotation='vertical',
-            #             color=('black' if y>(max_y_preplot-min_y_preplot)/2 else 'black'), fontsize=font_size_text) # make both cases black
+            plt.text(bar_Xs[i], y-0.01*(max_y_preplot-min_y_preplot) if y>(max_y_preplot-min_y_preplot)/2 else y+0.01*(max_y_preplot-min_y_preplot),
+                        f'{y} ({percentage:.1f}%)',
+                        ha='center', va=('top' if y>(max_y_preplot-min_y_preplot)/2 else 'bottom'), rotation='vertical',
+                        color=('black' if y>(max_y_preplot-min_y_preplot)/2 else 'black'), fontsize=font_size_text) # make both cases black
         
     # get actual plot dimensions
     min_x, max_x = plt.xlim()
     min_y, max_y = plt.ylim()
 
-    # for i, predictor in enumerate(cross_tab.index):
-    #     total = sum(cross_tab.iloc[i])
-    #     y = cross_tab.iloc[i].max()
-    #     plt.text(predictor, (y if y>(max_y-min_y)/2 else y+0.15*(max_y-min_y)),
-    #                 f'n={total}',
-    #                 ha='center', va='bottom',
-    #                 color='black', fontsize=font_size_text)
+    for i, predictor in enumerate(cross_tab.index):
+        total = sum(cross_tab.iloc[i])
+        y = cross_tab.iloc[i].max()
+        plt.text(predictor, (y if y>(max_y-min_y)/2 else y+0.15*(max_y-min_y)),
+                    f'n={total}',
+                    ha='center', va='bottom',
+                    color='black', fontsize=font_size_text)
 
     # Chi-square test
     if "chi-square" in a.type:
@@ -1043,19 +1043,19 @@ def errorbox(dataframe: pd.DataFrame, dataserie: pd.Series, summary: pd.DataFram
             std_diff_perc_str   = f"{(std-std_control)/std_control*100:+6.0f}%"
 
         # !!! tmp remove for thesis
-        # plt.text(summary[a.predictor][i]-width/1.9, min_y+0.80*(max_y-min_y),
-        #             f'Count:\nMean:\n\n\nStddev:\n\n\nStderr:\n',
-        #             ha='right', va='top', color=palette[0], fontsize=font_size_text)
-        # plt.text(summary[a.predictor][i]+width/1.9, 0.80*(max_y-min_y)+min_y,
-        #             f'{count:3.0f}\n{mean:6.2f}\n{mean_diff_str}\n{mean_diff_perc_str}\n{std:6.2f}\n{std_diff_str}\n{std_diff_perc_str}\n{stderr:6.2f}',
-        #             ha='left', va='top', color=palette[0], fontsize=font_size_text)
+        plt.text(summary[a.predictor][i]-width/1.9, min_y+0.80*(max_y-min_y),
+                    f'Count:\nMean:\n\n\nStddev:\n\n\nStderr:\n',
+                    ha='right', va='top', color=palette[0], fontsize=font_size_text)
+        plt.text(summary[a.predictor][i]+width/1.9, 0.80*(max_y-min_y)+min_y,
+                    f'{count:3.0f}\n{mean:6.2f}\n{mean_diff_str}\n{mean_diff_perc_str}\n{std:6.2f}\n{std_diff_str}\n{std_diff_perc_str}\n{stderr:6.2f}',
+                    ha='left', va='top', color=palette[0], fontsize=font_size_text)
         
-        # plt.text(summary[a.predictor][i]-width/1.9, 0.20*(max_y-min_y)+min_y,
-        #             f'Q3:\nMedian:\nQ1:',
-        #             ha='right', va='bottom', color=palette[1], fontsize=font_size_text)
-        # plt.text(summary[a.predictor][i]+width/1.9, 0.20*(max_y-min_y)+min_y,
-        #             f'{q3:6.2f}\n{median:6.2f}\n{q1:6.2f}',
-        #             ha='left', va='bottom', color=palette[1], fontsize=font_size_text)
+        plt.text(summary[a.predictor][i]-width/1.9, 0.20*(max_y-min_y)+min_y,
+                    f'Q3:\nMedian:\nQ1:',
+                    ha='right', va='bottom', color=palette[1], fontsize=font_size_text)
+        plt.text(summary[a.predictor][i]+width/1.9, 0.20*(max_y-min_y)+min_y,
+                    f'{q3:6.2f}\n{median:6.2f}\n{q1:6.2f}',
+                    ha='left', va='bottom', color=palette[1], fontsize=font_size_text)
 
     # ANOVA test
     if "anova" in a.type.lower():
