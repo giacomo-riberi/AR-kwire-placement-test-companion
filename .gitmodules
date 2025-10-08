@@ -1,0 +1,3 @@
+[submodule "ai-code"]
+	path = ai-code
+	url = https://github.com/gekigek99/ai-code
